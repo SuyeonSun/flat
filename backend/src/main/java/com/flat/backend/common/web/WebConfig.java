@@ -1,4 +1,4 @@
-package com.flat.backend.config;
+package com.flat.backend.common.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
