@@ -1,6 +1,7 @@
 package com.flat.backend;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +36,7 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in")
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in", "/auth/re-issue")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
         httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));

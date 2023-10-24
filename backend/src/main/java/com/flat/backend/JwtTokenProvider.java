@@ -2,6 +2,8 @@ package com.flat.backend;
 
 import com.flat.backend.token.entity.Token;
 import com.flat.backend.token.repository.TokenRepository;
+import com.flat.backend.user.repository.UserRepository;
+import com.flat.backend.user.repository.entity.User;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -10,20 +12,25 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final String secretKey = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
-    private final Long accessExpirationTime = 43200000L; // 12시간
-    private final Long refreshExpirationTime = 604800000L; // 7일
+    // private final Long accessExpirationTime = 43200000L; // 12시간
+    // private final Long refreshExpirationTime = 604800000L; // 7일
+    private final Long accessExpirationTime = Duration.ofMinutes(1).toMillis(); // 1분
+    private final Long refreshExpirationTime = Duration.ofMinutes(2).toMillis();  // 2분
+    // private final Long refreshExpirationTime = Duration.ofDays(7).toMillis(); // 7일
 
     private final UserDetailServiceImpl userDetailService;
 
     private final TokenRepository tokenRepository;
+    private final UserRepository userRepository;
 
-    // access token 생성
+    // accessToken 생성
     public String createAccessToken(Authentication authentication) {
         Claims claims = Jwts.claims().setSubject(authentication.getName());
         Date now = new Date();
@@ -38,8 +45,8 @@ public class JwtTokenProvider {
         return accessToken;
     }
 
-    // refresh token 생성
-    public String createRefreshToken(Authentication authentication) {
+    // refreshToken 생성
+    public void createRefreshToken(Authentication authentication, User user) {
         Claims claims = Jwts.claims().setSubject(authentication.getName());
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + refreshExpirationTime);
@@ -57,11 +64,10 @@ public class JwtTokenProvider {
                 .build();
         tokenRepository.save(token);
 
-        return refreshToken;
+        user.setToken(token);
+        userRepository.save(user);
     }
 
-    // TODO: ?
-    // token으로부터 claim을 생성하고, 이를 통해 User 객체를 생성해 Authentication 객체 반환
     public Authentication getAuthentication(String token) {
         String claims = Jwts
                 .parser()
@@ -82,7 +88,7 @@ public class JwtTokenProvider {
         return null;
     }
 
-    // access token 검증
+    // accessToken 재발급
     public boolean validateToken(String token) throws Exception {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
@@ -90,6 +96,15 @@ public class JwtTokenProvider {
         } catch (JwtException e) {
             throw new Exception();
         }
+    }
+
+    // accessToken 재발급
+    public String reIssueAccessToken(String refreshToken) {
+        // refresh token 검증
+        Authentication authentication = getAuthentication(refreshToken);
+        String accessToken;
+        accessToken = createAccessToken(authentication);
+        return accessToken;
     }
 
 }

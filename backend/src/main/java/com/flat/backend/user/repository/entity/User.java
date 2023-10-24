@@ -6,33 +6,26 @@ import lombok.*;
 
 import java.util.UUID;
 
-@Entity(name = "User")
+@Entity(name = "user")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id")
     private UUID id;
 
     private String email;
 
     private String password;
 
-    // TODO: do it later.
+    // TODO: 탈퇴한 회원을 위한 active 처리 구현이 필요하다.
     // private String active;
 
     @OneToOne
     @JoinColumn(name = "token_id")
     private Token token;
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", token=" + token +
-                '}';
-    }
 }

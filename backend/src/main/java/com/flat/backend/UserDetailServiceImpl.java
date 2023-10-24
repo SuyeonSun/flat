@@ -19,7 +19,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username); // TODO: throws exception 구현하기
+        User user = userRepository.findByEmail(username);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
     }
