@@ -106,5 +106,4 @@ public class JwtTokenProvider {
         accessToken = createAccessToken(authentication);
         return accessToken;
     }
-
 }

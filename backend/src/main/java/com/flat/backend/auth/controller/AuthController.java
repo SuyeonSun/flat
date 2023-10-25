@@ -2,6 +2,7 @@ package com.flat.backend.auth.controller;
 
 import com.flat.backend.auth.dto.ReIssueDto;
 import com.flat.backend.auth.dto.SignInDto;
+import com.flat.backend.auth.dto.SignOutDto;
 import com.flat.backend.auth.dto.SignUpDto;
 import com.flat.backend.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,11 @@ public class AuthController {
     @PostMapping("/sign-in")
     public String signIn(@RequestBody SignInDto signInDto) throws Exception {
         return authService.signIn(signInDto);
+    }
+
+    @PostMapping("/sign-out")
+    public void signOut(@RequestBody SignOutDto signOutDto) throws Exception {
+        authService.signOut(signOutDto);
     }
 
     @PostMapping("/re-issue")
