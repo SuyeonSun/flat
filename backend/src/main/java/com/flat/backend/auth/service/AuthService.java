@@ -66,5 +66,9 @@ public class AuthService {
     }
 
     // TODO 2
-    // refresh token 만료 시 로그아웃
+    // access token 만료 시 error code 전송
+
+    // TODO 3
+    // refresh token 만료 시 error code 전송
+
 }
