@@ -16,12 +16,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sign-up")
-    public ResponseDto<Boolean> signUp(@RequestBody SignUpDto signUpDto) {
+    public ResponseDto<?> signUp(@RequestBody SignUpDto signUpDto) {
         return authService.signUp(signUpDto);
     }
 
     @PostMapping("/sign-in")
-    public String signIn(@RequestBody SignInDto signInDto) throws Exception {
+    public String signIn(@RequestBody SignInDto signInDto) {
         return authService.signIn(signInDto);
     }
 

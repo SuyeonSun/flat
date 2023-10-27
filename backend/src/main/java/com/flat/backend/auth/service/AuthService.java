@@ -31,7 +31,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public ResponseDto<Boolean> signUp(SignUpDto signUpDto) {
+    public ResponseDto<?> signUp(SignUpDto signUpDto) {
         User existUser = userRepository.findByEmail(signUpDto.getEmail());
         if (existUser != null) {
             return new ResponseDto<>(false, null, ErrorCode.USERS_DUPLICATED_ERROR);
@@ -75,11 +75,4 @@ public class AuthService {
 
         tokenRepository.deleteById(user_token_id);
     }
-
-    // TODO 2
-    // access token 만료 시 error code 전송
-
-    // TODO 3
-    // refresh token 만료 시 error code 전송
-
 }
