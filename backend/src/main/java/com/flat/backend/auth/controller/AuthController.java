@@ -1,5 +1,6 @@
 package com.flat.backend.auth.controller;
 
+import com.flat.backend.ResponseDto;
 import com.flat.backend.auth.dto.ReIssueDto;
 import com.flat.backend.auth.dto.SignInDto;
 import com.flat.backend.auth.dto.SignOutDto;
@@ -15,9 +16,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sign-up")
-    public void signUp(@RequestBody SignUpDto signUpDto) {
-        // TODO: 이미 존재하는 user 인지 확인하는 로직이 추가 되어야 한다.
-        authService.signUp(signUpDto);
+    public ResponseDto<Boolean> signUp(@RequestBody SignUpDto signUpDto) {
+        return authService.signUp(signUpDto);
     }
 
     @PostMapping("/sign-in")

@@ -1,6 +1,8 @@
 package com.flat.backend.auth.service;
 
+import com.flat.backend.ErrorCode;
 import com.flat.backend.JwtTokenProvider;
+import com.flat.backend.ResponseDto;
 import com.flat.backend.auth.dto.ReIssueDto;
 import com.flat.backend.auth.dto.SignInDto;
 import com.flat.backend.auth.dto.SignOutDto;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,12 +31,22 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public void signUp(SignUpDto signUpDto) {
+    public ResponseDto<Boolean> signUp(SignUpDto signUpDto) {
+        User existUser = userRepository.findByEmail(signUpDto.getEmail());
+        if (existUser != null) {
+            return new ResponseDto<>(false, null, ErrorCode.USERS_DUPLICATED_ERROR);
+        }
+
         User user = User.builder()
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .build();
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+            return new ResponseDto<>(true, null);
+        } catch (Exception exception) {
+            return new ResponseDto<>(false, null, ErrorCode.INVALID_ERROR);
+        }
     }
 
     public String signIn(SignInDto signInDto) {
