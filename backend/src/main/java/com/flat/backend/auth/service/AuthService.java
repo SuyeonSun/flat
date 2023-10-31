@@ -1,18 +1,19 @@
 package com.flat.backend.auth.service;
 
-import com.flat.backend.ErrorCode;
-import com.flat.backend.JwtTokenProvider;
-import com.flat.backend.ResponseDto;
-import com.flat.backend.auth.dto.ReIssueDto;
-import com.flat.backend.auth.dto.SignInDto;
-import com.flat.backend.auth.dto.SignOutDto;
-import com.flat.backend.auth.dto.SignUpDto;
+import com.flat.backend.auth.dto.req.ReIssueReqDto;
+import com.flat.backend.auth.dto.req.SignInReqDto;
+import com.flat.backend.auth.dto.req.SignOutReqDto;
+import com.flat.backend.auth.dto.req.SignUpReqDto;
+import com.flat.backend.auth.dto.res.ReIssueResDto;
+import com.flat.backend.auth.dto.res.SignInResDto;
+import com.flat.backend.common.StatusEnum;
+import com.flat.backend.common.dto.BaseResponseDto;
+import com.flat.backend.token.JwtTokenProvider;
 import com.flat.backend.token.repository.TokenRepository;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,10 +32,12 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public ResponseDto<?> signUp(SignUpDto signUpDto) {
+    public ResponseEntity<BaseResponseDto<?>> signUp(SignUpReqDto signUpDto) {
         User existUser = userRepository.findByEmail(signUpDto.getEmail());
         if (existUser != null) {
-            return new ResponseDto<>(false, null, ErrorCode.USERS_DUPLICATED_ERROR);
+            return ResponseEntity
+                    .ok()
+                    .body(new BaseResponseDto<>(StatusEnum.INTERNAL_SERER_ERROR.getStatusCode(), StatusEnum.INTERNAL_SERER_ERROR.getStatusMessage()));
         }
 
         User user = User.builder()
@@ -43,13 +46,17 @@ public class AuthService {
                 .build();
         try {
             userRepository.save(user);
-            return new ResponseDto<>(true, null);
+            return ResponseEntity
+                    .ok()
+                    .body(new BaseResponseDto<>(StatusEnum.OK.getStatusCode(), StatusEnum.OK.getStatusMessage()));
         } catch (Exception exception) {
-            return new ResponseDto<>(false, null, ErrorCode.INVALID_ERROR);
+            return ResponseEntity
+                    .ok()
+                    .body(new BaseResponseDto<>(StatusEnum.INTERNAL_SERER_ERROR.getStatusCode(), StatusEnum.INTERNAL_SERER_ERROR.getStatusMessage()));
         }
     }
 
-    public String signIn(SignInDto signInDto) {
+    public ResponseEntity<BaseResponseDto<?>> signIn(SignInReqDto signInDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword())
         );
@@ -57,22 +64,35 @@ public class AuthService {
         User user = userRepository.findByEmail(signInDto.getEmail());
 
         jwtTokenProvider.createRefreshToken(authentication, user);
-        return accessToken;
+        // return accessToken;
+        SignInResDto signInResDto = new SignInResDto(user.getEmail(), accessToken);
+        BaseResponseDto<SignInResDto> baseResponseDto = new BaseResponseDto<>(StatusEnum.OK.getStatusCode(), StatusEnum.OK.getStatusMessage(), signInResDto);
+        return ResponseEntity.ok()
+                .body(baseResponseDto);
     }
 
-    public String reIssue(ReIssueDto reIssueDto) {
+    public ResponseEntity<BaseResponseDto<?>> reIssue(ReIssueReqDto reIssueDto) {
         User user = userRepository.findByEmail(reIssueDto.getEmail());
         String refreshToken = user.getToken().getRefreshToken();
-        return jwtTokenProvider.reIssueAccessToken(refreshToken);
+        String accessToken = jwtTokenProvider.reIssueAccessToken(refreshToken);
+        ReIssueResDto reIssueResDto = new ReIssueResDto(accessToken);
+        BaseResponseDto<ReIssueResDto> baseResponseDto = new BaseResponseDto<>(StatusEnum.OK.getStatusCode(), StatusEnum.OK.getStatusMessage(), reIssueResDto);
+        return ResponseEntity
+                .ok()
+                .body(baseResponseDto);
     }
 
     @Transactional
-    public void signOut(SignOutDto signOutDto) {
+    public ResponseEntity<BaseResponseDto<?>> signOut(SignOutReqDto signOutDto) {
         // refresh token 삭제
         User user = userRepository.findByEmail(signOutDto.getEmail());
         UUID user_token_id = user.getToken().getId();
         user.setToken(null);
 
         tokenRepository.deleteById(user_token_id);
+        BaseResponseDto<ReIssueResDto> baseResponseDto = new BaseResponseDto<>(StatusEnum.OK.getStatusCode(), StatusEnum.OK.getStatusMessage());
+        return ResponseEntity
+                .ok()
+                .body(baseResponseDto);
     }
 }

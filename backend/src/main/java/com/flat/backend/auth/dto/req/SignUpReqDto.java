@@ -1,11 +1,10 @@
-package com.flat.backend.auth.dto;
+package com.flat.backend.auth.dto.req;
 
-import lombok.Builder;
 // import lombok.Data;
 import lombok.Getter;
 
 @Getter
-public class SignUpDto {
+public class SignUpReqDto {
     private String email;
     private String password;
 }

@@ -1,4 +1,4 @@
-package com.flat.backend;
+package com.flat.backend.token;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

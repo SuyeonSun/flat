@@ -1,4 +1,4 @@
-package com.flat.backend;
+package com.flat.backend.user.service;
 
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;

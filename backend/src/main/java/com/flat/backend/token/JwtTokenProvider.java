@@ -1,5 +1,6 @@
-package com.flat.backend;
+package com.flat.backend.token;
 
+import com.flat.backend.user.service.UserDetailServiceImpl;
 import com.flat.backend.token.entity.Token;
 import com.flat.backend.token.repository.TokenRepository;
 import com.flat.backend.user.repository.UserRepository;

@@ -1,12 +1,13 @@
 package com.flat.backend.auth.controller;
 
-import com.flat.backend.ResponseDto;
-import com.flat.backend.auth.dto.ReIssueDto;
-import com.flat.backend.auth.dto.SignInDto;
-import com.flat.backend.auth.dto.SignOutDto;
-import com.flat.backend.auth.dto.SignUpDto;
+import com.flat.backend.common.dto.BaseResponseDto;
+import com.flat.backend.auth.dto.req.ReIssueReqDto;
+import com.flat.backend.auth.dto.req.SignInReqDto;
+import com.flat.backend.auth.dto.req.SignOutReqDto;
+import com.flat.backend.auth.dto.req.SignUpReqDto;
 import com.flat.backend.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,22 +17,22 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sign-up")
-    public ResponseDto<?> signUp(@RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<BaseResponseDto<?>> signUp(@RequestBody SignUpReqDto signUpDto) {
         return authService.signUp(signUpDto);
     }
 
     @PostMapping("/sign-in")
-    public String signIn(@RequestBody SignInDto signInDto) {
+    public ResponseEntity<BaseResponseDto<?>> signIn(@RequestBody SignInReqDto signInDto) {
         return authService.signIn(signInDto);
     }
 
     @PostMapping("/sign-out")
-    public void signOut(@RequestBody SignOutDto signOutDto) throws Exception {
+    public void signOut(@RequestBody SignOutReqDto signOutDto) throws Exception {
         authService.signOut(signOutDto);
     }
 
     @PostMapping("/re-issue")
-    public String reIssue(@RequestBody ReIssueDto reIssueDto) throws Exception {
+    public ResponseEntity<BaseResponseDto<?>> reIssue(@RequestBody ReIssueReqDto reIssueDto) throws Exception {
         return authService.reIssue(reIssueDto);
     }
 

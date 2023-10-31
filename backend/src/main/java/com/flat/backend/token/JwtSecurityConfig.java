@@ -1,4 +1,4 @@
-package com.flat.backend;
+package com.flat.backend.token;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
