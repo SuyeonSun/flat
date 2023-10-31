@@ -9,7 +9,7 @@
 </script>
 
 <template>
-  <div>Test Page</div>
+  <div>Test Pagejhgjhgjh</div>
 </template>
 
 <style scoped>
