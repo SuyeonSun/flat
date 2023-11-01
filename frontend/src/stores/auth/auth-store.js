@@ -1,19 +1,25 @@
 import { defineStore } from 'pinia';
+import {api} from "boot/axios";
+import {Notify, Quasar} from "quasar";
+import {useRouter} from "vue-router";
 
-export const useCounterStore = defineStore('counter', {
+const $router = useRouter();
+
+export const useAuthStore = defineStore('authStore', {
   state: () => ({
-    counter: 0
   }),
 
-  getters: {
-    doubleCount (state) {
-      return state.counter * 2
-    }
-  },
-
   actions: {
-    increment () {
-      this.counter++
+    async signUp(signUpPayload) {
+      try {
+
+        const response = await api.post("/auth/sign-up", signUpPayload);
+        return response.data.code !== 2000;
+        // await $router.push("/test");
+
+      } catch (error) {
+        console.log("error");
+      }
     }
   }
 })
