@@ -1,4 +1,4 @@
-package com.flat.backend.config;
+package com.flat.backend.common.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
