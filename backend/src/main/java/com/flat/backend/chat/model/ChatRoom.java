@@ -1,8 +1,9 @@
-package com.sample.stomp.model;
+package com.flat.backend.chat.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.UUID;
 
 @Getter

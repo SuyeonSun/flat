@@ -36,3 +36,4 @@ cloud:
 application:
   bucket:
     name: flat-bucket
+

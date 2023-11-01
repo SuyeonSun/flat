@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.usebootstrap.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         [v-cloak] {
             display: none;
@@ -16,7 +16,7 @@
 </head>
 <body>
 <div>
-    <button onclick="location.href=`/room`">돌아가기</button>
+    <button onclick="location.href=`/chat/room`">돌아가기</button>
 </div>
 <div class="container" id="app" v-cloak>
     <div>
@@ -39,17 +39,19 @@
     <div></div>
 </div>
 <!-- JavaScript -->
-<script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
-<script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
-<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
-<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
 <script>
     //alert(document.title);
     // websocket & stomp initialize
     var sock = new SockJS("/ws/chat");
     var ws = Stomp.over(sock);
+    console.log('ws: '+ws);
     var reconnect = 0;
+
     // vue.js
     var vm = new Vue({
         el: '#app',
@@ -62,6 +64,7 @@
         },
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
+            // console.log(this.roomId);
             this.sender = localStorage.getItem('wschat.sender');
             this.findRoom();
         },
@@ -84,6 +87,7 @@
         ws.connect({}, function(frame) {
             ws.subscribe("/topic/chat/room/"+vm.$data.roomId, function(message) {
                 var recv = JSON.parse(message.body);
+                console.log(recv);
                 vm.recvMessage(recv);
             });
             ws.send("/app/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender}));

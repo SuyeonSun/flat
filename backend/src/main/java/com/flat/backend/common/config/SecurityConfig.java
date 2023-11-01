@@ -36,8 +36,11 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in", "/auth/re-issue", "/auth/sign-out", "/user/test", "/user/upload")
-                        .permitAll().anyRequest().authenticated())
+//                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in",
+//                                "/auth/re-issue", "/auth/sign-out", "/user/test", "/user/upload", "/ws/chat",
+//                                "/api/v1/chatRooms", "/chat/**", "/favicon.ico")
+//                        .permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
         httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
         return httpSecurity.build();

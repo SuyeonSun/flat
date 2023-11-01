@@ -1,7 +1,7 @@
-package com.sample.stomp.controller;
+package com.flat.backend.chat.controller;
 
-import com.sample.stomp.model.ChatRoom;
-import com.sample.stomp.service.ChatService;
+import com.flat.backend.chat.model.ChatRoom;
+import com.flat.backend.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

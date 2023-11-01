@@ -1,4 +1,4 @@
-package com.sample.stomp.model;
+package com.flat.backend.chat.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.sample.stomp.controller;
+package com.flat.backend.chat.controller;
 
-import com.sample.stomp.model.ChatMessage;
+import com.flat.backend.chat.model.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -17,6 +17,7 @@ public class MessageController {
         if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
             message.setMessage(message.getSender()+"님이 입장하였습니다.");
         }
+        System.out.println("enter()........");
         sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(),message);
     }
 }
