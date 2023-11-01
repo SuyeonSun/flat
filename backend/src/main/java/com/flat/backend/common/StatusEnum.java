@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum StatusEnum {
     OK(200, "OK"),
-    INTERNAL_SERER_ERROR(500, "INTERNAL_SERVER_ERROR");
+    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR"),
+
+    // user
+    USER_ALREADY_EXIST_ERROR(2000, "USER_ALREADY_EXIST_ERROR");
 
     final int statusCode;
     final String statusMessage;

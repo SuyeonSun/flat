@@ -37,13 +37,19 @@ public class AuthService {
         if (existUser != null) {
             return ResponseEntity
                     .ok()
-                    .body(new BaseResponseDto<>(StatusEnum.INTERNAL_SERER_ERROR.getStatusCode(), StatusEnum.INTERNAL_SERER_ERROR.getStatusMessage()));
+                    .body(new BaseResponseDto<>(StatusEnum.USER_ALREADY_EXIST_ERROR.getStatusCode(), StatusEnum.USER_ALREADY_EXIST_ERROR.getStatusMessage()));
         }
 
         User user = User.builder()
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
+                .name(signUpDto.getName())
+                .profile(signUpDto.getProfile())
+                .address(signUpDto.getAddress())
+                .addressLat(signUpDto.getAddressLat())
+                .addressLng(signUpDto.getAddressLng())
                 .build();
+
         try {
             userRepository.save(user);
             return ResponseEntity
@@ -52,7 +58,7 @@ public class AuthService {
         } catch (Exception exception) {
             return ResponseEntity
                     .ok()
-                    .body(new BaseResponseDto<>(StatusEnum.INTERNAL_SERER_ERROR.getStatusCode(), StatusEnum.INTERNAL_SERER_ERROR.getStatusMessage()));
+                    .body(new BaseResponseDto<>(StatusEnum.INTERNAL_SERVER_ERROR.getStatusCode(), StatusEnum.INTERNAL_SERVER_ERROR.getStatusMessage()));
         }
     }
 
@@ -64,7 +70,6 @@ public class AuthService {
         User user = userRepository.findByEmail(signInDto.getEmail());
 
         jwtTokenProvider.createRefreshToken(authentication, user);
-        // return accessToken;
         SignInResDto signInResDto = new SignInResDto(user.getEmail(), accessToken);
         BaseResponseDto<SignInResDto> baseResponseDto = new BaseResponseDto<>(StatusEnum.OK.getStatusCode(), StatusEnum.OK.getStatusMessage(), signInResDto);
         return ResponseEntity.ok()

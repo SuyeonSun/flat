@@ -27,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    public void signOut(@RequestBody SignOutReqDto signOutDto) throws Exception {
+    public void signOut(@RequestBody SignOutReqDto signOutDto) {
         authService.signOut(signOutDto);
     }
 
