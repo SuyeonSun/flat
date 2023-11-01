@@ -12,11 +12,17 @@ export const useAuthStore = defineStore('authStore', {
   actions: {
     async signUp(signUpPayload) {
       try {
-
         const response = await api.post("/auth/sign-up", signUpPayload);
         return response.data.code !== 2000;
-        // await $router.push("/test");
+      } catch (error) {
+        console.log("error");
+      }
+    },
 
+    async signIn(signInPayload) {
+      try {
+        const response = await api.post("/auth/sign-in", signInPayload);
+        return response.data.code !== 2001;
       } catch (error) {
         console.log("error");
       }

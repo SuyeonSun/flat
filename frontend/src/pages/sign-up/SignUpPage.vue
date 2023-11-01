@@ -27,7 +27,11 @@ const onSubmit = async () => {
   }
   const response = await authStore.signUp(signUpPayload);
   if (response) {
-    await $router.push("/");
+    Notify.create({
+      message: '회원 가입이 완료되었습니다.',
+      color: "green"
+    })
+    await $router.push("/sign-in");
   } else {
       Notify.create({
         message: '이미 존재하는 계정입니다.',
@@ -85,10 +89,10 @@ const onSubmit = async () => {
         outlined
       />
 
-      <q-btn label="Submit" type="submit" color="primary" class="full-width"/>
+      <q-btn label="SIGN UP" type="submit" color="primary" class="full-width"/>
 
       <div class="text-subtitle1 text-center q-ma-none">
-        이미 계정이 있으신가요? <a href=""> Sign in here </a>
+        이미 계정이 있으신가요? <a href="/sign-in"> Sign in here </a>
       </div>
     </q-form>
 
