@@ -2,6 +2,20 @@
 const routes = [
   {
     path: '/',
+    component: null,
+    children: [
+      { path: `/chat/room/enter/:roomId`, component: () => import('pages/chat/ChatRoomDetail.vue')}
+    ]
+  },
+  {
+    path: '/',
+    component: null,
+    children: [
+      { path: '/chat/room', component: () => import('pages/chat/ChatRoomList.vue')}
+    ]
+  },
+  {
+    path: '/',
     component: () => import('layouts/AuthLayout.vue'),
     children: [
       { path: '/sign-up', component: () => import('pages/sign-up/SignUpPage.vue')}
