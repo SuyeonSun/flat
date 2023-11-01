@@ -63,9 +63,16 @@ public class AuthService {
     }
 
     public ResponseEntity<BaseResponseDto<?>> signIn(SignInReqDto signInDto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword())
-        );
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword())
+            );
+        } catch (Exception exception) {
+            BaseResponseDto<SignInResDto> baseResponseDto = new BaseResponseDto<>(StatusEnum.INVALID_USER_INFO.getStatusCode(), StatusEnum.INVALID_USER_INFO.getStatusMessage());
+            return ResponseEntity.ok()
+                    .body(baseResponseDto);
+        }
         String accessToken = jwtTokenProvider.createAccessToken(authentication);
         User user = userRepository.findByEmail(signInDto.getEmail());
 

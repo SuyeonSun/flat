@@ -20,11 +20,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final String secretKey = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
-    // private final Long accessExpirationTime = 43200000L; // 12시간
-    // private final Long refreshExpirationTime = 604800000L; // 7일
     private final Long accessExpirationTime = Duration.ofMinutes(1).toMillis(); // 1분
     private final Long refreshExpirationTime = Duration.ofMinutes(2).toMillis();  // 2분
-    // private final Long refreshExpirationTime = Duration.ofDays(7).toMillis(); // 7일
 
     private final UserDetailServiceImpl userDetailService;
 
