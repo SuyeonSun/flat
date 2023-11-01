@@ -17,9 +17,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID id;
-
     private String email;
-
+    private String name;
+    private String profile;
+    private String address;
+    @Column(name = "address_lat")
+    private String addressLat;
+    @Column(name = "address_lng")
+    private String addressLng;
     private String password;
 
     // TODO: 탈퇴한 회원을 위한 active 처리 구현이 필요하다.
