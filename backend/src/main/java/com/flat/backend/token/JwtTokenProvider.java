@@ -105,9 +105,8 @@ public class JwtTokenProvider {
             JSONObject payload = (JSONObject) parser.parse(new String(decodedBytes));
             String email = (String) payload.get("sub");
 
-            System.out.println("validateToken()" + email);
-            reIssueAccessToken(email);
-            throw new Exception();
+            String newAccessToken = reIssueAccessToken(email);
+            return newAccessToken != null;
         }
     }
 
@@ -132,8 +131,10 @@ public class JwtTokenProvider {
             userRepository.save(user);
 
             tokenRepository.deleteById(user_token_id);
-            // System.out.println(refreshToken + "--------------------");
-            throw new RuntimeException(e);
+            // TODO Response Entity
+
+            // 로그인 폼으로 보내기
+            return null;
         }
 
 

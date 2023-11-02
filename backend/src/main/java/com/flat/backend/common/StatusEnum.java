@@ -14,7 +14,8 @@ public enum StatusEnum {
     INVALID_USER_INFO(2001, "INVALID_USER_INFO"),
 
     // token
-    EXPIRED_ACCESS_TOKEN(2100, "EXPIRED_ACCESS_TOKEN");
+    EXPIRED_ACCESS_TOKEN(2100, "EXPIRED_ACCESS_TOKEN"),
+    EXPIRED_REFRESH_TOKEN(2101, "EXPIRED_REFRESH_TOKEN");
 
     final int statusCode;
     final String statusMessage;
