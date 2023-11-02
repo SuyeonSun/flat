@@ -8,8 +8,8 @@ import com.flat.backend.user.repository.entity.User;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.json.JSONParser;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -100,11 +100,11 @@ public class JwtTokenProvider {
             // token에서 email 가져오기
             String[] arr = token.split("\\.");
             byte[] decodedBytes = Base64.getDecoder().decode(arr[1]);
-            String decodedStr = new String(decodedBytes); // {"sub":"3","iat":1698886236,"exp":1698886296}
 
-            String[] arr2 = decodedStr.split(",");
-            String email = arr2[0].split(":")[1]; // "3"
-            email = email.substring(1, email.length()-1);
+            JSONParser parser = new JSONParser();
+            JSONObject payload = (JSONObject) parser.parse(new String(decodedBytes));
+            String email = (String) payload.get("sub");
+
             System.out.println("validateToken()" + email);
             reIssueAccessToken(email);
             throw new Exception();
@@ -116,9 +116,6 @@ public class JwtTokenProvider {
         // email로 refreshToken 조회
         User user = userRepository.findByEmail(email);
         String refreshToken = user.getToken().getRefreshToken();
-        //refreshToken이 만료일때
-
-
 
         // refreshToken이 정상일때
         try {
@@ -127,10 +124,12 @@ public class JwtTokenProvider {
             accessToken = createAccessToken(authentication);
             return accessToken;
         } catch (Exception e) {
+            //refreshToken이 만료일때
             // refresh token 만료 error 코드 전송
             // refresh token 삭제
             UUID user_token_id = user.getToken().getId();
             user.setToken(null);
+            userRepository.save(user);
 
             tokenRepository.deleteById(user_token_id);
             // System.out.println(refreshToken + "--------------------");
