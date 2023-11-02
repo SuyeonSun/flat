@@ -11,7 +11,10 @@ public enum StatusEnum {
 
     // user
     USER_ALREADY_EXIST_ERROR(2000, "USER_ALREADY_EXIST_ERROR"),
-    INVALID_USER_INFO(2001, "INVALID_USER_INFO");
+    INVALID_USER_INFO(2001, "INVALID_USER_INFO"),
+
+    // token
+    EXPIRED_ACCESS_TOKEN(2100, "EXPIRED_ACCESS_TOKEN");
 
     final int statusCode;
     final String statusMessage;
