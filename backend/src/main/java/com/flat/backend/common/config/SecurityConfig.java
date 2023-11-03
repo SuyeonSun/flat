@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsUtils;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -36,8 +37,11 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in", "/auth/sign-out", "/user/test", "/user/upload")
-                        .permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in",
+                                "/auth/sign-out", "/user/test", "/user/upload")
+
+                        .permitAll().requestMatchers(CorsUtils::isPreFlightRequest).permitAll().anyRequest().authenticated())
+                // CorsUtils::isPreFlightRequest , CorsUtils.isPreFlightRequest()
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
         httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
         return httpSecurity.build();

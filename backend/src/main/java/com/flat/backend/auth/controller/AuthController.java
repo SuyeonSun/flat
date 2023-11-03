@@ -1,5 +1,7 @@
 package com.flat.backend.auth.controller;
 
+import com.flat.backend.auth.dto.res.ReIssueResDto;
+import com.flat.backend.common.StatusEnum;
 import com.flat.backend.common.dto.BaseResponseDto;
 import com.flat.backend.auth.dto.req.ReIssueReqDto;
 import com.flat.backend.auth.dto.req.SignInReqDto;
@@ -37,7 +39,10 @@ public class AuthController {
     }
 
     @GetMapping("/resource")
-    public String resource() {
-        return "This is resource";
+    public ResponseEntity<BaseResponseDto<?>> resource() {
+        BaseResponseDto<String> baseResponseDto = new BaseResponseDto<>(StatusEnum.OK.getStatusCode(), StatusEnum.OK.getStatusMessage(), "This is resource");
+        return ResponseEntity
+                .ok()
+                .body(baseResponseDto);
     }
 }
