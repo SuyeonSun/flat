@@ -91,7 +91,7 @@ public class JwtTokenProvider {
         return null;
     }
 
-    // accessToken 재발급
+    // accessToken validate
     public boolean validateToken(String token) throws Exception {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
