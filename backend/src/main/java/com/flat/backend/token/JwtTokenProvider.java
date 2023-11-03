@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
@@ -131,12 +130,9 @@ public class JwtTokenProvider {
             userRepository.save(user);
 
             tokenRepository.deleteById(user_token_id);
-            // TODO Response Entity
 
             // 로그인 폼으로 보내기
             return null;
         }
-
-
     }
 }

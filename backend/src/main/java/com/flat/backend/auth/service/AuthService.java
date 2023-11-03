@@ -9,10 +9,12 @@ import com.flat.backend.auth.dto.res.SignInResDto;
 import com.flat.backend.common.StatusEnum;
 import com.flat.backend.common.dto.BaseResponseDto;
 import com.flat.backend.token.JwtTokenProvider;
+import com.flat.backend.token.entity.Token;
 import com.flat.backend.token.repository.TokenRepository;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,7 +64,18 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public ResponseEntity<BaseResponseDto<?>> signIn(SignInReqDto signInDto) {
+        User user = userRepository.findByEmail(signInDto.getEmail());
+
+        Token token = user.getToken();
+        // 로그인 시에는 무조건 서버의 refreshToken 삭제
+        if (token != null && token.getRefreshToken() != null) {
+            UUID user_token_id = user.getToken().getId();
+            user.setToken(null);
+            tokenRepository.deleteById(user_token_id);
+        }
+
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(
@@ -74,7 +87,6 @@ public class AuthService {
                     .body(baseResponseDto);
         }
         String accessToken = jwtTokenProvider.createAccessToken(authentication);
-        User user = userRepository.findByEmail(signInDto.getEmail());
 
         jwtTokenProvider.createRefreshToken(authentication, user);
         SignInResDto signInResDto = new SignInResDto(user.getEmail(), accessToken);

@@ -36,11 +36,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             // refresh token 만료 시, jwtTokenProvider.validateToken(token) == null을 return
+            // refresh token
+
             ObjectNode json = new ObjectMapper().createObjectNode();
             // client에서 login 페이지로 보낼 수 있도록 exception 처리
             json.put("code", String.valueOf(StatusEnum.EXPIRED_REFRESH_TOKEN.getStatusCode()));
             json.put("message", String.valueOf(StatusEnum.EXPIRED_REFRESH_TOKEN.getStatusMessage()));
-            String newResponse = new ObjectMapper().writeValueAsString(json);
+             String newResponse = new ObjectMapper().writeValueAsString(json); //  front에서 parse해서 쓰기
             response.setContentLength(newResponse.length());
             response.getOutputStream().write(newResponse.getBytes());
         }
