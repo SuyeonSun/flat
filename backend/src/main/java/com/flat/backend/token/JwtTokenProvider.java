@@ -8,23 +8,24 @@ import com.flat.backend.user.repository.entity.User;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final String secretKey = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
-    // private final Long accessExpirationTime = 43200000L; // 12시간
-    // private final Long refreshExpirationTime = 604800000L; // 7일
     private final Long accessExpirationTime = Duration.ofMinutes(1).toMillis(); // 1분
     private final Long refreshExpirationTime = Duration.ofMinutes(2).toMillis();  // 2분
-    // private final Long refreshExpirationTime = Duration.ofDays(7).toMillis(); // 7일
 
     private final UserDetailServiceImpl userDetailService;
 
@@ -89,22 +90,49 @@ public class JwtTokenProvider {
         return null;
     }
 
-    // accessToken 재발급
+    // accessToken validate
     public boolean validateToken(String token) throws Exception {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
-            throw new Exception();
+            // token에서 email 가져오기
+            String[] arr = token.split("\\.");
+            byte[] decodedBytes = Base64.getDecoder().decode(arr[1]);
+
+            JSONParser parser = new JSONParser();
+            JSONObject payload = (JSONObject) parser.parse(new String(decodedBytes));
+            String email = (String) payload.get("sub");
+
+            String newAccessToken = reIssueAccessToken(email);
+            return newAccessToken != null;
         }
     }
 
     // accessToken 재발급
-    public String reIssueAccessToken(String refreshToken) {
-        // refresh token 검증
-        Authentication authentication = getAuthentication(refreshToken);
-        String accessToken;
-        accessToken = createAccessToken(authentication);
-        return accessToken;
+    public String reIssueAccessToken(String email) {
+        // email로 refreshToken 조회
+        User user = userRepository.findByEmail(email);
+        String refreshToken = user.getToken().getRefreshToken();
+
+        // refreshToken이 정상일때
+        try {
+            Authentication authentication = getAuthentication(refreshToken);
+            String accessToken;
+            accessToken = createAccessToken(authentication);
+            return accessToken;
+        } catch (Exception e) {
+            //refreshToken이 만료일때
+            // refresh token 만료 error 코드 전송
+            // refresh token 삭제
+            UUID user_token_id = user.getToken().getId();
+            user.setToken(null);
+            userRepository.save(user);
+
+            tokenRepository.deleteById(user_token_id);
+
+            // 로그인 폼으로 보내기
+            return null;
+        }
     }
 }

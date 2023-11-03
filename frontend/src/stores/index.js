@@ -14,6 +14,7 @@ export default store((/* { ssrContext } */) => {
   const pinia = createPinia()
 
   // You can add Pinia plugins here
+  // pinia.use(SomePiniaPlugin)
   pinia.use(piniaPersist);
 
   return pinia

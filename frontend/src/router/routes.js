@@ -25,14 +25,15 @@ const routes = [
     path: '/',
     component: () => import('layouts/AuthLayout.vue'),
     children: [
-      { path: '/sign-up', component: () => import('pages/sign-up/SignUpPage.vue')}
+      { path: '/sign-up', component: () => import('pages/sign-up/SignUpPage.vue')},
+      { path: '/sign-in', component: () => import('pages/sign-in/SignInPage.vue')}
     ]
   },
   {
     path: '',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '/', component: () => import('pages/TestPage.vue')}
+      { path: '/test', component: () => import('pages/TestPage.vue')}
     ]
   },
 
@@ -44,4 +45,4 @@ const routes = [
   }
 ]
 
-export default routes
+export default routes;

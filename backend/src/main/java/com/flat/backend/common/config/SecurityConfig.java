@@ -13,6 +13,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -40,8 +44,10 @@ public class SecurityConfig{
                                 "/auth/re-issue", "/auth/sign-out", "/user/test", "/user/upload", "/ws/**", "/chat/**", "/favicon.ico")
                         .permitAll().anyRequest().authenticated())
 //                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                .addFilter(corsConfig.corsFilter()) ;
         httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
         return httpSecurity.build();
     }
+
 }

@@ -3,21 +3,15 @@ import {api} from "boot/axios";
 
 export const useTestStore = defineStore('testStore', {
   state: () => ({
-    count: 0,
   }),
 
   actions: {
     async test() {
       try {
-        this.count++;
+        await api.post("/auth/resource");
       } catch (error) {
         console.log("error")
       }
     },
-  },
-
-  persist: {
-    enabled: true,
-    strategies: [{ storage: localStorage }],
   },
 });
