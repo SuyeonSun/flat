@@ -32,7 +32,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-            filterChain.doFilter(request, response);
 
         } catch (Exception e) {
             // refresh token 만료 시, jwtTokenProvider.validateToken(token) == null을 return
@@ -45,6 +44,9 @@ public class JwtFilter extends OncePerRequestFilter {
              String newResponse = new ObjectMapper().writeValueAsString(json); //  front에서 parse해서 쓰기
             response.setContentLength(newResponse.length());
             response.getOutputStream().write(newResponse.getBytes());
+        } finally {
+            filterChain.doFilter(request, response);
+
         }
     }
 

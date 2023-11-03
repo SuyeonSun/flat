@@ -42,12 +42,15 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // cors 설정
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in",
                                 "/auth/sign-out", "/user/test", "/user/upload")
                         .permitAll()
                         .anyRequest().authenticated()) // .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .addFilter(corsConfig.corsFilter()) ;
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
+                // .addFilter(corsConfig.corsFilter()) ;
+
+
         httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
         return httpSecurity.build();
     }
