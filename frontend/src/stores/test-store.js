@@ -3,22 +3,21 @@ import {api} from "boot/axios";
 
 export const useTestStore = defineStore('testStore', {
   state: () => ({
+    count: 0,
   }),
 
   actions: {
     async test() {
       try {
-        let userInfo = {
-          firstName:"Fred",
-          lastName:"A"
-        }
-
-        await api.post("/test", userInfo);
-        // let firstName = "userInfo.firstName;
-        // await api.post(`/test?firstName="${firstName}"`);
+        this.count++;
       } catch (error) {
         console.log("error")
       }
     },
+  },
+
+  persist: {
+    enabled: true,
+    strategies: [{ storage: localStorage }],
   },
 });

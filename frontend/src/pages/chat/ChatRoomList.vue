@@ -1,3 +1,52 @@
+<script setup>
+
+import {api} from "boot/axios"
+import {ref, onMounted} from "vue"
+
+const room_name = ref('')
+const chatrooms = ref([])
+
+onMounted(() => {
+  findAllRoom()
+})
+
+const findAllRoom = () => {
+  api.get('/chat/rooms').then((response) => {
+    chatrooms.value = response.data;
+  })
+}
+
+const createRoom = () => {
+  if (room_name.value === '') {
+    alert('방 제목을 입력해 주십시요.');
+    return;
+  } else {
+    let params = new URLSearchParams();
+    params.append('name', room_name.value);
+    api
+      .post('/chat/room', params)
+      .then((response) => {
+        alert(response.data.roomName + '방 개설에 성공하였습니다.');
+        room_name.value = '';
+        findAllRoom();
+      })
+      .catch((response) => {
+        alert('채팅방 개설에 실패하였습니다.');
+      });
+  }
+}
+
+const enterRoom = (roomId) => {
+  let sender = prompt('대화명을 입력해 주세요.');
+  if (sender !== '') {
+    localStorage.setItem('wschat.sender', sender);
+    localStorage.setItem('wschat.roomId', roomId);
+    location.href = '/chat/room/enter/' + roomId;
+  }
+}
+
+</script>
+
 <template>
   <div class="container" v-cloak>
     <div class="row">
@@ -21,57 +70,6 @@
     </ul>
   </div>
 </template>
-
-<script>
-
-import {api} from "boot/axios"
-
-export default {
-  data() {
-    return {
-      room_name: '',
-      chatrooms: [],
-    };
-  },
-  created() {
-    this.findAllRoom();
-  },
-  methods: {
-    findAllRoom() {
-      api.get('/chat/rooms').then((response) => {
-        this.chatrooms = response.data;
-      });
-    },
-    createRoom() {
-      if (this.room_name === '') {
-        alert('방 제목을 입력해 주십시요.');
-        return;
-      } else {
-        const params = new URLSearchParams();
-        params.append('name', this.room_name);
-        api
-          .post('/chat/room', params)
-          .then((response) => {
-            alert(response.data.roomName + '방 개설에 성공하였습니다.');
-            this.room_name = '';
-            this.findAllRoom();
-          })
-          .catch((response) => {
-            alert('채팅방 개설에 실패하였습니다.');
-          });
-      }
-    },
-    enterRoom(roomId) {
-      const sender = prompt('대화명을 입력해 주세요.');
-      if (sender !== '') {
-        localStorage.setItem('wschat.sender', sender);
-        localStorage.setItem('wschat.roomId', roomId);
-        location.href = '/chat/room/enter/' + roomId;
-      }
-    },
-  },
-};
-</script>
 
 <style scoped>
 [v-cloak] {

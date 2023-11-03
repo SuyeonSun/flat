@@ -1,3 +1,83 @@
+<script setup>
+import {api} from 'boot/axios';
+import {ref, onMounted} from "vue";
+import SockJS from 'sockjs-client';
+import Stomp from 'webstomp-client';
+import {useChatStore} from "stores/chat/chat-store";
+
+const roomId = ref('')
+const room = ref({})
+const sender = ref('')
+const message = ref('')
+const messages = ref([])
+const ws = ref(null)
+const reconnect = ref(0)
+const prevIsConnected = ref(false)
+const chatStore = useChatStore()
+
+onMounted(() => {
+  roomId.value = localStorage.getItem('wschat.roomId')
+  sender.value = localStorage.getItem('wschat.sender')
+
+  let prevChatHistory = sessionStorage.getItem('chatHistory_' + roomId.value)
+  if(prevChatHistory) {
+    prevIsConnected.value = !prevIsConnected.value
+    messages.value = JSON.parse(prevChatHistory)
+  }
+
+  findRoom()
+
+  connectWebSocket()
+})
+
+const findRoom = () => {
+  api.get(`/chat/room/${roomId.value}`).then((response) => {
+    room.value = response.data;
+  });
+}
+
+const sendMessage = () => {
+  ws.value.send("/app/chat/message", JSON.stringify({ type: 'TALK', roomId: roomId.value, sender: sender.value, message: message.value }), []);
+  message.value = '';
+}
+
+const recvMessage = (recv) => {
+  messages.value.unshift({ type: recv.type, sender: recv.type === 'ENTER' ? '[알림]' : recv.sender, message: recv.message });
+  sessionStorage.setItem('chatHistory_' + roomId.value, JSON.stringify(messages.value));
+}
+
+const goBack = () => {
+  localStorage.removeItem('wschat.roomId')
+  localStorage.removeItem('wschat.sender')
+  location.href = '/chat/room'
+}
+
+const connectWebSocket = () => {
+
+  ws.value = Stomp.over(new SockJS("http://localhost:8000/ws/chat"));
+
+  ws.value.connect({}, (frame) => {
+    ws.value.subscribe(`/topic/chat/room/${roomId.value}`, (message) => {
+      const recv = JSON.parse(message.body);
+      recvMessage(recv);
+    });
+
+    let prevConnected = sessionStorage.getItem('chatHistory_' + roomId.value)
+    if(!prevConnected) {
+      ws.value.send("/app/chat/message", JSON.stringify({ type:'ENTER', roomId: roomId.value, sender: sender.value }), {});
+    }
+  }, (error) => {
+    if (reconnect.value++ <= 5) {
+      setTimeout(() => {
+        console.log("connection reconnect");
+        ws.value = Stomp.over(new SockJS("http://localhost:8000/ws/chat"));
+        connectWebSocket();
+      }, 10 * 1000);
+    }
+  })
+}
+</script>
+
 <template>
   <div>
     <button @click="goBack">돌아가기</button>
@@ -21,69 +101,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import {api} from 'boot/axios';
-import SockJS from 'sockjs-client';
-import Stomp from 'webstomp-client';
-
-export default {
-  data() {
-    return {
-      roomId: '',
-      room: {},
-      sender: '',
-      message: '',
-      messages: [],
-      ws: null,
-      reconnect: 0,
-    };
-  },
-  created() {
-    this.roomId = localStorage.getItem('wschat.roomId');
-    this.sender = localStorage.getItem('wschat.sender');
-    this.findRoom();
-    this.connectWebSocket();
-  },
-  methods: {
-    findRoom() {
-      api.get(`/chat/room/${this.roomId}`).then((response) => {
-        this.room = response.data;
-        console.log(this.room)
-      });
-    },
-    sendMessage() {
-      // send('url', 'body', {}) 순서 주의
-      this.ws.send("/app/chat/message", JSON.stringify({ type: 'TALK', roomId: this.roomId, sender: this.sender, message: this.message }), []);
-      this.message = '';
-    },
-    recvMessage(recv) {
-      this.messages.unshift({ type: recv.type, sender: recv.type === 'ENTER' ? '[알림]' : recv.sender, message: recv.message });
-    },
-    goBack() {
-      this.$router.push('/chat/room');
-    },
-    connectWebSocket() {
-      this.ws = Stomp.over(new SockJS("http://localhost:8000/ws/chat"));
-      this.ws.connect({}, (frame) => {
-        this.ws.subscribe(`/topic/chat/room/${this.roomId}`, (message) => {
-          const recv = JSON.parse(message.body);
-          this.recvMessage(recv);
-        });
-        this.ws.send("/app/chat/message", JSON.stringify({ type:'ENTER', roomId: this.roomId, sender: this.sender }), {});
-      }, (error) => {
-        if (this.reconnect++ <= 5) {
-          setTimeout(() => {
-            console.log("connection reconnect");
-            this.ws = Stomp.over(new SockJS("http://localhost:8000/ws/chat"));
-            this.connectWebSocket();
-          }, 10 * 1000);
-        }
-      });
-    },
-  },
-};
-</script>
 
 <style scoped>
 [v-cloak] {

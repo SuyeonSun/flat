@@ -3,13 +3,11 @@
   import {onMounted} from "vue";
 
   const testStore = useTestStore();
-  onMounted(() => {
-    testStore.test();
-  })
 </script>
 
 <template>
-  <div>Test Pagejhgjhgjh</div>
+  <div>Test {{ testStore.count }}</div>
+  <button @click="testStore.test()">증가</button>
 </template>
 
 <style scoped>

@@ -2,6 +2,13 @@
 const routes = [
   {
     path: '/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '/test', component: () => import('pages/TestPage.vue')}
+    ]
+  },
+  {
+    path: '/',
     component: null,
     children: [
       { path: `/chat/room/enter/:roomId`, component: () => import('pages/chat/ChatRoomDetail.vue')}
