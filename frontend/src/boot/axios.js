@@ -9,20 +9,22 @@ import {storeToRefs} from "pinia";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
+
+const authStore = useAuthStore();
+
+const token = authStore.accessToken;
+
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000',
+
   headers: {
-    "Content-Type":"application/json",
+    // "Authorization":token !== null ? `Bearer ${token}` : undefined
+    // "Content-Type":"application/json",
     // "Access-Control-Allow-Origin" : "*",
     // "Access-Control-Allow-Headers": "*",
     // "Access-Control-Allow-Credentials": true
-}
+  }
 })
-
-const authStore = useAuthStore();
-const {accessToken}  = storeToRefs(authStore);
-
-const token = accessToken.value;
 // const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdW5pbmlzeUBnbWFpbC5jb20iLCJpYXQiOjE2OTg5OTYxNzMsImV4cCI6MTY5ODk5NjIzM30.US4L1XxVPI3iC78t1arZJZXWPv3tRKskCsa3igom4R4';
 
 export default boot(({ app }) => {
@@ -30,17 +32,17 @@ export default boot(({ app }) => {
 
 
   // Add a request interceptor
-  api.interceptors.request.use((config) => {
-    // Do something before request is sent
-    config.headers.Authorization = `Bearer ${token}`
+  /*api.interceptors.request.use((config) => {
+      // Do something before request is sent
+      config.headers.Authorization = `Bearer ${token}`
 
-    // Access-Control-Allow-Credentials: true
-    return config
-  }, function (error) {
-    // Do something with request error
-    return Promise.reject(error)
-    // console.log(error);
-  })
+      // Access-Control-Allow-Credentials: true
+      return config
+    }, function (error) {
+      // Do something with request error
+      return Promise.reject(error)
+      // console.log(error);
+    })*/
 
   app.config.globalProperties.$axios = axios
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)

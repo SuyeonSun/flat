@@ -1,5 +1,6 @@
 package com.flat.backend.common.config;
 
+import com.flat.backend.CorsConfig;
 import com.flat.backend.token.JwtSecurityConfig;
 import com.flat.backend.token.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig{
     private final JwtTokenProvider jwtTokenProvider;
+    private final CorsConfig corsConfig;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -45,7 +47,7 @@ public class SecurityConfig{
                         .permitAll().anyRequest().authenticated())
 //                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .addFilter(corsConfig.corsFilter()) ;
+                .addFilter(corsConfig.corsFilter());
         httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
         return httpSecurity.build();
     }
