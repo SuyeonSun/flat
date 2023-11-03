@@ -3,8 +3,8 @@
   import {onMounted} from "vue";
 
   const testStore = useTestStore();
-  onMounted(() => {
-    testStore.test();
+  onMounted(async () => {
+    await testStore.test();
   })
 </script>
 
