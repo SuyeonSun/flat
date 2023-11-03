@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -11,14 +13,20 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ChatRoom {
 
-    private String roomId;
-    private String roomName;
+    private Long roomId;
+//    private String roomName;
+
+    private String sender;
+    private String receiver;
+    private List<ChatMessage> messages;
 
 
-    public static ChatRoom create(String name) {
+    public static ChatRoom create(Long roomId, String sender, String receiver) {
         ChatRoom room = new ChatRoom();
-        room.roomId = UUID.randomUUID().toString();
-        room.roomName = name;
+        room.setRoomId(roomId);
+        room.setSender(sender);
+        room.setReceiver(receiver);
+        room.setMessages(new ArrayList<>());
         return room;
     }
 }

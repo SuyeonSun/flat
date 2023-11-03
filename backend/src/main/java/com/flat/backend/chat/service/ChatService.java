@@ -1,5 +1,6 @@
 package com.flat.backend.chat.service;
 
+import com.flat.backend.chat.model.ChatMessage;
 import com.flat.backend.chat.model.ChatRoom;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private Map<String, ChatRoom> chatRooms;
+    private Long id = 0L;
+    private Map<Long, ChatRoom> chatRooms;
 
     @PostConstruct
     //의존관게 주입완료되면 실행되는 코드
@@ -35,10 +37,32 @@ public class ChatService {
         return chatRooms.get(roomId);
     }
 
+    public String findRoomBySenderAndReceiver(String sender, String receiver) {
+        String res = "";
+        for(ChatRoom room : chatRooms.values()) {
+            if(room.getSender().equals(sender) && room.getReceiver().equals(receiver)) {
+                res = room.getRoomId().toString();
+                System.out.println("roomId = " + room.getRoomId());
+                break;
+            }
+        }
+        return res;
+    }
+
     //채팅방 생성
-    public ChatRoom createRoom(String name) {
-        ChatRoom chatRoom = ChatRoom.create(name);
+    public ChatRoom createRoom(String sender, String receiver) {
+        ChatRoom chatRoom = ChatRoom.create(this.id++, sender, receiver);
         chatRooms.put(chatRoom.getRoomId(), chatRoom);
         return chatRoom;
+    }
+
+    public void saveMessage(Long roomId, ChatMessage message) {
+        ChatRoom room = chatRooms.get(roomId);
+        List<ChatMessage> messages = room.getMessages();
+        messages.add(message);
+    }
+
+    public ChatRoom findRoomById(Long roomId) {
+        return chatRooms.get(roomId);
     }
 }
