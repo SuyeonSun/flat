@@ -1,5 +1,6 @@
 package com.flat.backend.common.config;
 
+import com.flat.backend.CorsConfig;
 import com.flat.backend.token.JwtSecurityConfig;
 import com.flat.backend.token.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -22,6 +26,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig{
     private final JwtTokenProvider jwtTokenProvider;
+    private final CorsConfig corsConfig;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -39,11 +44,12 @@ public class SecurityConfig{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in",
                                 "/auth/sign-out", "/user/test", "/user/upload")
-
-                        .permitAll().requestMatchers(CorsUtils::isPreFlightRequest).permitAll().anyRequest().authenticated())
-                // CorsUtils::isPreFlightRequest , CorsUtils.isPreFlightRequest()
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
+                        .permitAll()
+                        .anyRequest().authenticated()) // .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                .addFilter(corsConfig.corsFilter()) ;
         httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
         return httpSecurity.build();
     }
+
 }
