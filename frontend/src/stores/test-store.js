@@ -8,14 +8,7 @@ export const useTestStore = defineStore('testStore', {
   actions: {
     async test() {
       try {
-        let userInfo = {
-          firstName:"Fred",
-          lastName:"A"
-        }
-
-        await api.post("/test", userInfo);
-        // let firstName = "userInfo.firstName;
-        // await api.post(`/test?firstName="${firstName}"`);
+        await api.post("/auth/resource");
       } catch (error) {
         console.log("error")
       }
