@@ -48,7 +48,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 // accessToken 만료
                 String email = jwtUtil.extractUserNameFromExpiredToken(token);
                 User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
-                String refreshToken = user.getToken().getRefreshToken();
+                String refreshToken = null;
+                try{
+                    refreshToken = user.getToken().getRefreshToken();
+                } catch (NullPointerException e) {
+                    ObjectNode json = new ObjectMapper().createObjectNode();
+                    json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusCode()));
+                    json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusMessage()));
+                    String newResponse = new ObjectMapper().writeValueAsString(json);
+                    response.setContentLength(newResponse.length());
+                    response.getOutputStream().write(newResponse.getBytes());
+                }
 
                 try {
                     // refreshToken 정상
@@ -57,7 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     ObjectNode json = new ObjectMapper().createObjectNode();
                     json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusCode()));
                     json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusMessage()));
-                    json.put("data", new ReIssueResDto(accessToken).toJson()); // TODO
+                    json.put("data", new ReIssueResDto(accessToken).toJson());
                     String newResponse = new ObjectMapper().writeValueAsString(json);
                     response.setContentLength(newResponse.length());
                     response.getOutputStream().write(newResponse.getBytes());

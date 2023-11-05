@@ -12,7 +12,6 @@ import org.json.simple.parser.JSONParser;
 public class ReIssueResDto {
     private String accessToken;
 
-    // TODO
     public ObjectNode toJson(){
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("accessToken", String.valueOf(accessToken));
