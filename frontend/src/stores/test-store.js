@@ -8,9 +8,11 @@ export const useTestStore = defineStore('testStore', {
   actions: {
     async test() {
       try {
-        await api.post("/auth/resource");
+        console.log("================ 5.")
+
+        await api.get("/resource");
       } catch (error) {
-        console.log("error")
+        console.log("error", error)
       }
     },
   },

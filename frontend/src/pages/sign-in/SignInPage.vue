@@ -4,6 +4,7 @@ import {useAuthStore} from "stores/auth/auth-store";
 
 import {useRouter} from "vue-router";
 import {Notify} from "quasar";
+import {useTestStore} from "stores/test-store";
 
 const authStore = useAuthStore();
 
@@ -11,6 +12,8 @@ const email = ref(undefined);
 const password = ref(undefined);
 
 const $router = useRouter();
+const testStore = useTestStore();
+
 
 const onSubmit = async () => {
   const signInPayload = {
@@ -20,6 +23,8 @@ const onSubmit = async () => {
   const response = await authStore.signIn(signInPayload);
   if (response) {
     await $router.push("/test");
+    // await testStore.test();
+
   } else {
     Notify.create({
       message: '유효하지 않은 회원 정보입니다.',

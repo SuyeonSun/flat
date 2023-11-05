@@ -1,26 +1,34 @@
+// quasar new boot auth-axios
+
 import { boot } from 'quasar/wrappers'
 import axios from 'axios'
+import {api} from "boot/axios";
+import {useAuthStore} from "stores/auth/auth-store";
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
 const authApi = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  // baseURL: 'http://127.0.0.1:8000',
+  baseURL: 'http://localhost:8000',
 })
 
-export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+export default boot(({ app, store }) => {
+  const authStore = useAuthStore(store);
+
+  api.interceptors.response.use((res) => {
+    console.log("================ 2. interceptor")
+    // TODO: 요청마다 accessToken 받아서 저장하기
+
+    if(res?.data?.data?.accessToken){
+      authStore.setAccessToken(res.data.data.accessToken);
+    }
+
+  }, function (error) {
+    return Promise.reject(error)
+  })
+
 
   app.config.globalProperties.$axios = axios
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
 
   app.config.globalProperties.$api = authApi
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
 })
 
 export { authApi }
