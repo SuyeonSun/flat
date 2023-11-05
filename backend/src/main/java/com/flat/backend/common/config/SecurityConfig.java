@@ -2,7 +2,9 @@ package com.flat.backend.common.config;
 
 import com.flat.backend.CorsConfig;
 import com.flat.backend.token.JwtSecurityConfig;
-import com.flat.backend.token.JwtTokenProvider;
+import com.flat.backend.token.JwtUtil;
+import com.flat.backend.token.repository.TokenRepository;
+import com.flat.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -25,7 +24,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig{
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
     private final CorsConfig corsConfig;
 
     @Bean
@@ -46,12 +47,10 @@ public class SecurityConfig{
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in",
                                 "/auth/sign-out", "/user/test", "/user/upload")
                         .permitAll()
-                        .anyRequest().authenticated()) // .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
-                // .addFilter(corsConfig.corsFilter()) ;
 
-
-        httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
+        httpSecurity.apply(new JwtSecurityConfig(jwtUtil, userRepository, tokenRepository));
         return httpSecurity.build();
     }
 
