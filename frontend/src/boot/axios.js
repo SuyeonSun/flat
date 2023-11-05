@@ -26,17 +26,10 @@ export default boot(({ app, store, router }) => {
     if(res?.data?.data?.accessToken){
       authStore.setAccessToken(res.data.data.accessToken);
     }
-
-    console.log("res: ",res);
-    // TODO: refreshToken 만료 시 login으로 redirect
-    if(res?.data?.data?.code == '2101'){
-      router.push({
-        path: '/sign-in'
-      })
-    }
-
   }, function (error) {
     // Do something with request error
+    // TODO: refreshToken 만료 시 login으로 redirect
+    router.push("/sign-in");
     return Promise.reject(error)
     // console.log(error);
   })
