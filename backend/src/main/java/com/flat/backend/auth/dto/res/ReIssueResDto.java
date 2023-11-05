@@ -13,7 +13,7 @@ public class ReIssueResDto {
     private String accessToken;
 
     // TODO
-    public ObjectNode toSomething(){
+    public ObjectNode toJson(){
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("accessToken", String.valueOf(accessToken));
         return json;
