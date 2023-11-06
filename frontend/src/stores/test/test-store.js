@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import {apiA} from "boot/axios";
+import {api} from "boot/api";
 
 export const useTestStore = defineStore('testStore', {
   state: () => ({
@@ -9,7 +9,7 @@ export const useTestStore = defineStore('testStore', {
   actions: {
     async test() {
       try {
-        const response = await apiA.get("/resource");
+        const response = await api.get("/resource");
         console.log("---------------------", response)
       } catch (error) {
         console.log("error");

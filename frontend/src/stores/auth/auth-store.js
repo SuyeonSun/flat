@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import {authApi} from "boot/auth-axios";
+import {authApi} from "boot/auth-api";
 
 export const useAuthStore = defineStore('authStore', {
   state: () => ({
@@ -20,6 +20,8 @@ export const useAuthStore = defineStore('authStore', {
     async signIn(signInPayload) {
       try {
         const response = await authApi.post("/auth/sign-in", signInPayload);
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", response)
+
         if (response.data.code === 200) { // 정상적인 요청
           this.accessToken = response.data.data.accessToken;
           this.email = response.data.data.email;
@@ -28,7 +30,7 @@ export const useAuthStore = defineStore('authStore', {
           return false;
         }
       } catch (error) {
-        console.log("error");
+        console.log("error =");
       }
     },
 

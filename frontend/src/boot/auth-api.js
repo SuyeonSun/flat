@@ -3,7 +3,6 @@
 import { boot } from 'quasar/wrappers'
 import {useAuthStore} from "stores/auth/auth-store";
 import axios from "axios";
-import {api} from "boot/axios"
 
 const authApi = axios.create({
   // baseURL: 'http://127.0.0.1:8000',
@@ -13,7 +12,7 @@ const authApi = axios.create({
 export default boot(({ app, store }) => {
   const authStore = useAuthStore(store);
 
-  api.interceptors.response.use((res) => {
+  authApi.interceptors.response.use((res) => {
     // 요청마다 accessToken 받아서 저장하기
     if(res?.data?.data?.accessToken){
       authStore.setAccessToken(res.data.data.accessToken);
