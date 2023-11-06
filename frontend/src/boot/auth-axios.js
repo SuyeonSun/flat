@@ -14,9 +14,7 @@ export default boot(({ app, store }) => {
   const authStore = useAuthStore(store);
 
   api.interceptors.response.use((res) => {
-    console.log("================ 2. interceptor")
-    // TODO: 요청마다 accessToken 받아서 저장하기
-
+    // 요청마다 accessToken 받아서 저장하기
     if(res?.data?.data?.accessToken){
       authStore.setAccessToken(res.data.data.accessToken);
     }

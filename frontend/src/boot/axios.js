@@ -3,8 +3,6 @@ import axios from 'axios'
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
 
-// import {LocalStorage} from "quasar";
-
 const api = axios.create({
   // baseURL: 'http://127.0.0.1:8000',
   baseURL: 'http://localhost:8000',
@@ -22,13 +20,12 @@ export default boot(({ app, store, router }) => {
   })
 
   api.interceptors.response.use((res) => {
-    // TODO: 요청마다 accessToken 받아서 저장하기
+    // 요청마다 accessToken 받아서 저장하기
     if(res?.data?.data?.accessToken){
       authStore.setAccessToken(res.data.data.accessToken);
     }
   }, function (error) {
-    // Do something with request error
-    // TODO: refreshToken 만료 시 login으로 redirect
+    // refreshToken 만료 시 login으로 redirect
     router.push("/sign-in");
     return Promise.reject(error)
     // console.log(error);
