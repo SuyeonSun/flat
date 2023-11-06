@@ -1,7 +1,9 @@
+// quasar new boot axios
+
 import { boot } from 'quasar/wrappers'
-import axios from 'axios'
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
+import axios from "axios";
 
 const api = axios.create({
   // baseURL: 'http://127.0.0.1:8000',
@@ -23,6 +25,8 @@ export default boot(({ app, store, router }) => {
     // 요청마다 accessToken 받아서 저장하기
     if(res?.data?.data?.accessToken){
       authStore.setAccessToken(res.data.data.accessToken);
+      console.log("========== 2")
+      // TODO: 새로 발급된 요청으로 다시 자원 요청
     }
   }, function (error) {
     // refreshToken 만료 시 login으로 redirect

@@ -4,7 +4,7 @@ import {useAuthStore} from "stores/auth/auth-store";
 
 import {useRouter} from "vue-router";
 import {Notify} from "quasar";
-import {useTestStore} from "stores/test-store";
+import {useTestStore} from "stores/test/test-store";
 
 const authStore = useAuthStore();
 
