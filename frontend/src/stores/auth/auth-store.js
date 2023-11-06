@@ -20,7 +20,6 @@ export const useAuthStore = defineStore('authStore', {
     async signIn(signInPayload) {
       try {
         const response = await authApi.post("/auth/sign-in", signInPayload);
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", response)
 
         if (response.data.code === 200) { // 정상적인 요청
           this.accessToken = response.data.data.accessToken;

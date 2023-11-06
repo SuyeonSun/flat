@@ -25,12 +25,17 @@ export default boot(({ app, store, router }) => {
     // 요청마다 accessToken 받아서 저장하기
     if(res?.data?.data?.accessToken) {
       authStore.setAccessToken(res.data.data.accessToken);
-      console.log("========== 2")
-      // TODO: 새로 발급된 요청으로 다시 자원 요청
+      // 새로 발급된 accessToken으로 다시 요청
+      res.config.headers.Authorization = `Bearer ${accessToken.value}`
+      return axios.request(res.config)
+    }
+    // refreshToken 만료 시 sign-in 화면으로 redirect
+    if (res?.data?.code === 2101) {
+      router.push("/sign-in");
     }
     return res;
   }, function (error) {
-    // refreshToken 만료 시 login으로 redirect
+    // 에러 발생 시 sign-in 화면으로 redirect
     router.push("/sign-in");
     return Promise.reject(error)
     // console.log(error);

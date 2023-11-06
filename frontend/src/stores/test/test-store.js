@@ -10,7 +10,8 @@ export const useTestStore = defineStore('testStore', {
     async test() {
       try {
         const response = await api.get("/resource");
-        console.log("---------------------", response)
+        this.testResponse = response.data.data.resource;
+
       } catch (error) {
         console.log("error");
       }
