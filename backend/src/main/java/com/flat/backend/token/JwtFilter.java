@@ -55,7 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 Authentication authentication = jwtUtil.getAuthentication(refreshToken);
                 String accessToken = jwtUtil.createAccessToken(authentication); // accessToken 재발급
                 ObjectNode json = new ObjectMapper().createObjectNode();
-                json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusCode()));
+                json.put("code", BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusCode());
                 json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusMessage()));
                 json.put("data", new ReIssueResDto(accessToken).toJson());
                 String newResponse = new ObjectMapper().writeValueAsString(json);
@@ -68,7 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 userRepository.save(user);
                 tokenRepository.deleteById(user_token_id);
                 ObjectNode json = new ObjectMapper().createObjectNode();
-                json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusCode()));
+                json.put("code", BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusCode());
                 json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusMessage()));
                 String newResponse = new ObjectMapper().writeValueAsString(json);
                 response.setContentLength(newResponse.length());
