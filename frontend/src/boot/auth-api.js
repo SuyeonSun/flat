@@ -17,7 +17,7 @@ export default boot(({ app, store }) => {
     if(res?.data?.data?.accessToken){
       authStore.setAccessToken(res.data.data.accessToken);
     }
-
+    return res;
   }, function (error) {
     return Promise.reject(error)
   })
