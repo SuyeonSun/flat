@@ -57,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 ObjectNode json = new ObjectMapper().createObjectNode();
                 json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusCode()));
                 json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusMessage()));
-                json.put("data", new ReIssueResDto(accessToken).toJson()); // TODO
+                json.put("data", new ReIssueResDto(accessToken).toJson());
                 String newResponse = new ObjectMapper().writeValueAsString(json);
                 response.setContentLength(newResponse.length());
                 response.getOutputStream().write(newResponse.getBytes());
