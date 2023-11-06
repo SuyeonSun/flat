@@ -11,7 +11,7 @@ const routes = [
     path: '/',
     component: null,
     children: [
-      { path: `/chat/room/enter/:roomId`, component: () => import('pages/dialog.vue')}
+      { path: `/chat/room/enter/:roomId`, component: () => import('pages/chat/ChatRoomDetail.vue')}
     ]
   },
   {

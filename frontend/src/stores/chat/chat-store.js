@@ -1,55 +1,107 @@
 import { defineStore } from 'pinia';
-import {api} from "boot/axios";
+import {api} from "boot/api";
 import {useRouter} from "vue-router";
-import {ref} from "vue"
 import SockJS from 'sockjs-client';
 import Stomp from 'webstomp-client';
 
-const $router = useRouter();
-
 export const useChatStore = defineStore('chatStore', {
   state: () => ({
-    // socket: ref(null),
-    // chatrooms: ref([])
-    isDialog: ref(false)
+    sender: 'userA',
+    receiver: 'userB',
+    roomId: undefined,
+    isDialog: false,
+    ws: null,
+    reconnect: 0,
+    messages: [],
   }),
 
   actions: {
-    // Todo...
+    // 방 번호 찾기: 외부에서 호출x
+    async findRoomId() {
+      try {
+        return await api.post('/chat/roomId', {
+          sender: this.sender,
+          receiver: this.receiver
+        })
+      } catch (e) {
+        console.log(e);
+      }
+    },
 
-  //   async init() {
-  //     this.setupWebSocket();
-  //
-  //     await this.loadChatRooms();
-  //   },
-  //
-  //   setupWebSocket() {
-  //     // SockJS 및 Stomp 설정
-  //     const socket = new SockJS('http://localhost:8000/ws/chat');
-  //     const stompClient = Stomp.over(socket);
-  //
-  //     stompClient.connect({}, (frame) => {
-  //       console.log('Connected to WebSocket');
-  //       // 원하는 채팅방들을 여기에서 subscribe
-  //       this.chatrooms.forEach((chatroom) => {
-  //         stompClient.subscribe(`/topic/chat/room/${chatroom.roomId}`, (message) => {
-  //
-  //           const recv = JSON.parse(message.body);
-  //           console.log(`Received message: ${message.body}`);
-  //         });
-  //       });
-  //     });
-  //
-  //     this.socket = stompClient;
-  //   },
-  //
-  //   async loadChatRooms() {
-  //     try {
-  //       const response = await api.get('/chat/rooms');
-  //       this.chatrooms = response.data;
-  //     } catch (error) {
-  //       console.error('Failed to load chatrooms', error);
-  //     }
-  //   },
+    // 방 번호 찾고, 없으면 방 생성
+    async createRoom() {
+      try {
+        const res1 = await this.findRoomId();
+
+        if(res1) {
+          this.roomId = res1.data;
+        }
+
+        if(!this.roomId) {
+          const res2 = await api.post('/chat/room', {
+            sender: this.sender,
+            receiver: this.receiver
+          })
+
+          this.roomId = res2.data.roomId;
+        }
+        this.isDialog = true;
+
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    // 소켓 연결 후, 서버에서 기존 메시지 가져오기
+    async readyToChat() {
+      this.connectWebSocket();
+      await this.getPrevMessages();
+
+    },
+
+    async getPrevMessages() {
+      const res = await api.get(`/chat/messages/${this.roomId}`);
+      this.messages = res.data;
+    },
+
+    connectWebSocket() {
+      this.ws = Stomp.over(new SockJS("http://localhost:8000/ws/chat"));
+
+      this.ws.connect({}, (frame) => {
+        this.ws.subscribe(`/topic/chat/room/${this.roomId}`, (message) => {
+          const recv = JSON.parse(message.body);
+          this.recvMessage(recv);
+        });
+      }, (error) => {
+        if (this.reconnect++ <= 5) {
+          setTimeout(() => {
+            console.log("connection reconnect");
+            this.connectWebSocket();
+          }, 10 * 1000);
+        }
+      })
+    },
+
+    sendMessage(message) {
+      this.ws.send("/app/chat/message",
+        JSON.stringify({ type: 'TALK', roomId: this.roomId, sender: this.sender, message: message }), []);
+    },
+
+    recvMessage(recv) {
+      this.messages.push({ type: recv.type, sender: recv.type === 'ENTER' ? '[알림]' : recv.sender, message: recv.message });
+    },
+
+    disconnectWebSocket() {
+      this.ws.disconnect();
+      this.ws = null;
+      this.reconnect = 0;
+    },
+
+    clear() {
+      this.roomId = undefined;
+      this.isDialog = !this.isDialog;
+      this.messages = [];
+      this.disconnectWebSocket();
+    }
   },
 })

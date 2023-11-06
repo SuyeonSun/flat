@@ -51,8 +51,8 @@ public class ChatService {
     }
 
     //채팅방 생성
-    public ChatRoom createRoom(String sender, String receiver) {
-        ChatRoom chatRoom = ChatRoom.create(++this.id, sender, receiver);
+    public ChatRoom createRoom(MakeRoomDto makeRoomDto) {
+        ChatRoom chatRoom = ChatRoom.create(++this.id, makeRoomDto.getSender(), makeRoomDto.getReceiver());
         chatRooms.put(chatRoom.getRoomId(), chatRoom);
         return chatRoom;
     }

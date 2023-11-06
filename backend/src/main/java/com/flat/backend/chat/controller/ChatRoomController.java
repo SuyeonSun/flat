@@ -20,12 +20,7 @@ public class ChatRoomController {
     @PostMapping("/roomId")
     @ResponseBody
     public String room(@RequestBody MakeRoomDto makeRoomDto) {
-        System.out.println("sender = " + makeRoomDto.getSender());
-        System.out.println("receiver = " + makeRoomDto.getSender());
-        String res = chatService.findRoomBySenderAndReceiver(makeRoomDto);
-        System.out.println("res = " + res);
-        return res;
-//        return chatService.findRoomBySenderAndReceiver(sender, receiver);
+        return chatService.findRoomBySenderAndReceiver(makeRoomDto);
     }
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
@@ -36,10 +31,8 @@ public class ChatRoomController {
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoom createRoom(@RequestParam String sender, @RequestParam String receiver) {
-        System.out.println("sender = " + sender);
-        System.out.println("receiver = " + receiver);
-        return chatService.createRoom(sender, receiver);
+    public ChatRoom createRoom(@RequestBody MakeRoomDto makeRoomDto) {
+        return chatService.createRoom(makeRoomDto);
     }
     // 채팅방 입장 화면
     @GetMapping("/room/enter/{roomId}")
