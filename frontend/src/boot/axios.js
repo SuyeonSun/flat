@@ -4,8 +4,8 @@ import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
 
 const api = axios.create({
-  // baseURL: 'http://127.0.0.1:8000',
-  baseURL: 'http://localhost:8000',
+  baseURL: 'http://127.0.0.1:8000',
+  // baseURL: 'http://localhost:8000',
 })
 
 export default boot(({ app, store, router }) => {
@@ -24,6 +24,7 @@ export default boot(({ app, store, router }) => {
     if(res?.data?.data?.accessToken){
       authStore.setAccessToken(res.data.data.accessToken);
     }
+    return res;
   }, function (error) {
     // refreshToken 만료 시 login으로 redirect
     router.push("/sign-in");

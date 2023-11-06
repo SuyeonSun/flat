@@ -1,13 +1,13 @@
 <script setup>
 
 import {api} from "boot/axios"
-import {ref, onMounted} from "vue"
+import {onMounted, ref} from "vue"
 import {useChatStore} from "stores/chat/chat-store";
 import dialogTest from "pages/dialog.vue";
 
 const chatStore = useChatStore();
 
-const roomId = ref('')
+const roomId = ref(0)
 const chatrooms = ref([])
 const sender = ref('userA')
 const receiver = ref('userB')
@@ -23,53 +23,49 @@ const findAllRoom = () => {
   })
 }
 
-const findRoom = async () => {
-    let params = new URLSearchParams();
-    params.append('sender', sender.value);
-    params.append('receiver', receiver.value);
-
-    await api.post('/chat/roomId', params)
-        .then((response) => {
-            roomId.value = response.data
-            console.log('findRoom(): '+roomId.value)
-    }).catch((response) => {
-
-    })
+const findRoom = () => {
+    return api.post('/chat/roomId', {
+      sender: sender.value,
+      receiver: receiver.value,
+    });
 }
 
 const createRoom = async () => {
-  // if (room_name.value === '') {
-  //   alert('방 제목을 입력해 주십시요.');
-  //   return;
-  // } else {
-  //   console.log('roomId.value: ' + roomId.value)
+  // try {
+    const response = await findRoom();
+    if(response) {
+      roomId.value = response.data;
+    }
+    console.log("roomId: ", roomId.value);
 
-  await findRoom();
-  if(roomId.value === '') {
+    if(!roomId.value) {
       console.log('createRoom() .......')
       let params = new URLSearchParams();
-      // params.append('name', room_name.value);
       params.append('sender', sender.value);
       params.append('receiver', receiver.value);
-      await api
-          .post('/chat/room', params)
-          .then((response) => {
-              // alert(response.data.roomName + '방 개설에 성공하였습니다.');
-              // alert('방 개설에 성공하였습니다.')
-              // room_name.value = '';
-              roomId.value = response.data.roomId
-              console.log('after create Room roomId: ' + roomId.value)
-              // findAllRoom();
-          })
-          .catch((response) => {
-              // alert('채팅방 개설에 실패하였습니다.');
-          });
-  }
-
-  chatStore.$state.isDialog = true
+      api
+        .post('/chat/room', params)
+        .then((response) => {
+          console.log("============11==========");
+          roomId.value = response.data.roomId;
+          chatStore.$state.isDialog = true
+          enterRoom();
+        })
+        .catch((response) => {
+          console.log("==============err========");
+          console.log(response);
+        });
+    } else {
+      chatStore.$state.isDialog = true
+      enterRoom();
+    }
+  // } catch (error) {
+  //   console.log("error: ", error);
   // }
-    console.log('after create Room roomId: ' + roomId.value)
-  enterRoom()
+
+
+  // }
+  // console.log('after create Room roomId: ' + roomId.value)
 }
 
 const enterRoom = () => {

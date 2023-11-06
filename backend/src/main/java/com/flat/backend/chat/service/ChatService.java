@@ -1,5 +1,6 @@
 package com.flat.backend.chat.service;
 
+import com.flat.backend.chat.dto.req.MakeRoomDto;
 import com.flat.backend.chat.model.ChatMessage;
 import com.flat.backend.chat.model.ChatRoom;
 import jakarta.annotation.PostConstruct;
@@ -37,10 +38,10 @@ public class ChatService {
         return chatRooms.get(roomId);
     }
 
-    public String findRoomBySenderAndReceiver(String sender, String receiver) {
+    public String findRoomBySenderAndReceiver(MakeRoomDto makeRoomDto) {
         String res = "";
         for(ChatRoom room : chatRooms.values()) {
-            if(room.getSender().equals(sender) && room.getReceiver().equals(receiver)) {
+            if(room.getSender().equals(makeRoomDto.getSender()) && room.getReceiver().equals(makeRoomDto.getReceiver())) {
                 res = room.getRoomId().toString();
                 System.out.println("roomId = " + room.getRoomId());
                 break;
@@ -51,7 +52,7 @@ public class ChatService {
 
     //채팅방 생성
     public ChatRoom createRoom(String sender, String receiver) {
-        ChatRoom chatRoom = ChatRoom.create(this.id++, sender, receiver);
+        ChatRoom chatRoom = ChatRoom.create(++this.id, sender, receiver);
         chatRooms.put(chatRoom.getRoomId(), chatRoom);
         return chatRoom;
     }
