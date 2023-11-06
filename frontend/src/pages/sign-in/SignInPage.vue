@@ -36,8 +36,12 @@ const onSubmit = async () => {
 <template>
   <div class="q-pa-md">
     <div class="text-center">
-      <h5 class="q-ma-none q-mb-md">FLAT</h5>
-      <h5 class="q-mt-none">SIGN IN</h5>
+      <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
+        <span style="font-size: 30px">F</span>
+        <span style="font-size: 30px">L</span>
+        <q-icon name="house" style="font-size: 37px; margin-bottom: 10px"/>
+        <span style="font-size: 30px">T</span>
+      </h5>
     </div>
 
     <q-form
@@ -46,19 +50,21 @@ const onSubmit = async () => {
     >
       <q-input
         v-model="email"
-        label="이메일"
+        label="Email"
         dense
         outlined
+        class="q-mb-md"
       />
 
       <q-input
         v-model="password"
-        label="비밀번호"
+        label="Password"
         dense
         outlined
+        class="q-mb-md"
       />
 
-      <q-btn label="SIGN IN" type="submit" color="primary" class="full-width"/>
+      <q-btn label="SIGN IN" type="submit" color="primary" class="full-width q-mb-md"/>
 
       <div class="text-subtitle1 text-center q-ma-none">
         Create account? <a href="/sign-up"> Sign up here </a>
