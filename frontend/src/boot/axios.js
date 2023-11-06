@@ -3,46 +3,36 @@ import axios from 'axios'
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
-
-const authStore = useAuthStore();
-
-const token = authStore.accessToken;
+// import {LocalStorage} from "quasar";
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
-
-  headers: {
-    // "Authorization":token !== null ? `Bearer ${token}` : undefined
-    // "Content-Type":"application/json",
-    // "Access-Control-Allow-Origin" : "*",
-    // "Access-Control-Allow-Headers": "*",
-    // "Access-Control-Allow-Credentials": true
-  }
+  // baseURL: 'http://127.0.0.1:8000',
+  baseURL: 'http://localhost:8000',
 })
-// const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdW5pbmlzeUBnbWFpbC5jb20iLCJpYXQiOjE2OTg5OTYxNzMsImV4cCI6MTY5ODk5NjIzM30.US4L1XxVPI3iC78t1arZJZXWPv3tRKskCsa3igom4R4';
 
-export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+export default boot(({ app, store, router }) => {
+  const authStore = useAuthStore(store);
+  const {accessToken} = storeToRefs(authStore);
 
+  api.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${accessToken.value}`
+    return config
+  }, function (error) {
+    return Promise.reject(error)
+  })
 
-  // Add a request interceptor
-  /*api.interceptors.request.use((config) => {
-      // Do something before request is sent
-      config.headers.Authorization = `Bearer ${token}`
-
-      // Access-Control-Allow-Credentials: true
-      return config
-    }, function (error) {
-      // Do something with request error
-      return Promise.reject(error)
-      // console.log(error);
-    })*/
+  api.interceptors.response.use((res) => {
+    // TODO: 요청마다 accessToken 받아서 저장하기
+    if(res?.data?.data?.accessToken){
+      authStore.setAccessToken(res.data.data.accessToken);
+    }
+  }, function (error) {
+    // Do something with request error
+    // TODO: refreshToken 만료 시 login으로 redirect
+    router.push("/sign-in");
+    return Promise.reject(error)
+    // console.log(error);
+  })
 
   app.config.globalProperties.$axios = axios
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)

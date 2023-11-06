@@ -1,8 +1,5 @@
 import { defineStore } from 'pinia';
-import {createApi} from "stores/auth/auth-store";
-import {useAuthStore} from "stores/auth/auth-store";
-
-const authStore = useAuthStore();
+import {api} from "boot/axios";
 
 export const useTestStore = defineStore('testStore', {
   state: () => ({
@@ -11,10 +8,11 @@ export const useTestStore = defineStore('testStore', {
   actions: {
     async test() {
       try {
-        console.log(authStore.accessToken)
-        await createApi().get("/auth/resource");
+        console.log("================ 5.")
+
+        await api.get("/resource");
       } catch (error) {
-        console.log("testStore error")
+        console.log("error", error)
       }
     },
   },

@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum StatusEnum {
+public enum BaseResponseStatus {
+    // basic
     OK(200, "OK"),
     INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR"),
 

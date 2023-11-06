@@ -1,5 +1,6 @@
 package com.flat.backend.token;
 
+import com.flat.backend.common.BaseException;
 import com.flat.backend.user.service.UserDetailServiceImpl;
 import com.flat.backend.token.entity.Token;
 import com.flat.backend.token.repository.TokenRepository;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +22,11 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
+import static com.flat.backend.common.BaseResponseStatus.*;
+
 @Component
 @RequiredArgsConstructor
-public class JwtTokenProvider {
+public class JwtUtil {
     private final String secretKey = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
     private final Long accessExpirationTime = Duration.ofMinutes(1).toMillis(); // 1분
     private final Long refreshExpirationTime = Duration.ofMinutes(2).toMillis();  // 2분
@@ -91,48 +95,49 @@ public class JwtTokenProvider {
     }
 
     // accessToken validate
-    public boolean validateToken(String token) throws Exception {
+    public boolean isValidAccessToken(String token) {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
-            // token에서 email 가져오기
-            String[] arr = token.split("\\.");
-            byte[] decodedBytes = Base64.getDecoder().decode(arr[1]);
-
-            JSONParser parser = new JSONParser();
-            JSONObject payload = (JSONObject) parser.parse(new String(decodedBytes));
-            String email = (String) payload.get("sub");
-
-            String newAccessToken = reIssueAccessToken(email);
-            return newAccessToken != null;
+        } catch (ExpiredJwtException expiredJwtException) {
+            return false;
         }
     }
 
     // accessToken 재발급
     public String reIssueAccessToken(String email) {
         // email로 refreshToken 조회
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
         String refreshToken = user.getToken().getRefreshToken();
 
-        // refreshToken이 정상일때
         try {
+            // refreshToken이 정상일때
             Authentication authentication = getAuthentication(refreshToken);
             String accessToken;
             accessToken = createAccessToken(authentication);
             return accessToken;
-        } catch (Exception e) {
+        } catch (JwtException jwtException) {
             //refreshToken이 만료일때
-            // refresh token 만료 error 코드 전송
-            // refresh token 삭제
             UUID user_token_id = user.getToken().getId();
             user.setToken(null);
             userRepository.save(user);
-
             tokenRepository.deleteById(user_token_id);
-
-            // 로그인 폼으로 보내기
-            return null;
+            throw new BaseException(EXPIRED_REFRESH_TOKEN);
         }
+    }
+
+    // extract userName from expired accessToken
+    public String extractUserNameFromExpiredToken (String token) {
+        String[] arr = token.split("\\.");
+        byte[] decodedBytes = Base64.getDecoder().decode(arr[1]);
+
+        JSONParser parser = new JSONParser();
+        JSONObject payload = null;
+        try {
+            payload = (JSONObject) parser.parse(new String(decodedBytes));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return (String) payload.get("sub");
     }
 }
