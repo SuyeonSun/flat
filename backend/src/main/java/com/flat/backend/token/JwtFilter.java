@@ -45,45 +45,35 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         } else {
-                // accessToken 만료
-                String email = jwtUtil.extractUserNameFromExpiredToken(token);
-                User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
-                String refreshToken = null;
-                try{
-                    refreshToken = user.getToken().getRefreshToken();
-                } catch (NullPointerException e) {
-                    ObjectNode json = new ObjectMapper().createObjectNode();
-                    json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusCode()));
-                    json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusMessage()));
-                    String newResponse = new ObjectMapper().writeValueAsString(json);
-                    response.setContentLength(newResponse.length());
-                    response.getOutputStream().write(newResponse.getBytes());
-                }
+            // accessToken 만료
+            String email = jwtUtil.extractUserNameFromExpiredToken(token);
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+            String refreshToken = user.getToken().getRefreshToken();
 
-                try {
-                    // refreshToken 정상
-                    Authentication authentication = jwtUtil.getAuthentication(refreshToken);
-                    String accessToken = jwtUtil.createAccessToken(authentication); // accessToken 재발급
-                    ObjectNode json = new ObjectMapper().createObjectNode();
-                    json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusCode()));
-                    json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusMessage()));
-                    json.put("data", new ReIssueResDto(accessToken).toJson());
-                    String newResponse = new ObjectMapper().writeValueAsString(json);
-                    response.setContentLength(newResponse.length());
-                    response.getOutputStream().write(newResponse.getBytes());
-                } catch (ExpiredJwtException expiredJwtException) {
-                    // refreshToken 만료
-                    UUID user_token_id = user.getToken().getId();
-                    user.setToken(null);
-                    userRepository.save(user);
-                    tokenRepository.deleteById(user_token_id);
-                    ObjectNode json = new ObjectMapper().createObjectNode();
-                    json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusCode()));
-                    json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusMessage()));
-                    String newResponse = new ObjectMapper().writeValueAsString(json);
-                    response.setContentLength(newResponse.length());
-                    response.getOutputStream().write(newResponse.getBytes());
-                }
+            try {
+                // refreshToken 정상
+                Authentication authentication = jwtUtil.getAuthentication(refreshToken);
+                String accessToken = jwtUtil.createAccessToken(authentication); // accessToken 재발급
+                ObjectNode json = new ObjectMapper().createObjectNode();
+                json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusCode()));
+                json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_ACCESS_TOKEN.getStatusMessage()));
+                json.put("data", new ReIssueResDto(accessToken).toJson()); // TODO
+                String newResponse = new ObjectMapper().writeValueAsString(json);
+                response.setContentLength(newResponse.length());
+                response.getOutputStream().write(newResponse.getBytes());
+            } catch (ExpiredJwtException expiredJwtException) {
+                // refreshToken 만료
+                UUID user_token_id = user.getToken().getId();
+                user.setToken(null);
+                userRepository.save(user);
+                tokenRepository.deleteById(user_token_id);
+                ObjectNode json = new ObjectMapper().createObjectNode();
+                json.put("code", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusCode()));
+                json.put("message", String.valueOf(BaseResponseStatus.EXPIRED_REFRESH_TOKEN.getStatusMessage()));
+                String newResponse = new ObjectMapper().writeValueAsString(json);
+                response.setContentLength(newResponse.length());
+                response.getOutputStream().write(newResponse.getBytes());
+            }
         }
     }
 }

@@ -1,12 +1,24 @@
 <script setup>
-import {onMounted} from "vue";
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
+import {useRouter} from "vue-router";
 
+const $router = useRouter();
 const authStore = useAuthStore();
 
 const {email} = storeToRefs(authStore);
 
+const signOut = async () => {
+  // localStorage 및 store email, accessToken 값 지우기
+  const signOutPayload = {
+    email: email.value
+  }
+  await authStore.signOut(signOutPayload);
+  authStore.setAccessToken(undefined);
+  authStore.setEmail(undefined);
+
+  $router.push("/sign-in");
+}
 </script>
 
 <template>
@@ -23,6 +35,9 @@ const {email} = storeToRefs(authStore);
           </div>
           <div>
             {{ email }}
+          </div>
+          <div>
+            <q-btn @click="signOut()">sign out</q-btn>
           </div>
         </q-toolbar-title>
       </q-toolbar>

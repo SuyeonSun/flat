@@ -19,13 +19,10 @@ export const useAuthStore = defineStore('authStore', {
 
     async signIn(signInPayload) {
       try {
-        console.log("================ 1. before signIn api")
         const response = await authApi.post("/auth/sign-in", signInPayload);
         if (response.data.code === 200) { // 정상적인 요청
-          // TODO
           this.accessToken = response.data.data.accessToken;
           this.email = response.data.data.email;
-          console.log("================ 4.")
           return true;
         } else if (response.data.code === 2001) { // 유효하지 않은 회원 정보
           return false;
@@ -36,8 +33,19 @@ export const useAuthStore = defineStore('authStore', {
     },
 
     setAccessToken(token) {
-      console.log("================ 3. setAccessToken")
       this.accessToken = token;
+    },
+
+    setEmail(email) {
+      this.email = email;
+    },
+
+    async signOut(signOutPayload) {
+      try {
+        await authApi.post("/auth/sign-out", signOutPayload);
+      } catch (error) {
+        console.log("error");
+      }
     }
   },
 
