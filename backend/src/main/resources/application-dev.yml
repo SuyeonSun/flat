@@ -22,17 +22,3 @@ spring:
 
 server:
   port: 8000
-
-cloud:
-  aws:
-    credentials:
-      accessKey: AKIA4X5JVVJB3POTFPYN
-      secretKey: 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
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-
-application:
-  bucket:
-    name: flat-bucket

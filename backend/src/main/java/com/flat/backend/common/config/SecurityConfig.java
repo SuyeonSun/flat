@@ -1,7 +1,10 @@
 package com.flat.backend.common.config;
 
+import com.flat.backend.CorsConfig;
 import com.flat.backend.token.JwtSecurityConfig;
-import com.flat.backend.token.JwtTokenProvider;
+import com.flat.backend.token.JwtUtil;
+import com.flat.backend.token.repository.TokenRepository;
+import com.flat.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,13 +17,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig{
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
+    private final CorsConfig corsConfig;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -36,10 +43,15 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in", "/auth/re-issue", "/auth/sign-out", "/user/test", "/user/upload")
-                        .permitAll().anyRequest().authenticated())
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // cors 설정
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/sign-up", "/auth/sign-in",
+                                "/auth/sign-out", "/user/test", "/user/upload")
+                        .permitAll()
+                        .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
-        httpSecurity.apply(new JwtSecurityConfig(jwtTokenProvider));
+
+        httpSecurity.apply(new JwtSecurityConfig(jwtUtil, userRepository, tokenRepository));
         return httpSecurity.build();
     }
+
 }

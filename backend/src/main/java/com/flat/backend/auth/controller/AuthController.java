@@ -1,7 +1,6 @@
 package com.flat.backend.auth.controller;
 
 import com.flat.backend.common.dto.BaseResponseDto;
-import com.flat.backend.auth.dto.req.ReIssueReqDto;
 import com.flat.backend.auth.dto.req.SignInReqDto;
 import com.flat.backend.auth.dto.req.SignOutReqDto;
 import com.flat.backend.auth.dto.req.SignUpReqDto;
@@ -27,17 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    public void signOut(@RequestBody SignOutReqDto signOutDto) throws Exception {
+    public void signOut(@RequestBody SignOutReqDto signOutDto) {
         authService.signOut(signOutDto);
-    }
-
-    @PostMapping("/re-issue")
-    public ResponseEntity<BaseResponseDto<?>> reIssue(@RequestBody ReIssueReqDto reIssueDto) throws Exception {
-        return authService.reIssue(reIssueDto);
-    }
-
-    @GetMapping("/resource")
-    public String resource() {
-        return "This is resource";
     }
 }
