@@ -65,7 +65,7 @@ const onSubmit = async () => {
           class="q-mb-md"
         />
 
-        <q-btn label="SIGN IN" type="submit" class="full-width q-mb-md submit-btn"/>
+        <q-btn label="로그인" type="submit" class="full-width q-mb-md submit-btn"/>
 
         <div class="text-subtitle1 text-center q-ma-none text">
           가입이 필요하신가요? <a href="/sign-up" style="text-decoration: none;" class="text"> | 회원가입 </a>

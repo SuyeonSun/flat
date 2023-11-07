@@ -6,7 +6,7 @@ import {useRouter} from "vue-router";
 const $router = useRouter();
 const authStore = useAuthStore();
 
-const {email} = storeToRefs(authStore);
+const {email, name} = storeToRefs(authStore);
 
 const signOut = async () => {
   // localStorage 및 store email, accessToken 값 지우기
@@ -16,6 +16,7 @@ const signOut = async () => {
   await authStore.signOut(signOutPayload);
   authStore.setAccessToken(undefined);
   authStore.setEmail(undefined);
+  authStore.setName(undefined);
 
   $router.push("/sign-in");
 }
@@ -24,22 +25,24 @@ const signOut = async () => {
 <template>
   <q-layout view="hHh lpR fFf">
 
-    <q-header elevated class="bg-primary text-white" height-hint="98">
-      <q-toolbar>
-        <q-toolbar-title style="display: flex; justify-content: space-between">
+    <q-header elevated class="bg-black text-white" height-hint="98">
+      <q-toolbar class="q-pt-md" style="display: flex; justify-content: space-between; align-items: center">
+        <div class="q-pl-md">
+          <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
+            <span class="logo-font">F</span>
+            <span class="logo-font">L</span>
+            <q-icon name="house" class="logo-icon"/>
+            <span class="logo-font">T</span>
+          </h5>
+        </div>
+        <div style="display: flex; align-items: center">
           <div>
-            <q-avatar>
-              <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-            </q-avatar>
-            Title
+            {{ name }} 님
           </div>
           <div>
-            {{ email }}
+            <q-btn size="md" unelevated @click="signOut()">로그아웃</q-btn>
           </div>
-          <div>
-            <q-btn @click="signOut()">sign out</q-btn>
-          </div>
-        </q-toolbar-title>
+        </div>
       </q-toolbar>
 
       <q-tabs align="left">
@@ -53,15 +56,23 @@ const signOut = async () => {
       <router-view/>
     </q-page-container>
 
-    <q-footer elevated class="bg-grey-8 text-white">
-      <q-toolbar>
-        <q-toolbar-title>
-          <div>Title</div>
-        </q-toolbar-title>
+    <q-footer elevated class="text-white full-width" style="background-color: #4F4F51">
+      <q-toolbar style="display: flex; justify-content: center">
+        <div>© 2023 FLAT</div>
       </q-toolbar>
     </q-footer>
-
   </q-layout>
 </template>
+
+<style scoped>
+.logo-font {
+  font-size: 20px;
+}
+
+.logo-icon {
+  font-size: 23px;
+  margin-bottom: 3px;
+}
+</style>
 
 
