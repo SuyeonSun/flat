@@ -43,64 +43,104 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="q-pa-md">
+  <div class="main-container">
     <div class="text-center">
-      <h5 class="q-ma-none q-mb-md">FLAT</h5>
-      <h5 class="q-mt-none">CREATE YOUR ACCOUNT</h5>
+      <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
+        <span class="logo-font">F</span>
+        <span class="logo-font">L</span>
+        <q-icon name="house" class="logo-icon"/>
+        <span class="logo-font">T</span>
+      </h5>
     </div>
 
-    <q-form
-      @submit="onSubmit"
-      class="form-container"
-    >
-      <q-input
-        v-model="email"
-        label="이메일"
-        dense
-        outlined
-      />
+    <div class="form-outer-container">
+      <q-form
+        @submit="onSubmit"
+        class="form-container"
+      >
+        <q-input
+          v-model="email"
+          label="Email"
+          dense
+          outlined
+          class="q-mb-md"
+        />
 
-      <q-input
-        v-model="name"
-        label="이름"
-        dense
-        outlined
-      />
+        <q-input
+          v-model="name"
+          label="Name"
+          dense
+          outlined
+          class="q-mb-md"
+        />
 
-      <q-input
-        v-model="password"
-        label="비밀번호"
-        dense
-        outlined
-      />
+        <q-input
+          v-model="password"
+          label="Password"
+          dense
+          outlined
+          class="q-mb-md"
+        />
 
 
-      <q-input
-        v-model="profile"
-        label="프로필"
-        dense
-        outlined
-      />
+        <q-input
+          v-model="profile"
+          label="Profile Image"
+          dense
+          outlined
+          class="q-mb-md"
+        />
 
-      <q-input
-        v-model="address"
-        label="주소"
-        dense
-        outlined
-      />
+        <q-input
+          v-model="address"
+          label="Address"
+          dense
+          outlined
+          class="q-mb-md"
+        />
 
-      <q-btn label="SIGN UP" type="submit" color="primary" class="full-width"/>
+        <q-btn label="SIGN UP" type="submit" class="full-width q-mb-md submit-btn"/>
 
-      <div class="text-subtitle1 text-center q-ma-none">
-        이미 계정이 있으신가요? <a href="/sign-in"> Sign in here </a>
-      </div>
-    </q-form>
+        <div class="text-subtitle1 text-center q-ma-none text">
+          이미 계정이 있으신가요? | <a href="/sign-in" style="text-decoration: none;" class="text"> 로그인 </a>
+        </div>
+      </q-form>
+    </div>
 
   </div>
 </template>
 
 <style scoped>
+.main-container {
+  padding: 80px;
+  background-color: white;
+  border-radius: 10px;
+  width: 50%;
+}
+
+.logo-font {
+  font-size: 30px;
+}
+
+.logo-icon {
+  font-size: 37px;
+  margin-bottom: 10px;
+}
+
+.form-outer-container {
+  display: flex;
+  justify-content: center;
+}
+
 .form-container {
-  max-width: 300px;
+  min-width: 300px;
+}
+
+.submit-btn {
+  background-color: #F2C4CE;
+}
+
+.text {
+  color: #4F4F51;
 }
 </style>
