@@ -8,6 +8,9 @@
 .container {
   display: flex;
   justify-content: center;
-  align-items: center
+  align-items: center;
+  /*background-color: #D6D6D6;*/
+  background-color: #e4e4e4;
+
 }
 </style>

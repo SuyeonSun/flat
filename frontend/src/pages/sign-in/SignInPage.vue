@@ -34,13 +34,13 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="q-pa-md">
+  <div class="main-container">
     <div class="text-center">
       <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
-        <span style="font-size: 30px">F</span>
-        <span style="font-size: 30px">L</span>
-        <q-icon name="house" style="font-size: 37px; margin-bottom: 10px"/>
-        <span style="font-size: 30px">T</span>
+        <span class="logo">F</span>
+        <span class="logo">L</span>
+        <q-icon name="house" class="logo-icon"/>
+        <span class="logo">T</span>
       </h5>
     </div>
 
@@ -64,10 +64,10 @@ const onSubmit = async () => {
         class="q-mb-md"
       />
 
-      <q-btn label="SIGN IN" type="submit" color="primary" class="full-width q-mb-md"/>
+      <q-btn label="SIGN IN" type="submit" class="full-width q-mb-md submit-btn"/>
 
-      <div class="text-subtitle1 text-center q-ma-none">
-        Create account? <a href="/sign-up"> Sign up here </a>
+      <div class="text-subtitle1 text-center q-ma-none text">
+        가입이 필요하신가요? <a href="/sign-up" style="text-decoration: none;" class="text"> 회원가입 </a>
       </div>
     </q-form>
 
@@ -75,7 +75,30 @@ const onSubmit = async () => {
 </template>
 
 <style scoped>
+.main-container {
+  padding: 80px;
+  background-color: white;
+  border-radius: 10px;
+}
+
 .form-container {
   max-width: 300px;
+}
+
+.logo {
+  font-size: 30px;
+}
+
+.logo-icon {
+  font-size: 37px;
+  margin-bottom: 10px;
+}
+
+.text {
+  color: #4F4F51;
+}
+
+.submit-btn {
+  background-color: #F2C4CE;
 }
 </style>
