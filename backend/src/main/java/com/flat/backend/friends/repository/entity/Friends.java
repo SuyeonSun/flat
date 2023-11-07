@@ -1,5 +1,6 @@
 package com.flat.backend.friends.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.friends.FriendGrade;
 import com.flat.backend.user.repository.entity.User;
 import lombok.*;
@@ -17,9 +18,15 @@ public class Friends {
     @Column(name = "friends_id")
     private Long id;
 
-    @OneToOne
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
+
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "friend_id")
-    private User user;
+    private User friendId;
 
     @Builder.Default
     private int grade = FriendGrade.BEST.getValue();

@@ -1,5 +1,6 @@
 package com.flat.backend.friends.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.user.repository.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,14 +14,16 @@ import lombok.*;
 public class ReqFriendDto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column("req_id")
-    private Long id
+    @Column(name = "req_id")
+    private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "friend_id")
-    private User user;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User senderId;
 
-    @OneToOne
-    @JoinColumn(name = "friend_id")
-    private User user;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private User receiverId;
 }
