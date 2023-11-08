@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
 
 @Service
@@ -43,5 +45,13 @@ public class PropertyService {
                 .build();
         propertyRepository.save(property);
         user.getProperties().add(property);
+    }
+
+    public void delete(Long propertyId, String email) {
+        propertyRepository.deleteById(propertyId);
+        User user = userRepository.findByEmail(email).orElseThrow();
+        List<Property> propertyList = user.getProperties();
+        propertyList.removeIf(property -> property.getId() == propertyId);
+        System.out.println("======================" + user.getProperties().toString());
     }
 }

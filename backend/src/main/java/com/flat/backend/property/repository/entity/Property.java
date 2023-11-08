@@ -4,12 +4,14 @@ import com.flat.backend.user.repository.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "properties")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class Property {
     @Id @GeneratedValue
     @Column(name = "property_id")
