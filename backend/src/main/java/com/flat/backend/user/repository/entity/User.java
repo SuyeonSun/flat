@@ -2,6 +2,9 @@ package com.flat.backend.user.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.property.repository.entity.Property;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.flat.backend.friends.repository.entity.Friends;
+import com.flat.backend.friends.repository.entity.ReqFriendDto;
 import com.flat.backend.token.entity.Token;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,6 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -41,4 +45,17 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Property> properties = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    private List<Friends> friends = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "senderId", cascade = CascadeType.ALL)
+    private List<ReqFriendDto> sentFriendRequests = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiverId", cascade = CascadeType.ALL)
+    private List<ReqFriendDto> receivedFriendRequests = new ArrayList<>();
+
 }
