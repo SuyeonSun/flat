@@ -1,9 +1,12 @@
 package com.flat.backend.property.controller;
 
 import com.flat.backend.property.dto.req.RegisterReqDto;
+import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.property.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/property")
@@ -23,9 +26,13 @@ public class PropertyController {
         propertyService.delete(propertyId, email);
     }
 
-    // 매물 수정
-
     // 매물 리스트 조회
+    @GetMapping("")
+    public List<Property> selectList(@RequestParam String email) {
+        return propertyService.selectList(email);
+    }
 
     // 매물 상세 조회
+
+    // 매물 수정
 }

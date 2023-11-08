@@ -7,9 +7,11 @@ import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
@@ -17,6 +19,7 @@ import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class PropertyService {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
@@ -49,9 +52,18 @@ public class PropertyService {
 
     public void delete(Long propertyId, String email) {
         propertyRepository.deleteById(propertyId);
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
         List<Property> propertyList = user.getProperties();
         propertyList.removeIf(property -> property.getId() == propertyId);
-        System.out.println("======================" + user.getProperties().toString());
+    }
+
+    public List<Property> selectList(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+        List<Property> result = new ArrayList<>();
+        for (Property property : user.getProperties()) {
+            result.add(property);
+            // log.info("property = {}", property.getUser().getId());
+        }
+        return result;
     }
 }

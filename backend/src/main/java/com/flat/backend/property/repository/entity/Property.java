@@ -1,5 +1,6 @@
 package com.flat.backend.property.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.user.repository.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,5 +49,7 @@ public class Property {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+
+    @JsonIgnore
     User user;
 }

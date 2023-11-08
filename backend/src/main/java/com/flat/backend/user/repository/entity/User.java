@@ -1,5 +1,6 @@
 package com.flat.backend.user.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.token.entity.Token;
 import jakarta.persistence.*;
@@ -37,6 +38,7 @@ public class User {
     @JoinColumn(name = "token_id")
     private Token token;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Property> properties = new ArrayList<>();
 }
