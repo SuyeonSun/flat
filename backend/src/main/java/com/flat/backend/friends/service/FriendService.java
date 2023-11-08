@@ -1,6 +1,7 @@
 package com.flat.backend.friends.service;
 
 import com.amazonaws.Response;
+import com.flat.backend.friends.dto.FriendDeleteDto;
 import com.flat.backend.friends.dto.RequestDto;
 import com.flat.backend.friends.dto.ResponseDto;
 import com.flat.backend.friends.repository.FriendsRepository;
@@ -9,6 +10,7 @@ import com.flat.backend.friends.repository.entity.Friends;
 import com.flat.backend.friends.repository.entity.ReqFriendDto;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +86,10 @@ public class FriendService{
 
     public ResponseEntity<?> connectFriend(RequestDto requestDto) {
 
+        if(reqFriendRepository.findBySenderId_IdAndReceiverId_Id(requestDto.getSenderId(), requestDto.getReceiverId()).isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         User sendUser = userRepository.findById(requestDto.getSenderId()).orElseThrow();
         User recvUser = userRepository.findById(requestDto.getReceiverId()).orElseThrow();
 
@@ -119,6 +125,31 @@ public class FriendService{
         }
         return ResponseEntity.ok()
                 .body(list);
+    }
+
+    public ResponseEntity<?> removeFriend(FriendDeleteDto friendDeleteDto) {
+        User user = userRepository.findById(friendDeleteDto.getUserId()).orElseThrow();
+        User friend = userRepository.findById(friendDeleteDto.getFriendId()).orElseThrow();
+
+        log.info("userId = {}", user.getId());
+        log.info("friendId = {}", friend.getId());
+
+        log.info("userId의 friend = {}", user.getFriends().size());
+        log.info("friendId의 friend = {}", friend.getFriends().size());
+
+        Friends userIdFriends = friendsRepository.findByUserId_IdAndFriendId_Id(user.getId(), friend.getId()).orElseThrow();
+        Friends friendIdFriends = friendsRepository.findByUserId_IdAndFriendId_Id(friend.getId(), user.getId()).orElseThrow();
+
+        user.getFriends().remove(userIdFriends);
+        friend.getFriends().remove(friendIdFriends);
+
+        friendsRepository.delete(userIdFriends);
+        friendsRepository.delete(friendIdFriends);
+
+        log.info("userId의 friend = {}", user.getFriends().size());
+        log.info("friendId의 friend = {}", friend.getFriends().size());
+
+        return ResponseEntity.ok().build();
     }
 
 }

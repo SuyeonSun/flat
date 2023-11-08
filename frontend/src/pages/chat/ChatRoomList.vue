@@ -20,7 +20,6 @@ const chatStore = useChatStore();
       </div>
     </div>
   </div>
-
   <template v-if="chatStore.$state.isDialog">
     <dialog-test/>
   </template>

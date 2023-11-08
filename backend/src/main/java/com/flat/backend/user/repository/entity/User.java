@@ -38,6 +38,7 @@ public class User {
     // TODO: 탈퇴한 회원을 위한 active 처리 구현이 필요하다.
     // private String active;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "token_id")
     private Token token;
