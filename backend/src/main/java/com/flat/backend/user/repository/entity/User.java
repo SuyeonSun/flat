@@ -1,9 +1,12 @@
 package com.flat.backend.user.repository.entity;
 
+import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.token.entity.Token;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "user")
@@ -33,4 +36,7 @@ public class User {
     @OneToOne
     @JoinColumn(name = "token_id")
     private Token token;
+
+    @OneToMany(mappedBy = "user")
+    private List<Property> properties = new ArrayList<>();
 }
