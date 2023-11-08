@@ -8,6 +8,8 @@
 .container {
   display: flex;
   justify-content: center;
-  align-items: center
+  align-items: center;
+  background-color: #E4E4E4;
+
 }
 </style>

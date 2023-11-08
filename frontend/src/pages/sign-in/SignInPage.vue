@@ -34,42 +34,79 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="q-pa-md">
+  <div class="main-container">
     <div class="text-center">
-      <h5 class="q-ma-none q-mb-md">FLAT</h5>
-      <h5 class="q-mt-none">SIGN IN</h5>
+      <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
+        <span class="logo-font">F</span>
+        <span class="logo-font">L</span>
+        <q-icon name="house" class="logo-icon"/>
+        <span class="logo-font">T</span>
+      </h5>
     </div>
 
-    <q-form
-      @submit="onSubmit"
-      class="form-container"
-    >
-      <q-input
-        v-model="email"
-        label="이메일"
-        dense
-        outlined
-      />
+    <div class="form-outer-container">
+      <q-form
+        @submit="onSubmit"
+        class="form-container"
+      >
+        <q-input
+          v-model="email"
+          label="Email"
+          dense
+          outlined
+          class="q-mb-md"
+        />
 
-      <q-input
-        v-model="password"
-        label="비밀번호"
-        dense
-        outlined
-      />
+        <q-input
+          v-model="password"
+          label="Password"
+          dense
+          outlined
+          class="q-mb-md"
+        />
 
-      <q-btn label="SIGN IN" type="submit" color="primary" class="full-width"/>
+        <q-btn label="로그인" type="submit" class="full-width q-mb-md submit-btn"/>
 
-      <div class="text-subtitle1 text-center q-ma-none">
-        Create account? <a href="/sign-up"> Sign up here </a>
-      </div>
-    </q-form>
+        <div class="text-subtitle1 text-center q-ma-none text">
+          가입이 필요하신가요? <a href="/sign-up" style="text-decoration: none;" class="text"> | 회원가입 </a>
+        </div>
+      </q-form>
+    </div>
 
   </div>
 </template>
 
 <style scoped>
+.main-container {
+  padding: 80px;
+  background-color: white;
+  border-radius: 10px;
+  width: 40%;
+}
+
+.form-outer-container {
+  display: flex;
+  justify-content: center;
+}
+
 .form-container {
-  max-width: 300px;
+  min-width: 300px;
+}
+
+.logo-font {
+  font-size: 30px;
+}
+
+.logo-icon {
+  font-size: 37px;
+  margin-bottom: 10px;
+}
+
+.submit-btn {
+  background-color: #F2C4CE;
+}
+
+.text {
+  color: #4F4F51;
 }
 </style>

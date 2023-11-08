@@ -4,7 +4,8 @@ import {authApi} from "boot/auth-api";
 export const useAuthStore = defineStore('authStore', {
   state: () => ({
     accessToken: undefined,
-    email: undefined
+    email: undefined,
+    name: undefined
   }),
 
   actions: {
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore('authStore', {
         if (response.data.code === 200) { // 정상적인 요청
           this.accessToken = response.data.data.accessToken;
           this.email = response.data.data.email;
+          this.name = response.data.data.name;
           return true;
         } else if (response.data.code === 2001) { // 유효하지 않은 회원 정보
           return false;
@@ -39,6 +41,10 @@ export const useAuthStore = defineStore('authStore', {
 
     setEmail(email) {
       this.email = email;
+    },
+
+    setName(name) {
+      this.name = name;
     },
 
     async signOut(signOutPayload) {

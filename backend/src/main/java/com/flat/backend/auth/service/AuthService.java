@@ -90,7 +90,7 @@ public class AuthService {
         // refreshToken 생성
         jwtTokenProvider.createRefreshToken(authentication, user);
 
-        SignInResDto signInResDto = new SignInResDto(user.getEmail(), accessToken);
+        SignInResDto signInResDto = new SignInResDto(user.getEmail(), accessToken, user.getName());
         BaseResponseDto<SignInResDto> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), signInResDto);
         return ResponseEntity.ok()
                 .body(baseResponseDto);
