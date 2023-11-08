@@ -40,9 +40,9 @@ public class User {
     @JoinColumn(name = "token_id")
     private Token token;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL)
-//    private List<Friends> friends;
+    @JsonIgnore
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    private List<Friends> friends = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "senderId", cascade = CascadeType.ALL)

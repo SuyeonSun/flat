@@ -1,6 +1,7 @@
 package com.flat.backend.friends.controller;
 
 import com.flat.backend.friends.dto.RequestDto;
+import com.flat.backend.friends.dto.RequestUUIDDto;
 import com.flat.backend.friends.service.FriendService;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
@@ -41,6 +42,19 @@ public class FriendController {
     @RequestMapping("/recv/{receiverId}")
     public ResponseEntity<?> getRecvRequests(@PathVariable UUID receiverId) {
         return friendService.getRecvRequests(receiverId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/connect")
+    public ResponseEntity<?> connectFriend(@RequestBody RequestDto requestDto) {
+        return friendService.connectFriend(requestDto);
+    }
+
+    @ResponseBody
+    @RequestMapping("/list")
+    public ResponseEntity<?> getFriendList(@RequestBody RequestUUIDDto requestUUIDDto) {
+        log.info("userId = {}", requestUUIDDto.getUserId());
+        return friendService.getFriends(requestUUIDDto.getUserId());
     }
 
 

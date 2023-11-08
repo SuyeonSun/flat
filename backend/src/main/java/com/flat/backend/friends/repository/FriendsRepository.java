@@ -13,5 +13,5 @@ import java.util.UUID;
 @Repository
 public interface FriendsRepository extends JpaRepository<Friends, Long> {
 
-    Optional<List<Friends>> findByFriendId_Id(UUID userId); // User 테이블의 ID와 Friends 테이블의 friendId 조인
+    Optional<List<Friends>> findByUserId_Id(UUID userId); // User 테이블의 ID와 Friends 테이블의 userId 조인
 }

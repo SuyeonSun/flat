@@ -1,9 +1,11 @@
 package com.flat.backend.friends.service;
 
+import com.amazonaws.Response;
 import com.flat.backend.friends.dto.RequestDto;
 import com.flat.backend.friends.dto.ResponseDto;
 import com.flat.backend.friends.repository.FriendsRepository;
 import com.flat.backend.friends.repository.ReqFriendRepository;
+import com.flat.backend.friends.repository.entity.Friends;
 import com.flat.backend.friends.repository.entity.ReqFriendDto;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
@@ -37,18 +39,18 @@ public class FriendService{
             return ResponseEntity.badRequest()
                     .body("이미 존재하는 친구요청 입니다.");
         }
+
+        // Todo 이미 친구인 경우를 프론트에서 처리? 백에서 처리?
+
+
         ReqFriendDto reqFriendDto = ReqFriendDto.builder()
                         .senderId(userRepository.findById(requestDto.getSenderId()).orElseThrow())
                                 .receiverId(userRepository.findById(requestDto.getReceiverId()).orElseThrow())
                                         .build();
 
         reqFriendRepository.save(reqFriendDto);
-        User sendUser = userRepository.findById(requestDto.getSenderId()).orElseThrow();
-        User recvUser = userRepository.findById(requestDto.getReceiverId()).orElseThrow();
-        sendUser.getSentFriendRequests().add(reqFriendDto);
-        log.info("sentFriendRequests.length: {}", sendUser.getSentFriendRequests().size());
-        recvUser.getReceivedFriendRequests().add(reqFriendDto);
-        log.info("receivedFriendRequests.length: {}", recvUser.getReceivedFriendRequests().size());
+        reqFriendDto.getSenderId().getSentFriendRequests().add(reqFriendDto);
+        reqFriendDto.getReceiverId().getReceivedFriendRequests().add(reqFriendDto);
 
         return ResponseEntity.ok()
                 .body(reqFriendDto);
@@ -80,5 +82,43 @@ public class FriendService{
                 .body(responseDtos);
     }
 
+    public ResponseEntity<?> connectFriend(RequestDto requestDto) {
+
+        User sendUser = userRepository.findById(requestDto.getSenderId()).orElseThrow();
+        User recvUser = userRepository.findById(requestDto.getReceiverId()).orElseThrow();
+
+        // 친구 요청 보낸 쪽 처리
+        Friends friendsSend = Friends.builder()
+                .userId(sendUser)
+                .friendId(recvUser)
+                .build();
+        friendsRepository.save(friendsSend);
+        sendUser.getFriends().add(friendsSend);
+
+        // 친구 요청 받은 쪽 처리
+        Friends friendsRecv = Friends.builder()
+                .userId(recvUser)
+                .friendId(sendUser)
+                .build();
+        friendsRepository.save(friendsRecv);
+        recvUser.getFriends().add(friendsRecv);
+
+        ReqFriendDto reqFriendDto = reqFriendRepository.findBySenderId_IdAndReceiverId_Id(requestDto.getSenderId(), requestDto.getReceiverId()).orElseThrow();
+        reqFriendRepository.delete(reqFriendDto);
+
+        log.info("SendUser= {}", sendUser.getFriends().size());
+        log.info("RecvUser= {}", recvUser.getFriends().size());
+
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<?> getFriends(UUID userId) {
+        List<User> list = new ArrayList<User>();
+        for(Friends friends : userRepository.findById(userId).orElseThrow().getFriends()) {
+            list.add(userRepository.findById(friends.getFriendId().getId()).orElseThrow());
+        }
+        return ResponseEntity.ok()
+                .body(list);
+    }
 
 }
