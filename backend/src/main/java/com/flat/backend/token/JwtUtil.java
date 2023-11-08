@@ -28,8 +28,8 @@ import static com.flat.backend.common.BaseResponseStatus.*;
 @RequiredArgsConstructor
 public class JwtUtil {
     private final String secretKey = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
-    private final Long accessExpirationTime = Duration.ofMinutes(60).toMillis(); // 1분
-    private final Long refreshExpirationTime = Duration.ofHours(24).toMillis();  // 2분
+    private final Long accessExpirationTime = Duration.ofMinutes(60).toMillis(); // 60분
+    private final Long refreshExpirationTime = Duration.ofHours(24).toMillis();  // 24시간
 
     private final UserDetailServiceImpl userDetailService;
 

@@ -66,4 +66,12 @@ public class PropertyService {
         }
         return result;
     }
+
+    public List<Property> selectListAll() {
+        return propertyRepository.findAll();
+    }
+
+    public Property selectDetail(Long propertyId) {
+        return propertyRepository.findById(propertyId).orElseThrow();
+    }
 }

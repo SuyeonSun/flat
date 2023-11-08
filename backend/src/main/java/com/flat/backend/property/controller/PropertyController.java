@@ -14,25 +14,33 @@ import java.util.List;
 public class PropertyController {
     private final PropertyService propertyService;
 
-    // 매물 등록
+    // 내가 등록한 매물 등록
     @PostMapping("")
     public void register(@RequestParam String email, @RequestBody RegisterReqDto registerReqDto) {
         propertyService.register(email, registerReqDto);
     }
 
-    // 매물 삭제
+    // 내가 등록한 매물 삭제
     @PostMapping("/{propertyId}")
     public void delete(@PathVariable Long propertyId, @RequestParam String email) {
         propertyService.delete(propertyId, email);
     }
 
-    // 매물 리스트 조회
+    // 내가 등록한 매물 리스트 조회
     @GetMapping("")
     public List<Property> selectList(@RequestParam String email) {
         return propertyService.selectList(email);
     }
 
-    // 매물 상세 조회
+    // 전체 매물 조회
+    @GetMapping("/list")
+    public List<Property> selectListAll() {
+        return propertyService.selectListAll();
+    }
 
-    // 매물 수정
+    // 매물 상세 조회
+    @GetMapping("/detail/{propertyId}")
+    public Property selectDetail(@PathVariable Long propertyId) {
+        return propertyService.selectDetail(propertyId);
+    }
 }
