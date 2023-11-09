@@ -1,18 +1,18 @@
-package com.flat.backend.property.dto.req;
+package com.flat.backend.property.dto.res;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter // TODO
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class RegisterReqDto {
-    private String title;
-    private String image;
+@NoArgsConstructor
+public class DetailResDto {
     private String address;
+    private String image;
+    private String title;
     private String buildingName;
     private String floorInfo;
     private String lat;
@@ -29,4 +29,7 @@ public class RegisterReqDto {
     private int averageHeatPrice;
     private int area1;
     private int area2;
+
+    private String name;
+    private String email;
 }

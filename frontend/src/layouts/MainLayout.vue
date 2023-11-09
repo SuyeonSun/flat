@@ -24,7 +24,6 @@ const signOut = async () => {
 
 <template>
   <q-layout view="hHh lpR fFf">
-
     <q-header elevated class="bg-black text-white" height-hint="98">
       <q-toolbar class="q-pt-md" style="display: flex; justify-content: space-between; align-items: center">
         <div class="q-pl-md">

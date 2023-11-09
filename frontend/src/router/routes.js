@@ -1,35 +1,6 @@
-
 const routes = [
   {
-    path: '/',
-    component: null,
-    children: [
-      { path: '/my-page', component: () => import('pages/MyPage.vue')}
-    ]
-  },
-  {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '/test', component: () => import('pages/TestPage.vue')}
-    ]
-  },
-  {
-    path: '/',
-    component: null,
-    children: [
-      { path: `/chat/room/enter/:roomId`, component: () => import('pages/chat/ChatRoomDetail.vue')}
-    ]
-  },
-  {
-    path: '/',
-    component: null,
-    children: [
-      { path: '/chat/room', component: () => import('pages/chat/ChatRoomList.vue')}
-    ]
-  },
-  {
-    path: '/',
+    path: '',
     component: () => import('layouts/AuthLayout.vue'),
     children: [
       { path: '/sign-up', component: () => import('pages/sign-up/SignUpPage.vue')},
@@ -40,7 +11,12 @@ const routes = [
     path: '',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '/test', component: () => import('pages/TestPage.vue')}
+      { path: '/test', component: () => import('pages/TestPage.vue')},
+      { path: `/chat/room/enter/:roomId`, component: () => import('pages/chat/ChatRoomDetail.vue')},
+      { path: '/chat/room', component: () => import('pages/chat/ChatRoomList.vue')},
+      { path: '/property/register', component: () => import('pages/property/RegisterPropertyPage')},
+      { path: '/property/:propertyId', component: () => import('pages/property/PropertyDetailPage')},
+      { path: '/my-page', component: () => import('pages/MyPage.vue')}
     ]
   },
 
