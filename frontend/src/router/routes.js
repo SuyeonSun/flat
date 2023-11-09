@@ -33,7 +33,8 @@ const routes = [
     path: '',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '/test', component: () => import('pages/TestPage.vue')}
+      { path: '/test', component: () => import('pages/TestPage.vue')},
+      { path: '/property-detail/:propertyId', component: () => import('pages/property/PropertyDetail')}
     ]
   },
 
