@@ -30,7 +30,7 @@ const name = ref(undefined);
 const email = ref(undefined);
 
 onMounted(async () => {
-  // http://localhost:8080/property-detail/352
+  // http://localhost:8080/property/352
   const propertyId = $route.params.propertyId;
   await propertyStore.getPropertyDetail(propertyId);
 

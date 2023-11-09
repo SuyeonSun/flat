@@ -14,7 +14,8 @@ const routes = [
       { path: '/test', component: () => import('pages/TestPage.vue')},
       { path: `/chat/room/enter/:roomId`, component: () => import('pages/chat/ChatRoomDetail.vue')},
       { path: '/chat/room', component: () => import('pages/chat/ChatRoomList.vue')},
-      { path: '/property-detail/:propertyId', component: () => import('pages/property/PropertyDetail')}
+      { path: '/property/register', component: () => import('pages/property/RegisterPropertyPage')},
+      { path: '/property/:propertyId', component: () => import('pages/property/PropertyDetailPage')}
     ]
   },
 

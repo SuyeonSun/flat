@@ -14,6 +14,8 @@ export const usePropertyStore = defineStore('propertyStore', {
       } catch (error) {
         console.log("error");
       }
-    }
+    },
+
+
   },
 })
