@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterReqDto {
+    private String title;
     private String address;
     private String buildingName;
     private String floorInfo;

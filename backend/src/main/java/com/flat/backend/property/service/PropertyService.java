@@ -1,6 +1,8 @@
 package com.flat.backend.property.service;
 
 import com.flat.backend.common.BaseException;
+import com.flat.backend.common.BaseResponseStatus;
+import com.flat.backend.common.dto.BaseResponseDto;
 import com.flat.backend.property.dto.req.RegisterReqDto;
 import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.PropertyRepository;
@@ -9,6 +11,7 @@ import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +28,11 @@ public class PropertyService {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
 
-    public void register(String email, RegisterReqDto registerReqDto) {
+    public ResponseEntity<BaseResponseDto<?>> register(String email, RegisterReqDto registerReqDto) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
         Property property =  Property.builder()
                 .user(user)
+                .title(registerReqDto.getTitle())
                 .address(registerReqDto.getAddress())
                 .buildingName(registerReqDto.getBuildingName())
                 .floorInfo(registerReqDto.getFloorInfo())
@@ -49,33 +53,43 @@ public class PropertyService {
                 .build();
         propertyRepository.save(property);
         user.getProperties().add(property);
+        return ResponseEntity
+                .ok()
+                .body(new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage()));
     }
 
-    public void delete(Long propertyId, String email) {
+    public ResponseEntity<BaseResponseDto<?>> delete(Long propertyId, String email) {
         propertyRepository.deleteById(propertyId);
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
         List<Property> propertyList = user.getProperties();
         propertyList.removeIf(property -> property.getId() == propertyId);
+        return ResponseEntity
+                .ok()
+                .body(new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage()));
     }
 
-    public List<Property> selectList(String email) {
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectList(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
         List<Property> result = new ArrayList<>();
         for (Property property : user.getProperties()) {
             result.add(property);
             // log.info("property = {}", property.getUser().getId());
         }
-        return result;
+        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
+        return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public List<Property> selectListAll() {
-        return propertyRepository.findAll();
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll() {
+        List<Property> result = propertyRepository.findAll();
+        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
+        return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public DetailResDto selectDetail(Long propertyId) {
+    public ResponseEntity<BaseResponseDto<DetailResDto>> selectDetail(Long propertyId) {
         Property property = propertyRepository.findById(propertyId).orElseThrow();
         User user = property.getUser();
         DetailResDto detailResDto = DetailResDto.builder()
+                .title(property.getTitle())
                 .address(property.getAddress())
                 .buildingName(property.getBuildingName())
                 .floorInfo(property.getFloorInfo())
@@ -96,6 +110,7 @@ public class PropertyService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
-        return detailResDto;
+        BaseResponseDto<DetailResDto> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), detailResDto);
+        return ResponseEntity.ok().body(baseResponseDto);
     }
 }
