@@ -16,6 +16,12 @@ export const usePropertyStore = defineStore('propertyStore', {
       }
     },
 
-
+    async registerProperty(email, registerPayload) {
+      try {
+        await api.post(`/property?email=${email}`, registerPayload);
+      } catch (error) {
+        console.log("error");
+      }
+    }
   },
 })
