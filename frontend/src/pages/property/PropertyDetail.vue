@@ -39,7 +39,7 @@ onMounted(async () => {
   address.value = propertyDetail.value.address;
   buildingName.value = propertyDetail.value.buildingName;
   floorInfo.value = propertyDetail.value.floorInfo;
-  tagList.value = propertyDetail.value.tagList;
+  tagList.value = propertyDetail.value.tagList.split(" ");
   articleFeatureDesc.value = propertyDetail.value.articleFeatureDesc;
   tradeTypeName.value = propertyDetail.value.tradeTypeName;
   rentPrc.value = propertyDetail.value.rentPrc;
@@ -77,42 +77,44 @@ onMounted(async () => {
 
           <div class="q-mb-md">
             <!-- 주소 -->
-            <div>
-              {{ address }} &nbsp; {{ buildingName }} &nbsp; {{ floorInfo }}
+            <div class="text-subtitle1">
+              {{ address }}  ({{ buildingName }} {{ floorInfo }})
             </div>
             <!-- 태그 -->
-            <div>{{ tagList }}</div>
+            <div class="q-mb-sm">
+              <q-badge v-for="tag in tagList" outline align="middle" color="grey" class="q-mr-xs">
+                {{tag}}
+              </q-badge>
+            </div>
             <!-- 매물 특징 -->
             <div>{{ articleFeatureDesc }}</div>
           </div>
 
+          <hr/>
 
-          <div class="q-mb-md">
-            <!-- 거래 유형 -->
-            <div>{{ tradeTypeName }}</div>
-            <!-- 가격 -->
-            <div>{{ rentPrc }}</div>
+          <div class="q-my-md">
+            <!-- 거래 유형 및 가격 -->
+            <div>- 거래 유형 및 가격: {{ tradeTypeName }} ({{ rentPrc }})</div>
           </div>
 
           <div class="q-mb-md">
             <!-- 방향 -->
-            <div>{{ direction }}</div>
+            <div>- 방향 : {{ direction }}</div>
             <!-- 공급 면적 -->
-            <div>{{ area1 }}</div>
-            <div>{{ area2 }}</div>
+            <div>- 공급 / 전용 면적 : {{ area1 }} / {{ area2 }} (단위 : 제곱미터)</div>
           </div>
 
           <div class="q-mb-md">
             <!-- 개수 -->
-            <div>{{ roomCnt }}</div>
-            <div>{{ bathroomCnt }}</div>
+            <div>- 방 개수 : {{ roomCnt }}</div>
+            <div>- 화장실 개수 : {{ bathroomCnt }}</div>
           </div>
 
           <div class="q-mb-md">
             <!-- 비용 -->
-            <div>{{ averageCommonPrice }}</div>
-            <div>{{ averageEtcPrice }}</div>
-            <div>{{ averageHeatPrice }}</div>
+            <div>- 평균 관리비 : {{ averageCommonPrice }} (단위 : 만원)</div>
+            <div>- 전기 요금 : {{ averageEtcPrice }} (단위 : 만원)</div>
+            <div>- 난방비 : {{ averageHeatPrice }} (단위 : 만원)</div>
           </div>
         </q-card-section>
       </q-card>
