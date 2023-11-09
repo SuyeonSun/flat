@@ -67,7 +67,8 @@ onMounted(async () => {
           <h6 class="q-ma-none q-mb-md">{{ title }}</h6>
           <!-- 이미지 -->
           <q-img :src="image" no-native-menu class="q-mb-md">
-            <q-icon class="absolute all-pointer-events" size="32px" name="info" color="white" style="top: 8px; left: 8px">
+            <q-icon class="absolute all-pointer-events" size="32px" name="info" color="white"
+                    style="top: 8px; left: 8px">
               <q-tooltip>
                 매물 이미지
               </q-tooltip>
@@ -113,24 +114,26 @@ onMounted(async () => {
             <div>{{ averageEtcPrice }}</div>
             <div>{{ averageHeatPrice }}</div>
           </div>
-
-
         </q-card-section>
       </q-card>
 
       <div class="user-info-card">
         <q-card>
-          <q-card-section>
-            <div class="q-mb-sm">게시자: {{name}}</div>
-            <div>이메일: {{email}}</div>
-          </q-card-section>
+          <q-list bordered separator>
+            <q-item>
+              <q-item-section>게시자: {{ name }}</q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>이메일: {{ email }}</q-item-section>
+            </q-item>
+          </q-list>
         </q-card>
       </div>
     </div>
 
     <div>
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
-        <q-btn fab icon="headset" style="background-color: #F2C4CE;" />
+        <q-btn fab icon="headset" style="background-color: #F2C4CE;"/>
       </q-page-sticky>
     </div>
 
