@@ -25,6 +25,7 @@ const onSubmit = async () => {
     addressLat: "test lat value",
     addressLng: "test lng value",
   }
+
   const response = await authStore.signUp(signUpPayload);
   if (response) {
     Notify.create({
