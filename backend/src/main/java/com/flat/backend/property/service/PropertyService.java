@@ -2,6 +2,7 @@ package com.flat.backend.property.service;
 
 import com.flat.backend.common.BaseException;
 import com.flat.backend.property.dto.req.RegisterReqDto;
+import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.PropertyRepository;
 import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.user.repository.UserRepository;
@@ -71,7 +72,30 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
-    public Property selectDetail(Long propertyId) {
-        return propertyRepository.findById(propertyId).orElseThrow();
+    public DetailResDto selectDetail(Long propertyId) {
+        Property property = propertyRepository.findById(propertyId).orElseThrow();
+        User user = property.getUser();
+        DetailResDto detailResDto = DetailResDto.builder()
+                .address(property.getAddress())
+                .buildingName(property.getBuildingName())
+                .floorInfo(property.getFloorInfo())
+                .lat(property.getLat())
+                .lng(property.getLng())
+                .tradeTypeName(property.getTradeTypeName())
+                .articleFeatureDesc(property.getArticleFeatureDesc())
+                .tagList(property.getTagList())
+                .rentPrc(property.getRentPrc())
+                .roomCnt(property.getRoomCnt())
+                .bathroomCnt(property.getBathroomCnt())
+                .direction(property.getDirection())
+                .averageCommonPrice(property.getAverageCommonPrice())
+                .averageEtcPrice(property.getAverageEtcPrice())
+                .averageHeatPrice(property.getAverageHeatPrice())
+                .area1(property.getArea1())
+                .area2(property.getArea2())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
+        return detailResDto;
     }
 }

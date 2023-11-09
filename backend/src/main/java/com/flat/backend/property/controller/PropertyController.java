@@ -1,6 +1,7 @@
 package com.flat.backend.property.controller;
 
 import com.flat.backend.property.dto.req.RegisterReqDto;
+import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.property.service.PropertyService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class PropertyController {
 
     // 매물 상세 조회
     @GetMapping("/detail/{propertyId}")
-    public Property selectDetail(@PathVariable Long propertyId) {
+    public DetailResDto selectDetail(@PathVariable Long propertyId) {
         return propertyService.selectDetail(propertyId);
     }
 }
