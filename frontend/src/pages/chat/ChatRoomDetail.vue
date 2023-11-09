@@ -25,7 +25,7 @@ const sendMsg = () => {
   <div class="q-pa-md q-gutter-sm">
 <!--    <q-btn label="Click me" color="primary" @click="layout = true" />-->
 
-    <q-dialog v-model="chatStore.isDialog" persistent>
+    <q-dialog v-model="chatStore.$state.isDialog" persistent>
       <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
         <q-header class="bg-primary">
           <q-toolbar>

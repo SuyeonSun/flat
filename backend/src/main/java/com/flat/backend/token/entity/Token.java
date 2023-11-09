@@ -1,5 +1,6 @@
 package com.flat.backend.token.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.user.repository.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +21,7 @@ public class Token {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "token")
     private User user;
 }

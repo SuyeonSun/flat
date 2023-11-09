@@ -1,7 +1,7 @@
 <script setup>
 
 import {useChatStore} from "stores/chat/chat-store";
-import dialogTest from "pages/chat/ChatRoomDetail.vue";
+import chatRoom from "pages/chat/ChatRoomDetail.vue";
 
 const chatStore = useChatStore();
 
@@ -20,9 +20,8 @@ const chatStore = useChatStore();
       </div>
     </div>
   </div>
-
   <template v-if="chatStore.$state.isDialog">
-    <dialog-test/>
+    <chat-room/>
   </template>
 </template>
 

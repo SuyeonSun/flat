@@ -59,6 +59,10 @@ public class AuthService {
                 .addressLng(signUpDto.getAddressLng())
                 .build();
 
+        if(user.getProfile() == null) {
+            user.setProfile("https://flat-bucket.s3.ap-northeast-2.amazonaws.com/0ecd56b8-0b4c-4072-92ff-bf4e91c49a21.png");
+        }
+
         userRepository.save(user);
         return ResponseEntity
                 .ok()

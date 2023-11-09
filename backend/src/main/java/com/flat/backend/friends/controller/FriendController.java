@@ -1,5 +1,6 @@
 package com.flat.backend.friends.controller;
 
+import com.flat.backend.friends.dto.FriendDeleteDto;
 import com.flat.backend.friends.dto.RequestDto;
 import com.flat.backend.friends.dto.RequestUUIDDto;
 import com.flat.backend.friends.service.FriendService;
@@ -51,11 +52,31 @@ public class FriendController {
     }
 
     @ResponseBody
+    @RequestMapping("/reject")
+    public ResponseEntity<?> rejectRequest(@RequestBody RequestDto requestDto) {
+        return friendService.rejectRequest(requestDto);
+    }
+
+    @ResponseBody
+    @RequestMapping("/remove")
+    public ResponseEntity<?> removeRequest(@RequestBody RequestDto requestDto) {
+        return friendService.removeRequest(requestDto);
+    }
+
+    @ResponseBody
     @RequestMapping("/list")
     public ResponseEntity<?> getFriendList(@RequestBody RequestUUIDDto requestUUIDDto) {
         log.info("userId = {}", requestUUIDDto.getUserId());
         return friendService.getFriends(requestUUIDDto.getUserId());
     }
+
+    @ResponseBody
+    @DeleteMapping
+    public ResponseEntity<?> deleteFriend(@RequestBody FriendDeleteDto friendDeleteDto) {
+        log.info("friendDeleteDto = {}", friendDeleteDto);
+        return friendService.removeFriend(friendDeleteDto);
+    }
+
 
 
 }

@@ -7,6 +7,7 @@ import com.flat.backend.friends.repository.entity.Friends;
 import com.flat.backend.friends.repository.entity.ReqFriendDto;
 import com.flat.backend.token.entity.Token;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class User {
     // TODO: 탈퇴한 회원을 위한 active 처리 구현이 필요하다.
     // private String active;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "token_id")
     private Token token;
