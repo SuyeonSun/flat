@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RegisterReqDto {
     private String title;
+    private String image;
     private String address;
     private String buildingName;
     private String floorInfo;

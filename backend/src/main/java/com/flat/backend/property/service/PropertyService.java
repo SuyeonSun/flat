@@ -33,6 +33,7 @@ public class PropertyService {
         Property property =  Property.builder()
                 .user(user)
                 .title(registerReqDto.getTitle())
+                .image(registerReqDto.getImage())
                 .address(registerReqDto.getAddress())
                 .buildingName(registerReqDto.getBuildingName())
                 .floorInfo(registerReqDto.getFloorInfo())
@@ -90,6 +91,7 @@ public class PropertyService {
         User user = property.getUser();
         DetailResDto detailResDto = DetailResDto.builder()
                 .title(property.getTitle())
+                .image(property.getImage())
                 .address(property.getAddress())
                 .buildingName(property.getBuildingName())
                 .floorInfo(property.getFloorInfo())

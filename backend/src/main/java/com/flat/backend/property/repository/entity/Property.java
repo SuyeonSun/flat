@@ -18,6 +18,7 @@ public class Property {
     @Column(name = "property_id")
     private Long id;
     private String title;
+    private String image;
     private String address;
     @Column(name = "building_name")
     private String buildingName;
