@@ -118,6 +118,20 @@ public class FriendService{
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<?> rejectRequest(RequestDto requestDto) {
+        ReqFriendDto reqFriendDto = reqFriendRepository.findBySenderId_IdAndReceiverId_Id(requestDto.getSenderId(), requestDto.getReceiverId()).orElseThrow();
+        reqFriendRepository.delete(reqFriendDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<?> removeRequest(RequestDto requestDto) {
+        ReqFriendDto reqFriendDto = reqFriendRepository.findBySenderId_IdAndReceiverId_Id(requestDto.getSenderId(), requestDto.getReceiverId()).orElseThrow();
+        reqFriendRepository.delete(reqFriendDto);
+
+        return ResponseEntity.ok().build();
+    }
+
     public ResponseEntity<?> getFriends(UUID userId) {
         List<User> list = new ArrayList<User>();
         for(Friends friends : userRepository.findById(userId).orElseThrow().getFriends()) {

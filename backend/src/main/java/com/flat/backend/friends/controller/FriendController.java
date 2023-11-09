@@ -52,6 +52,18 @@ public class FriendController {
     }
 
     @ResponseBody
+    @RequestMapping("/reject")
+    public ResponseEntity<?> rejectRequest(@RequestBody RequestDto requestDto) {
+        return friendService.rejectRequest(requestDto);
+    }
+
+    @ResponseBody
+    @RequestMapping("/remove")
+    public ResponseEntity<?> removeRequest(@RequestBody RequestDto requestDto) {
+        return friendService.removeRequest(requestDto);
+    }
+
+    @ResponseBody
     @RequestMapping("/list")
     public ResponseEntity<?> getFriendList(@RequestBody RequestUUIDDto requestUUIDDto) {
         log.info("userId = {}", requestUUIDDto.getUserId());

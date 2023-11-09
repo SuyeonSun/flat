@@ -7,6 +7,7 @@ import com.flat.backend.friends.repository.entity.Friends;
 import com.flat.backend.friends.repository.entity.ReqFriendDto;
 import com.flat.backend.token.entity.Token;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;

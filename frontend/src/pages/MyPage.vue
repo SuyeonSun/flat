@@ -2,6 +2,8 @@
 import { ref, watch, onMounted } from 'vue';
 import {useAuthStore} from "stores/auth/auth-store";
 import {useUserStore} from "stores/user/user-store";
+import friendRequest from "pages/FriendRequest.vue";
+import addForm from "pages/FriendAddForm.vue"
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
@@ -57,22 +59,34 @@ const removeFriend = (friendId) => {
           </q-tab-panel>
 
           <q-tab-panel name="friends">
-            <div class="q-pa-md row items-start q-gutter-md">
-              <q-card v-for="friend in userStore.$state.friends" :key="friend" class="my-card">
-                <img src="https://flat-bucket.s3.ap-northeast-2.amazonaws.com/0ecd56b8-0b4c-4072-92ff-bf4e91c49a21.png">
-                <q-card-section>
-                  <div class="text-subtitle2">name : {{friend.name}}</div>
-                  <div class="text-subtitle2">email : {{friend.email}}</div>
-                  <div class="text-subtitle2">address : {{friend.address === null ? 'null' : friend.address}}</div>
-                  <q-btn @click="removeFriend(friend.id)">친구 삭제</q-btn>
-                </q-card-section>
-              </q-card>
+            <div class="row justify-between">
+              <div class="q-pa-md row items-start q-gutter-md">
+                <q-card v-for="friend in userStore.$state.friends" :key="friend" class="my-card">
+                  <img :src="friend.profile">
+                  <q-card-section>
+                    <div class="text-subtitle2">name : {{friend.name}}</div>
+                    <div class="text-subtitle2">email : {{friend.email}}</div>
+                    <div class="text-subtitle2">address : {{friend.address === null ? 'null' : friend.address}}</div>
+                    <q-btn @click="removeFriend(friend.id)" style="margin-top: 5px">친구 삭제</q-btn>
+                  </q-card-section>
+                </q-card>
+              </div>
+              <div>
+                <q-btn style="margin-right: 10px" @click="userStore.viewAddForm">친구 추가</q-btn>
+                <q-btn @click="userStore.getFriendRequest(authStore.email)">요청 확인</q-btn>
+              </div>
             </div>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
     </div>
   </div>
+  <template v-if="userStore.$state.addFormDialog">
+    <add-form/>
+  </template>
+  <template v-if="userStore.$state.reqDialog">
+    <friend-request/>
+  </template>
 </template>
 
 <style scoped>
