@@ -77,7 +77,7 @@ const register = async () => {
     <div class="row items-center q-mb-md">
       <div class="col-2">이미지</div>
       <q-file
-        class="input"
+        class="col-4"
         v-model="file"
         label="Pick one file"
         outlined
@@ -142,7 +142,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">거래 유형</div>
+      <div class="col-2">거래 유형</div> <!-- TODO: select box: 월세 전세 매매-->
       <q-input
         class="col-4"
         v-model="tradeTypeName"
@@ -164,7 +164,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">방향</div>
+      <div class="col-2">방향</div> <!-- TODO: select box: 남향, 남동향, 남서향, 동향, 서향, 북향 -->
       <q-input
         class="col-4"
         v-model="direction"
@@ -175,7 +175,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">전용 면적</div>
+      <div class="col-2">전용 면적</div> <!-- TODO: 숫자로 변경-->
       <q-input
         class="col-4"
         v-model="area1"
@@ -186,7 +186,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">공용 면적</div>
+      <div class="col-2">공용 면적</div> <!-- TODO: 숫자로 변경-->
       <q-input
         class="col-4"
         v-model="area2"
@@ -197,7 +197,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">방 개수</div>
+      <div class="col-2">방 개수</div> <!-- TODO: 숫자로 변경-->
       <q-input
         class="col-4"
         v-model="roomCnt"
@@ -208,7 +208,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">화장실 개수</div>
+      <div class="col-2">화장실 개수</div> <!-- TODO: 숫자로 변경-->
       <q-input
         class="col-4"
         v-model="bathroomCnt"
@@ -219,7 +219,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">관리비</div>
+      <div class="col-2">관리비</div> <!-- TODO: 숫자로 변경-->
       <q-input
         class="col-4"
         v-model="averageCommonPrice"
@@ -230,7 +230,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">전기 요금</div>
+      <div class="col-2">전기 요금</div> <!-- TODO: 숫자로 변경-->
       <q-input
         class="col-4"
         v-model="averageEtcPrice"
@@ -241,7 +241,7 @@ const register = async () => {
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">난방비</div>
+      <div class="col-2">난방비</div> <!-- TODO: 숫자로 변경-->
       <q-input
         class="col-4"
         v-model="averageHeatPrice"
@@ -251,7 +251,9 @@ const register = async () => {
       />
     </div>
 
-    <q-btn outline dense label="등록" @click="register" class="register-btn"/>
+    <div class="row items-center justify-end">
+      <q-btn outline dense label="등록" @click="register" class="register-btn"/>
+    </div>
   </q-page>
 </template>
 
