@@ -32,6 +32,9 @@ export default boot(({ app, store, router }) => {
     // refreshToken 만료 시 sign-in 화면으로 redirect
     if (res?.data?.code === 2101) {
       router.push("/sign-in");
+      authStore.setAccessToken(undefined);
+      authStore.setEmail(undefined);
+      authStore.setName(undefined);
     }
     return res;
   }, function (error) {
