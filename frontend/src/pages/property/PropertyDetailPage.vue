@@ -34,9 +34,10 @@ const averageHeatPrice = ref(undefined);
 
 const name = ref(undefined);
 const email = ref(undefined);
+const phoneNumber = ref(undefined);
 
 onMounted(async () => {
-  // http://localhost:8080/property/352
+  // http://localhost:8080/property/502
   const propertyId = $route.params.propertyId;
   await propertyStore.getPropertyDetail(propertyId);
 
@@ -60,6 +61,7 @@ onMounted(async () => {
 
   name.value = propertyDetail.value.name;
   email.value = propertyDetail.value.email;
+  phoneNumber.value = propertyDetail.value.phoneNumber;
 })
 
 </script>
@@ -133,6 +135,9 @@ onMounted(async () => {
             </q-item>
             <q-item>
               <q-item-section>이메일: {{ email }}</q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>전화번호: {{ phoneNumber }}</q-item-section>
             </q-item>
           </q-list>
         </q-card>

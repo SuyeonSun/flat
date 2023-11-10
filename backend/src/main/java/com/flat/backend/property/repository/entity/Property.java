@@ -51,7 +51,6 @@ public class Property {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-
     @JsonIgnore
     User user;
 }

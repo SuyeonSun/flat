@@ -1,29 +1,50 @@
 <script setup>
 import {ref} from "vue";
-import {useAuthStore} from "stores/auth/auth-store";
-
 import {useRouter} from "vue-router";
+import {useAuthStore} from "stores/auth/auth-store";
+import {useS3Store} from "stores/common/s3-store";
 import {Notify} from "quasar";
+import SearchAddressDialog from "components/property/SearchAddressDialog";
 
 const authStore = useAuthStore();
+const s3Store = useS3Store();
+
+const $router = useRouter();
 
 const email = ref(undefined);
 const password = ref(undefined);
 const name = ref(undefined);
 const profile = ref(undefined);
-const address = ref(undefined);
+const phoneNumber = ref(undefined);
 
-const $router = useRouter();
+const selectedAddress = ref({
+  address: undefined,
+  lat: undefined,
+  lng: undefined
+})
+
+const updateSelectedAddress = (value) => {
+  selectedAddress.value.address = value.address;
+  selectedAddress.value.lat = value.lat;
+  selectedAddress.value.lng = value.lng;
+}
+
+const isOpenSearchAddressDialog = ref(false);
+const handleSearchAddressDialog = () => {
+  isOpenSearchAddressDialog.value = !isOpenSearchAddressDialog.value;
+}
 
 const onSubmit = async () => {
+  const fileUrl = await s3Store.uploadFile(profile.value);
   const signUpPayload = {
     email: email.value,
     password: password.value,
     name: name.value,
-    profile: profile.value,
-    address: address.value,
-    addressLat: "test lat value",
-    addressLng: "test lng value",
+    profile: fileUrl,
+    phoneNumber: phoneNumber.value,
+    address: selectedAddress.value.address,
+    addressLat: selectedAddress.value.lat,
+    addressLng: selectedAddress.value.lng
   }
 
   const response = await authStore.signUp(signUpPayload);
@@ -40,28 +61,27 @@ const onSubmit = async () => {
       })
   }
 }
-
 </script>
 
 <template>
   <div class="main-container">
-    <div class="text-center">
-      <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
-        <span class="logo-font">F</span>
-        <span class="logo-font">L</span>
-        <q-icon name="house" class="logo-icon"/>
-        <span class="logo-font">T</span>
-      </h5>
-    </div>
-
     <div class="form-outer-container">
       <q-form
         @submit="onSubmit"
         class="form-container"
       >
+        <div>
+          <h5 class="q-ma-none" style="font-weight: bold">
+            <span class="logo-font">F</span>
+            <span class="logo-font">L</span>
+            <q-icon name="house" class="logo-icon"/>
+            <span class="logo-font">T</span>
+          </h5>
+        </div>
+        <h5 class="text-bold q-mt-none">계정 생성에 필요한 정보를 입력해주세요.</h5>
         <q-input
           v-model="email"
-          label="Email"
+          label="이메일"
           dense
           outlined
           class="q-mb-md"
@@ -69,7 +89,7 @@ const onSubmit = async () => {
 
         <q-input
           v-model="name"
-          label="Name"
+          label="이름"
           dense
           outlined
           class="q-mb-md"
@@ -77,38 +97,54 @@ const onSubmit = async () => {
 
         <q-input
           v-model="password"
-          label="Password"
+          label="비밀번호"
           dense
           outlined
           class="q-mb-md"
         />
 
-
-        <q-input
+        <q-file
           v-model="profile"
-          label="Profile Image"
+          label="프로필"
+          outlined
+          dense
+          class="q-mb-md"
+        >
+          <template v-slot:append>
+            <q-icon name="apple"/>
+          </template>
+        </q-file>
+
+        <q-input
+          class="q-mb-md"
+          v-model="selectedAddress.address"
+          @click="handleSearchAddressDialog"
           dense
           outlined
-          class="q-mb-md"
+          readonly
+          label="주소"
         />
 
         <q-input
-          v-model="address"
-          label="Address"
+          v-model="phoneNumber"
+          label="전화번호"
           dense
           outlined
-          class="q-mb-md"
         />
 
-        <q-btn label="회원가입" type="submit" class="full-width q-mb-md submit-btn"/>
+        <q-btn label="회원가입" type="submit" class="full-width q-mt-xl q-mb-lg submit-btn"/>
 
         <div class="text-subtitle1 text-center q-ma-none text">
           이미 계정이 있으신가요? | <a href="/sign-in" style="text-decoration: none;" class="text"> 로그인 </a>
         </div>
       </q-form>
     </div>
-
   </div>
+  <search-address-dialog
+    :isOpenSearchAddressDialog="isOpenSearchAddressDialog"
+    @handleSearchAddressDialog="handleSearchAddressDialog"
+    @updateSelectedAddress="updateSelectedAddress"
+  ></search-address-dialog>
 </template>
 
 <style scoped>
@@ -116,7 +152,7 @@ const onSubmit = async () => {
   padding: 80px;
   background-color: white;
   border-radius: 10px;
-  width: 50%;
+  width: 60%;
 }
 
 .logo-font {
@@ -138,10 +174,11 @@ const onSubmit = async () => {
 }
 
 .submit-btn {
-  background-color: #F2C4CE;
+  background-color: #117CE9;
+  color: #FFFFFF
 }
 
 .text {
-  color: #4F4F51;
+  color: #444444;
 }
 </style>

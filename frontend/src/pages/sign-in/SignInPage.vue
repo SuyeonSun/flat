@@ -43,7 +43,6 @@ const onSubmit = async () => {
         <span class="logo-font">T</span>
       </h5>
     </div>
-
     <div class="form-outer-container">
       <q-form
         @submit="onSubmit"
@@ -51,7 +50,7 @@ const onSubmit = async () => {
       >
         <q-input
           v-model="email"
-          label="Email"
+          label="이메일"
           dense
           outlined
           class="q-mb-md"
@@ -59,7 +58,7 @@ const onSubmit = async () => {
 
         <q-input
           v-model="password"
-          label="Password"
+          label="비밀번호"
           dense
           outlined
           class="q-mb-md"
@@ -81,7 +80,7 @@ const onSubmit = async () => {
   padding: 80px;
   background-color: white;
   border-radius: 10px;
-  width: 40%;
+  width: 60%;
 }
 
 .form-outer-container {

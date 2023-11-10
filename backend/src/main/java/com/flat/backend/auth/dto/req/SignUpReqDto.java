@@ -11,4 +11,5 @@ public class SignUpReqDto {
     private String addressLat;
     private String addressLng;
     private String password;
+    private String phoneNumber;
 }

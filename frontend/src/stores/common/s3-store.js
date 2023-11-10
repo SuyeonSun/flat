@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import {api} from "boot/api";
+import {authApi} from "boot/auth-api";
 
-export const useCommonStore = defineStore('commonStore', {
+export const useS3Store = defineStore('s3Store', {
   state: () => ({
   }),
 
@@ -10,7 +10,7 @@ export const useCommonStore = defineStore('commonStore', {
       try {
         const formData = new FormData();
         formData.append("file", file);
-        const response = await api.post('/user/upload', formData, {
+        const response = await authApi.post('/user/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         return response.data;

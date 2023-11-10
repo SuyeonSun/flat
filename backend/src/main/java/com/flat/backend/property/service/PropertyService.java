@@ -111,6 +111,7 @@ public class PropertyService {
                 .area2(property.getArea2())
                 .name(user.getName())
                 .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
                 .build();
         BaseResponseDto<DetailResDto> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), detailResDto);
         return ResponseEntity.ok().body(baseResponseDto);
