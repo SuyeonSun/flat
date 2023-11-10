@@ -17,11 +17,8 @@ const directionOptions = ["남향", "남동향", "남서향", "동향", "서향"
 
 const title = ref(undefined);
 const file = ref(undefined);
-const address = ref(undefined);
 const buildingName = ref(undefined);
 const floorInfo = ref(undefined);
-const lat = ref(undefined);
-const lng = ref(undefined);
 const tagList = ref(undefined);
 const articleFeatureDesc = ref(undefined);
 const tradeTypeName = ref(tradeTypeOptions[0]);
@@ -35,6 +32,22 @@ const averageCommonPrice = ref(0);
 const averageEtcPrice = ref(0);
 const averageHeatPrice = ref(0);
 
+const selectedAddress = ref({
+  address: undefined,
+  lat: undefined,
+  lng: undefined
+})
+// const address = ref(undefined);
+// const lat = ref(undefined);
+// const lng = ref(undefined);
+
+const updateSelectedAddress = (value) => {
+  selectedAddress.value.address = value.address;
+  selectedAddress.value.lat = value.lat;
+  selectedAddress.value.lng = value.lng;
+
+}
+
 const isOpenSearchAddressDialog = ref(false);
 const handleSearchAddressDialog = () => {
   isOpenSearchAddressDialog.value = !isOpenSearchAddressDialog.value;
@@ -45,11 +58,8 @@ const register = async () => {
   const registerPayload = {
     title: title.value,
     image: fileUrl,
-    address: address.value, // TODO
     buildingName: buildingName.value,
     floorInfo: floorInfo.value,
-    lat: lat.value, // TODO
-    lng: lng.value, // TODO
     tagList: tagList.value,
     articleFeatureDesc: articleFeatureDesc.value,
     tradeTypeName: tradeTypeName.value,
@@ -61,7 +71,10 @@ const register = async () => {
     bathroomCnt: bathroomCnt.value,
     averageCommonPrice: averageCommonPrice.value,
     averageEtcPrice: averageEtcPrice.value,
-    averageHeatPrice: averageHeatPrice.value
+    averageHeatPrice: averageHeatPrice.value,
+    address: selectedAddress.value.address, // TODO
+    lat: selectedAddress.value.lat, // TODO
+    lng: selectedAddress.value.lng, // TODO
   }
   await propertyStore.registerProperty(email.value, registerPayload);
   // TODO: 추후 목록 페이지로 이동
@@ -108,7 +121,7 @@ const register = async () => {
       <div class="col-2">주소</div>
       <q-input
         class="col-4"
-        v-model="address"
+        v-model="selectedAddress.address"
         @click="handleSearchAddressDialog"
         dense
         outlined
@@ -261,6 +274,7 @@ const register = async () => {
     <search-address-dialog
       :isOpenSearchAddressDialog="isOpenSearchAddressDialog"
       @handleSearchAddressDialog="handleSearchAddressDialog"
+      @updateSelectedAddress="updateSelectedAddress"
     ></search-address-dialog>
   </q-page>
 </template>

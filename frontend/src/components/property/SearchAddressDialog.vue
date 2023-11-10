@@ -4,26 +4,49 @@ import {useGeocodeStore} from "stores/common/geocode-store";
 import {storeToRefs} from "pinia";
 
 const props = defineProps(['isOpenSearchAddressDialog']);
-const emit = defineEmits(['handleSearchAddressDialog'])
+const emit = defineEmits(['handleSearchAddressDialog', 'updateSelectedAddress'])
 
 const closeDialog = () => {
   emit('handleSearchAddressDialog');
+  addresses.value = [];
+  search.value = "";
 }
 
 const geocodeStore = useGeocodeStore();
 
 const {addresses} = storeToRefs(geocodeStore);
 
-const search = ref(undefined);
+const search = ref("");
 
 watch(() => search.value,  (newVal, oldVal) => {
+  if (newVal.length === 0) {
+    addresses.value = [];
+  }
+
   if (newVal.length >= 2) {
      geocodeStore.searchAddress(newVal);
   }
 })
 
-// addresses.length > 0
-// addresses[0].roadAddress, addresses[0].x, addresses[0].y
+const selectedAddress = ref({
+  lat: undefined,
+  lng: undefined,
+  address: undefined
+});
+
+const clickAddress = (address) => {
+  // 위도 lat address.y
+  // 경도 lng address.x
+  // address.roadAddress
+  selectedAddress.value.lat = address.y;
+  selectedAddress.value.lng = address.x;
+  selectedAddress.value.address = address.roadAddress;
+}
+
+const clickOkBtn = () => {
+  emit('updateSelectedAddress', selectedAddress.value);
+  closeDialog();
+}
 </script>
 
 <template>
@@ -42,12 +65,19 @@ watch(() => search.value,  (newVal, oldVal) => {
           </template>
         </q-input>
 
-        {{addresses}}
+        <q-list bordered seperator v-if="addresses?.length > 0">
+          <q-item v-for="(address) in addresses" clickable v-ripple @click="clickAddress(address)">
+            <q-item-section>
+              <q-item-label>{{address.roadAddress}}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+        <div v-else class="q-mt-md q-ml-xs"> 검색 결과가 없습니다. </div>
 
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn color="primary" label="OK" @click="closeDialog"/>
-        <q-btn color="primary" label="Cancel"/>
+        <q-btn color="primary" label="확인" @click="clickOkBtn"/>
+        <q-btn color="primary" label="취소" @click="closeDialog"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
