@@ -43,7 +43,6 @@ const onSubmit = async () => {
         <span class="logo-font">T</span>
       </h5>
     </div>
-
     <div class="form-outer-container">
       <q-form
         @submit="onSubmit"
@@ -81,7 +80,7 @@ const onSubmit = async () => {
   padding: 80px;
   background-color: white;
   border-radius: 10px;
-  width: 40%;
+  width: 60%;
 }
 
 .form-outer-container {

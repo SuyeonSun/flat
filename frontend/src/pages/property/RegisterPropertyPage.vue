@@ -4,6 +4,7 @@ import {useS3Store} from "stores/common/s3-store";
 import {usePropertyStore} from "stores/property/property-store";
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
+import SearchAddressDialog from "components/property/SearchAddressDialog";
 
 const authStore = useAuthStore();
 const s3Store = useS3Store();
@@ -34,17 +35,21 @@ const averageCommonPrice = ref(0);
 const averageEtcPrice = ref(0);
 const averageHeatPrice = ref(0);
 
+const isOpenSearchAddressDialog = ref(false);
+const handleSearchAddressDialog = () => {
+  isOpenSearchAddressDialog.value = !isOpenSearchAddressDialog.value;
+}
 
 const register = async () => {
   const fileUrl = await s3Store.uploadFile(file.value);
   const registerPayload = {
     title: title.value,
     image: fileUrl,
-    address: address.value,
+    address: address.value, // TODO
     buildingName: buildingName.value,
     floorInfo: floorInfo.value,
-    lat: lat.value,
-    lng: lng.value,
+    lat: lat.value, // TODO
+    lng: lng.value, // TODO
     tagList: tagList.value,
     articleFeatureDesc: articleFeatureDesc.value,
     tradeTypeName: tradeTypeName.value,
@@ -87,7 +92,8 @@ const register = async () => {
       />
     </div>
 
-    <!-- TODO: 추후 API 연동 필요 -->
+    <!-- TODO =========================== -->
+    <!--
     <div class="row items-center q-mb-md">
       <div class="col-2">주소</div>
       <q-input
@@ -95,6 +101,18 @@ const register = async () => {
         v-model="address"
         dense
         outlined
+      />
+    </div>
+    -->
+    <div class="row items-center q-mb-md">
+      <div class="col-2">주소</div>
+      <q-input
+        class="col-4"
+        v-model="address"
+        @click="handleSearchAddressDialog"
+        dense
+        outlined
+        readonly
       />
     </div>
 
@@ -239,6 +257,11 @@ const register = async () => {
     <div class="row items-center justify-end">
       <q-btn outline dense label="등록" @click="register" class="register-btn"/>
     </div>
+
+    <search-address-dialog
+      :isOpenSearchAddressDialog="isOpenSearchAddressDialog"
+      @handleSearchAddressDialog="handleSearchAddressDialog"
+    ></search-address-dialog>
   </q-page>
 </template>
 
