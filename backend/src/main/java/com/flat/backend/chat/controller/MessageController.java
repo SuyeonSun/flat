@@ -1,17 +1,18 @@
 package com.flat.backend.chat.controller;
 
-import com.flat.backend.chat.model.ChatMessage;
+import com.flat.backend.chat.dto.req.MessageDto;
+import com.flat.backend.chat.entity.ChatMessage;
 import com.flat.backend.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MessageController {
@@ -19,18 +20,20 @@ public class MessageController {
     private final SimpMessageSendingOperations sendingOperations;
     private final ChatService chatService;
     @MessageMapping("/chat/message")
-    public void enter(ChatMessage message) {
-        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-            message.setMessage(message.getSender()+"님이 입장하였습니다.");
-        }
+    public void enter(MessageDto message) {
+//        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
+//            message.setMessage(message.getSender()+"님이 입장하였습니다.");
+//        }
+
         System.out.println("enter()........");
         chatService.saveMessage(message.getRoomId(), message);
-        sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(),message);
+
+        sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(), message);
     }
 
-    @GetMapping("/chat/messages/{roomId}")
+    @PostMapping("/chat/messages")
     @ResponseBody
-    public List<ChatMessage> getPrevMessages(@PathVariable Long roomId) {
-        return chatService.findRoomById(roomId).getMessages();
+    public ResponseEntity<?> getPrevMessages(@RequestBody Map<String, Long> roomIdMap) {
+        return chatService.getPrevMessages(roomIdMap.get("roomId"));
     }
 }

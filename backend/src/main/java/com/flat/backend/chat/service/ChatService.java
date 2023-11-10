@@ -1,11 +1,15 @@
 package com.flat.backend.chat.service;
 
 import com.flat.backend.chat.dto.req.MakeRoomDto;
-import com.flat.backend.chat.model.ChatMessage;
-import com.flat.backend.chat.model.ChatRoom;
-import jakarta.annotation.PostConstruct;
+import com.flat.backend.chat.dto.req.MessageDto;
+import com.flat.backend.chat.entity.ChatMessage;
+import com.flat.backend.chat.entity.ChatRoom;
+import com.flat.backend.chat.repository.ChatMessageRepository;
+import com.flat.backend.chat.repository.ChatRoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,55 +19,86 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private Long id = 0L;
-    private Map<Long, ChatRoom> chatRooms;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
-    @PostConstruct
-    //의존관게 주입완료되면 실행되는 코드
-    private void init() {
-        chatRooms = new LinkedHashMap<>();
-    }
 
-    //채팅방 불러오기
-    public List<ChatRoom> findAllRoom() {
-        //채팅방 최근 생성 순으로 반환
-        List<ChatRoom> result = new ArrayList<>(chatRooms.values());
-        Collections.reverse(result);
-
-        return result;
-    }
-
-    //채팅방 하나 불러오기
-    public ChatRoom findById(String roomId) {
-        return chatRooms.get(roomId);
-    }
-
-    public String findRoomBySenderAndReceiver(MakeRoomDto makeRoomDto) {
-        String res = "";
-        for(ChatRoom room : chatRooms.values()) {
-            if(room.getSender().equals(makeRoomDto.getSender()) && room.getReceiver().equals(makeRoomDto.getReceiver())) {
-                res = room.getRoomId().toString();
-                System.out.println("roomId = " + room.getRoomId());
-                break;
-            }
+    //채팅방 정보 가져오기
+    public ResponseEntity<?> getRoom(Long roomId) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
+        if(chatRoom.isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
-        return res;
+
+        return ResponseEntity.ok()
+                .body(chatRoom.get());
     }
+
+    public ResponseEntity<?> findRoom(MakeRoomDto makeRoomDto) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findBySenderAndReceiver(makeRoomDto.getSender(), makeRoomDto.getReceiver());
+        if(chatRoom.isEmpty()) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.ok()
+                .body(chatRoom.get());
+    }
+
+    public ResponseEntity<?> findRooms(String user) {
+        Optional<List<ChatRoom>> chatRooms = chatRoomRepository.findByUser(user);
+
+        if(chatRooms.isEmpty()) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.ok()
+                .body(chatRooms.get());
+
+    }
+
+
 
     //채팅방 생성
-    public ChatRoom createRoom(MakeRoomDto makeRoomDto) {
-        ChatRoom chatRoom = ChatRoom.create(++this.id, makeRoomDto.getSender(), makeRoomDto.getReceiver());
-        chatRooms.put(chatRoom.getRoomId(), chatRoom);
-        return chatRoom;
+    public ResponseEntity<?> createRoom(MakeRoomDto makeRoomDto) {
+        ChatRoom chatRoom = ChatRoom.builder()
+                .sender(makeRoomDto.getSender())
+                .receiver(makeRoomDto.getReceiver())
+                .build();
+
+        chatRoomRepository.save(chatRoom);
+        return ResponseEntity.ok()
+                .body(chatRoom);
     }
 
-    public void saveMessage(Long roomId, ChatMessage message) {
-        ChatRoom room = chatRooms.get(roomId);
-        List<ChatMessage> messages = room.getMessages();
-        messages.add(message);
+    @Transactional
+    public void saveMessage(Long roomId, MessageDto message) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
+        if(chatRoom.isEmpty()) {
+            return;
+        }
+
+        ChatMessage chatMessage = ChatMessage.builder()
+                .type(message.getType())
+                .sender(message.getSender())
+                .message(message.getMessage())
+                .date(message.getDate())
+                .chatRoom(chatRoomRepository.findById(roomId).orElseThrow())
+                .build();
+
+
+        chatMessageRepository.save(chatMessage);
+
+        chatRoom.get().getMessages().add(chatMessage);
+        log.info("messages size = {}", chatRoom.get().getMessages().size());
     }
 
-    public ChatRoom findRoomById(Long roomId) {
-        return chatRooms.get(roomId);
+    public ResponseEntity<?> getPrevMessages(Long roomId) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
+        if(chatRoom.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok()
+                .body(chatRoom.get().getMessages());
     }
 }

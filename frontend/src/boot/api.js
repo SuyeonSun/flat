@@ -39,7 +39,7 @@ export default boot(({ app, store, router }) => {
     return res;
   }, function (error) {
     // 에러 발생 시 sign-in 화면으로 redirect
-    router.push("/sign-in");
+    // router.push("/sign-in");
     return Promise.reject(error)
     // console.log(error);
   })
