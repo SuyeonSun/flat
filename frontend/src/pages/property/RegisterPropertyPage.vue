@@ -1,15 +1,18 @@
 <script setup>
 import {ref} from "vue";
-import {useCommonStore} from "stores/common/common-store";
+import {useS3Store} from "stores/common/s3-store";
 import {usePropertyStore} from "stores/property/property-store";
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
 
 const authStore = useAuthStore();
-const commonStore = useCommonStore();
+const s3Store = useS3Store();
 const propertyStore = usePropertyStore();
 
 const {email} = storeToRefs(authStore);
+
+const tradeTypeOptions = ["월세", "전세", "매매"];
+const directionOptions = ["남향", "남동향", "남서향", "동향", "서향", "북향"];
 
 const title = ref(undefined);
 const file = ref(undefined);
@@ -20,20 +23,20 @@ const lat = ref(undefined);
 const lng = ref(undefined);
 const tagList = ref(undefined);
 const articleFeatureDesc = ref(undefined);
-const tradeTypeName = ref(undefined);
+const tradeTypeName = ref(tradeTypeOptions[0]);
 const rentPrc = ref(undefined);
-const direction = ref(undefined);
-const area1 = ref(undefined);
-const area2 = ref(undefined);
-const roomCnt = ref(undefined);
-const bathroomCnt = ref(undefined);
-const averageCommonPrice = ref(undefined);
-const averageEtcPrice = ref(undefined);
-const averageHeatPrice = ref(undefined);
+const direction = ref(directionOptions[0]);
+const area1 = ref(0);
+const area2 = ref(0);
+const roomCnt = ref(0);
+const bathroomCnt = ref(0);
+const averageCommonPrice = ref(0);
+const averageEtcPrice = ref(0);
+const averageHeatPrice = ref(0);
 
 
 const register = async () => {
-  const fileUrl = await commonStore.uploadFile(file.value);
+  const fileUrl = await s3Store.uploadFile(file.value);
   const registerPayload = {
     title: title.value,
     image: fileUrl,
@@ -68,7 +71,6 @@ const register = async () => {
       <q-input
         class="col-4"
         v-model="title"
-        label="제목"
         dense
         outlined
       />
@@ -91,7 +93,6 @@ const register = async () => {
       <q-input
         class="col-4"
         v-model="address"
-        label="주소"
         dense
         outlined
       />
@@ -102,7 +103,6 @@ const register = async () => {
       <q-input
         class="col-4"
         v-model="buildingName"
-        label="동"
         dense
         outlined
       />
@@ -113,7 +113,6 @@ const register = async () => {
       <q-input
         class="col-4"
         v-model="floorInfo"
-        label="층"
         dense
         outlined
       />
@@ -124,7 +123,6 @@ const register = async () => {
       <q-input
         class="col-4"
         v-model="tagList"
-        label="태그"
         dense
         outlined
       />
@@ -133,23 +131,17 @@ const register = async () => {
     <div class="row items-center q-mb-md">
       <div class="col-2">매물 특징</div>
       <q-input
+        type="textarea"
         class="col-4"
         v-model="articleFeatureDesc"
-        label="매물 특징"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">거래 유형</div> <!-- TODO: select box: 월세 전세 매매-->
-      <q-input
-        class="col-4"
-        v-model="tradeTypeName"
-        label="거래 유형"
-        dense
-        outlined
-      />
+      <div class="col-2">거래 유형</div>
+      <q-select outlined class="col-4" v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense />
     </div>
 
     <div class="row items-center q-mb-md">
@@ -157,95 +149,88 @@ const register = async () => {
       <q-input
         class="col-4"
         v-model="rentPrc"
-        label="가격"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">방향</div> <!-- TODO: select box: 남향, 남동향, 남서향, 동향, 서향, 북향 -->
-      <q-input
-        class="col-4"
-        v-model="direction"
-        label="방향"
-        dense
-        outlined
-      />
+      <div class="col-2">방향</div>
+      <q-select outlined class="col-4" v-model="direction" :options="directionOptions" stack-label dense />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">전용 면적</div> <!-- TODO: 숫자로 변경-->
+      <div class="col-2">전용 면적 (제곱 미터)</div>
       <q-input
         class="col-4"
         v-model="area1"
-        label="전용 면적"
+        type="number"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">공용 면적</div> <!-- TODO: 숫자로 변경-->
+      <div class="col-2">공용 면적 (제곱 미터)</div>
       <q-input
         class="col-4"
         v-model="area2"
-        label="공 면적"
+        type="number"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">방 개수</div> <!-- TODO: 숫자로 변경-->
+      <div class="col-2">방 개수</div>
       <q-input
         class="col-4"
         v-model="roomCnt"
-        label="방 개수"
+        type="number"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">화장실 개수</div> <!-- TODO: 숫자로 변경-->
+      <div class="col-2">화장실 개수</div>
       <q-input
         class="col-4"
         v-model="bathroomCnt"
-        label="화장실 개수"
+        type="number"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">관리비</div> <!-- TODO: 숫자로 변경-->
+      <div class="col-2">관리비 (만원)</div>
       <q-input
         class="col-4"
         v-model="averageCommonPrice"
-        label="관리비"
+        type="number"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">전기 요금</div> <!-- TODO: 숫자로 변경-->
+      <div class="col-2">전기 요금 (만원)</div>
       <q-input
         class="col-4"
         v-model="averageEtcPrice"
-        label="전기 요금"
+        type="number"
         dense
         outlined
       />
     </div>
 
     <div class="row items-center q-mb-md">
-      <div class="col-2">난방비</div> <!-- TODO: 숫자로 변경-->
+      <div class="col-2">난방비 (만원)</div>
       <q-input
         class="col-4"
         v-model="averageHeatPrice"
-        label="난방비"
+        type="number"
         dense
         outlined
       />

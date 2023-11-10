@@ -1,29 +1,33 @@
 <script setup>
 import {ref} from "vue";
-import {useAuthStore} from "stores/auth/auth-store";
-
 import {useRouter} from "vue-router";
+import {useAuthStore} from "stores/auth/auth-store";
+import {useS3Store} from "stores/common/s3-store";
 import {Notify} from "quasar";
 
 const authStore = useAuthStore();
+const s3Store = useS3Store();
 
 const email = ref(undefined);
 const password = ref(undefined);
 const name = ref(undefined);
 const profile = ref(undefined);
 const address = ref(undefined);
+const phoneNumber = ref(undefined);
 
 const $router = useRouter();
 
 const onSubmit = async () => {
+  const fileUrl = await s3Store.uploadFile(profile.value);
   const signUpPayload = {
     email: email.value,
     password: password.value,
     name: name.value,
-    profile: profile.value,
+    profile: fileUrl,
     address: address.value,
     addressLat: "test lat value",
     addressLng: "test lng value",
+    phoneNumber: phoneNumber.value
   }
 
   const response = await authStore.signUp(signUpPayload);
@@ -61,7 +65,7 @@ const onSubmit = async () => {
       >
         <q-input
           v-model="email"
-          label="Email"
+          label="이메일"
           dense
           outlined
           class="q-mb-md"
@@ -69,7 +73,7 @@ const onSubmit = async () => {
 
         <q-input
           v-model="name"
-          label="Name"
+          label="이름"
           dense
           outlined
           class="q-mb-md"
@@ -77,24 +81,31 @@ const onSubmit = async () => {
 
         <q-input
           v-model="password"
-          label="Password"
+          label="비밀번호"
           dense
           outlined
           class="q-mb-md"
         />
 
-
-        <q-input
+        <q-file
           v-model="profile"
-          label="Profile Image"
-          dense
+          label="프로필"
           outlined
+          dense
           class="q-mb-md"
         />
 
         <q-input
           v-model="address"
-          label="Address"
+          label="주소"
+          dense
+          outlined
+          class="q-mb-md"
+        />
+
+        <q-input
+          v-model="phoneNumber"
+          label="전화번호"
           dense
           outlined
           class="q-mb-md"

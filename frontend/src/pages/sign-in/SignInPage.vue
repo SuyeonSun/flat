@@ -51,7 +51,7 @@ const onSubmit = async () => {
       >
         <q-input
           v-model="email"
-          label="Email"
+          label="이메일"
           dense
           outlined
           class="q-mb-md"
@@ -59,7 +59,7 @@ const onSubmit = async () => {
 
         <q-input
           v-model="password"
-          label="Password"
+          label="비밀번호"
           dense
           outlined
           class="q-mb-md"
