@@ -19,8 +19,8 @@ const {addresses} = storeToRefs(geocodeStore);
 const search = ref("");
 
 watch(() => search.value,  (newVal, oldVal) => {
-  if (newVal.length === 0) {
-    addresses.value = [];
+  if (newVal === "") {
+    geocodeStore.initAddresses();
   }
 
   if (newVal.length >= 2) {
@@ -41,6 +41,7 @@ const clickAddress = (address) => {
   selectedAddress.value.lat = address.y;
   selectedAddress.value.lng = address.x;
   selectedAddress.value.address = address.roadAddress;
+  search.value = address.roadAddress;
 }
 
 const clickOkBtn = () => {

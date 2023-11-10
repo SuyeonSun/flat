@@ -37,9 +37,6 @@ const selectedAddress = ref({
   lat: undefined,
   lng: undefined
 })
-// const address = ref(undefined);
-// const lat = ref(undefined);
-// const lng = ref(undefined);
 
 const updateSelectedAddress = (value) => {
   selectedAddress.value.address = value.address;
@@ -72,9 +69,9 @@ const register = async () => {
     averageCommonPrice: averageCommonPrice.value,
     averageEtcPrice: averageEtcPrice.value,
     averageHeatPrice: averageHeatPrice.value,
-    address: selectedAddress.value.address, // TODO
-    lat: selectedAddress.value.lat, // TODO
-    lng: selectedAddress.value.lng, // TODO
+    address: selectedAddress.value.address,
+    lat: selectedAddress.value.lat,
+    lng: selectedAddress.value.lng,
   }
   await propertyStore.registerProperty(email.value, registerPayload);
   // TODO: 추후 목록 페이지로 이동

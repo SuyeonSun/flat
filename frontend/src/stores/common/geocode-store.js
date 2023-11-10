@@ -9,11 +9,12 @@ export const useGeocodeStore = defineStore('geocodeStore', {
   actions: {
     async searchAddress(query) {
       try {
-        // TODO: 추후 주석 해제
-        // query = "논현동"
-        // const response = await api.get(`/geocode/${query}`);
-        // this.addresses = JSON.parse(response.data.data.body).addresses;
+        // TODO: 추후 주석 시작 =====
+        const response = await api.get(`/geocode/${query}`);
+        this.addresses = JSON.parse(response.data.data.body).addresses;
+        // TODO: 추후 주석 끝 =====
 
+        /*
         this.addresses = [{
           "roadAddress": "서울특별시 강남구 논현동",
           "jibunAddress": "서울특별시 강남구 논현동",
@@ -81,9 +82,14 @@ export const useGeocodeStore = defineStore('geocodeStore', {
           "y": "37.4057553",
           "distance": 0
         }]
+         */
       } catch (e) {
         console.log("error", e);
       }
+    },
+
+    initAddresses () {
+      this.addresses = undefined;
     }
   }
 })
