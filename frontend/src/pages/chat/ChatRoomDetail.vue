@@ -1,12 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import {useChatStore} from "stores/chat/chat-store";
+import {useUserStore} from "stores/user/user-store";
+import moment from "moment"
 
 const chatStore = useChatStore();
-
-onMounted(() => {
-  chatStore.readyToChat();
-})
+const userStore = useUserStore();
 
 const moreContent = ref(true)
 const contentSize = computed(() => moreContent.value ? 150 : 5)
@@ -14,11 +13,38 @@ const drawer = ref(false)
 const drawerR = ref(false)
 
 const input = ref('');
+
+const receiverProfile = ref('')
+const scrollRef = ref(null)
+
 const sendMsg = () => {
   chatStore.sendMessage(input.value);
   input.value='';
 };
 
+const getGap = (date) => {
+  const gapMin = moment().diff(date, "minutes")
+  let res = gapMin + " minutes ago"
+
+  if(gapMin > 60) {
+    res = moment().diff(date, "hours") + " hours ago"
+  }
+
+  if(gapMin > 60*24) {
+    res = moment().diff(date, "days") + " days ago"
+  }
+
+  return res
+}
+
+
+
+onMounted(async () => {
+  await chatStore.readyToChat();
+  const response = await userStore.getUserProfile(chatStore.$state.receiver)
+  receiverProfile.value = response.data
+  scrollRef.value.setScrollPercentage('vertical', 1)
+})
 </script>
 
 <template>
@@ -45,21 +71,42 @@ const sendMsg = () => {
           </q-toolbar>
         </q-footer>
 
-        <q-drawer bordered v-model="drawer" :width="200" :breakpoint="600" class="bg-grey-3 text-dark q-pa-sm">
-          <div v-for="n in 50" :key="n">Drawer {{ n }} / 50</div>
-        </q-drawer>
+<!--        <q-drawer bordered v-model="drawer" :width="200" :breakpoint="600" class="bg-grey-3 text-dark q-pa-sm">-->
+<!--          <div v-for="n in 50" :key="n">Drawer {{ n }} / 50</div>-->
+<!--        </q-drawer>-->
 
-        <q-drawer side="right" bordered v-model="drawerR" :width="200" :breakpoint="300" class="bg-grey-3 text-dark q-pa-sm">
-          <div v-for="n in 50" :key="n">Drawer {{ n }} / 50</div>
-        </q-drawer>
+<!--        <q-drawer side="right" bordered v-model="drawerR" :width="200" :breakpoint="300" class="bg-grey-3 text-dark q-pa-sm">-->
+<!--          <div v-for="n in 50" :key="n">Drawer {{ n }} / 50</div>-->
+<!--        </q-drawer>-->
 
-        <q-page-container>
-          <q-page padding>
-            <p v-for="message in chatStore.$state.messages" :key="message">
-              {{message.sender}}: {{message.message}}
-            </p>
-          </q-page>
-        </q-page-container>
+        <q-scroll-area style="height: 800px;" ref="scrollRef">
+          <q-page-container>
+            <q-page padding>
+              <div class="row justify-center">
+                <div style="width: 100%; max-width: 400px">
+                  <div v-for="message in chatStore.$state.messages" :key="message">
+                    <q-chat-message
+                      v-if="message.sender === chatStore.$state.sender"
+                      :name=message.sender
+                      :avatar=userStore.user.profile
+                      :text="[message.message]"
+                      :stamp= getGap(message.date)
+                      sent
+                    />
+                    <q-chat-message
+                      v-else
+                      :name=message.sender
+                      :avatar=receiverProfile
+                      :text="[message.message]"
+                      :stamp= getGap(message.date)
+                    />
+                  </div>
+                </div>
+              </div>
+            </q-page>
+          </q-page-container>
+
+        </q-scroll-area>
       </q-layout>
     </q-dialog>
   </div>

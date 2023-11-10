@@ -3,6 +3,12 @@ import {usePropertyStore} from "stores/property/property-store";
 import {onMounted, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
+import {useChatStore} from "stores/chat/chat-store";
+import chatRoom from "pages/chat/ChatRoomDetail.vue";
+import {useAuthStore} from "stores/auth/auth-store";
+
+const chatStore = useChatStore();
+const authStore = useAuthStore();
 
 const $route = useRoute();
 const propertyStore = usePropertyStore();
@@ -140,11 +146,15 @@ onMounted(async () => {
 
     <div>
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
-        <q-btn fab icon="headset" style="background-color: #F2C4CE;"/>
+        <q-btn fab icon="headset" style="background-color: #F2C4CE;" @click="chatStore.createRoom(authStore.$state.name, name)" />
       </q-page-sticky>
     </div>
 
   </q-page>
+
+  <template v-if="chatStore.$state.isDialog">
+    <chat-room/>
+  </template>
 </template>
 
 <style scoped>

@@ -10,6 +10,7 @@ export const useUserStore = defineStore('userStore', {
     addFormDialog: false,
     recvRequests: [],
     sendRequests: [],
+
   }),
 
   actions: {
@@ -18,6 +19,14 @@ export const useUserStore = defineStore('userStore', {
       try {
         const response = await api.post(`/user`, {email: email})
         this.user = response.data
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    async getUserProfile(name) {
+      try {
+        return await api.post('/user/profile', {name: name})
       } catch (e) {
         console.log(e)
       }
