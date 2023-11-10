@@ -1,5 +1,7 @@
 package com.flat.backend.geocode.controller;
 
+import com.flat.backend.common.BaseResponseStatus;
+import com.flat.backend.common.dto.BaseResponseDto;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping("/geocode")
 public class GeocodeController {
     @GetMapping("/{query}")
-    public void searchAddress(@PathVariable String query) {
+    public ResponseEntity<BaseResponseDto<ResponseEntity<String>>> searchAddress(@PathVariable String query) {
         ByteBuffer buffer = StandardCharsets.UTF_8.encode(query);
         String encode = StandardCharsets.UTF_8.decode(buffer).toString();
         URI uri = UriComponentsBuilder
@@ -34,7 +36,8 @@ public class GeocodeController {
                 .header("X-NCP-APIGW-API-KEY", "99XkSbZnQwTciMuTbiQ0LDGD9faiUn5Wjp7yAf6o")
                 .build();
         ResponseEntity<String> result = restTemplate.exchange(request, String.class);
-        System.out.println(result + "==============================================");
+        return ResponseEntity
+                .ok()
+                .body(new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result));
     }
-
 }
