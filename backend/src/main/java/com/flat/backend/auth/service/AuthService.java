@@ -57,6 +57,7 @@ public class AuthService {
                 .address(signUpDto.getAddress())
                 .addressLat(signUpDto.getAddressLat())
                 .addressLng(signUpDto.getAddressLng())
+                .phoneNumber(signUpDto.getPhoneNumber())
                 .build();
 
         if(user.getProfile() == null) {

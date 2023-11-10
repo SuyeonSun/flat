@@ -35,6 +35,7 @@ public class User {
     @Column(name = "address_lng")
     private String addressLng;
     private String password;
+    private String phoneNumber;
 
     // TODO: 탈퇴한 회원을 위한 active 처리 구현이 필요하다.
     // private String active;
