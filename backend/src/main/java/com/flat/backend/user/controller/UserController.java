@@ -43,6 +43,20 @@ public class UserController {
     }
 
     @ResponseBody
+    @PostMapping("/profile")
+    public ResponseEntity<?> getUserProfile(@RequestBody Map<String, String> nameMap) {
+        Optional<User> user = userRepository.findByName(nameMap.get("name"));
+
+        if(user.isEmpty()) {
+            return ResponseEntity.ok()
+                    .body(new BaseException(INVALID_USER_INFO));
+        }
+
+        return ResponseEntity.ok()
+                .body(user.get().getProfile());
+    }
+
+    @ResponseBody
     @PostMapping("/friends/send")
     public ResponseEntity<?> getSendReqs(@RequestBody Map<String, String> emailMap) {
         Optional<User> user = userRepository.findByEmail(emailMap.get("email"));

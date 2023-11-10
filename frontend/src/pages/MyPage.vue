@@ -2,27 +2,43 @@
 import { ref, watch, onMounted } from 'vue';
 import {useAuthStore} from "stores/auth/auth-store";
 import {useUserStore} from "stores/user/user-store";
+import {useChatStore} from "stores/chat/chat-store";
 import friendRequest from "pages/FriendRequest.vue";
 import addForm from "pages/FriendAddForm.vue"
+import ChatRoomDetail from "pages/chat/ChatRoomDetail.vue";
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
+const chatStore = useChatStore()
 
 const tab = ref('likes')
 
 onMounted(() => {
-  userStore.getUserInfo(authStore.email)
+  userStore.getUserInfo(authStore.$state.email)
 })
 
-watch(tab, (n) => {
+watch(tab, async (n) => {
   if(n === 'friends') {
-    userStore.findFriends(userStore.user.id)
+    await userStore.findFriends(userStore.user.id)
+  }
+})
+
+watch(tab, async (n) => {
+  if(n === 'chats') {
+    await chatStore.findRooms(authStore.$state.name)
+    console.log("@@@@@@@@", chatStore.$state.myRooms)
   }
 })
 
 const removeFriend = (friendId) => {
-  console.log("delete@@@@@@@@@")
   userStore.deleteFriend(userStore.user.id, friendId)
+}
+
+const enterRoom = (room) => {
+  const sender = authStore.$state.name
+  const receiver = authStore.$state.name == room.sender ? room.receiver : room.sender
+  const roomId = room.roomId
+  chatStore.enterRoom(sender, receiver, roomId)
 }
 
 </script>
@@ -43,6 +59,7 @@ const removeFriend = (friendId) => {
           <q-tab name="likes" label="관심 매물" />
           <q-tab name="mines" label="등록 매물" />
           <q-tab name="friends" label="친구" />
+          <q-tab name="chats" label="내 문의" />
         </q-tabs>
 
         <q-separator />
@@ -77,6 +94,13 @@ const removeFriend = (friendId) => {
               </div>
             </div>
           </q-tab-panel>
+
+          <q-tab-panel name="chats">
+            <q-card v-for="room in chatStore.$state.myRooms" :key="room" class="my-card">
+              <div class="text-subtitle2">상대방 : {{authStore.$state.name == room.sender ? room.receiver : room.sender}}</div>
+              <q-btn @click="enterRoom(room)">채팅방 입장</q-btn>
+            </q-card>
+          </q-tab-panel>
         </q-tab-panels>
       </q-card>
     </div>
@@ -86,6 +110,9 @@ const removeFriend = (friendId) => {
   </template>
   <template v-if="userStore.$state.reqDialog">
     <friend-request/>
+  </template>
+  <template v-if="chatStore.$state.isDialog">
+    <chat-room-detail/>
   </template>
 </template>
 
