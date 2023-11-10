@@ -42,7 +42,6 @@ const updateSelectedAddress = (value) => {
   selectedAddress.value.address = value.address;
   selectedAddress.value.lat = value.lat;
   selectedAddress.value.lng = value.lng;
-
 }
 
 const isOpenSearchAddressDialog = ref(false);
@@ -102,18 +101,6 @@ const register = async () => {
       />
     </div>
 
-    <!-- TODO =========================== -->
-    <!--
-    <div class="row items-center q-mb-md">
-      <div class="col-2">주소</div>
-      <q-input
-        class="col-4"
-        v-model="address"
-        dense
-        outlined
-      />
-    </div>
-    -->
     <div class="row items-center q-mb-md">
       <div class="col-2">주소</div>
       <q-input

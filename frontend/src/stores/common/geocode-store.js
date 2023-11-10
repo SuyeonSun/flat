@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {api} from "boot/api";
+import {authApi} from "boot/auth-api";
 
 export const useGeocodeStore = defineStore('geocodeStore', {
   state: () => ({
@@ -9,10 +9,8 @@ export const useGeocodeStore = defineStore('geocodeStore', {
   actions: {
     async searchAddress(query) {
       try {
-        // TODO: 추후 주석 시작 =====
-        const response = await api.get(`/geocode/${query}`);
+        const response = await authApi.get(`/geocode/${query}`);
         this.addresses = JSON.parse(response.data.data.body).addresses;
-        // TODO: 추후 주석 끝 =====
 
         /*
         this.addresses = [{

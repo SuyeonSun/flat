@@ -4,18 +4,35 @@ import {useRouter} from "vue-router";
 import {useAuthStore} from "stores/auth/auth-store";
 import {useS3Store} from "stores/common/s3-store";
 import {Notify} from "quasar";
+import SearchAddressDialog from "components/property/SearchAddressDialog";
 
 const authStore = useAuthStore();
 const s3Store = useS3Store();
+
+const $router = useRouter();
 
 const email = ref(undefined);
 const password = ref(undefined);
 const name = ref(undefined);
 const profile = ref(undefined);
-const address = ref(undefined);
 const phoneNumber = ref(undefined);
 
-const $router = useRouter();
+const selectedAddress = ref({
+  address: undefined,
+  lat: undefined,
+  lng: undefined
+})
+
+const updateSelectedAddress = (value) => {
+  selectedAddress.value.address = value.address;
+  selectedAddress.value.lat = value.lat;
+  selectedAddress.value.lng = value.lng;
+}
+
+const isOpenSearchAddressDialog = ref(false);
+const handleSearchAddressDialog = () => {
+  isOpenSearchAddressDialog.value = !isOpenSearchAddressDialog.value;
+}
 
 const onSubmit = async () => {
   const fileUrl = await s3Store.uploadFile(profile.value);
@@ -24,10 +41,10 @@ const onSubmit = async () => {
     password: password.value,
     name: name.value,
     profile: fileUrl,
-    address: address.value,
-    addressLat: "test lat value",
-    addressLng: "test lng value",
-    phoneNumber: phoneNumber.value
+    phoneNumber: phoneNumber.value,
+    address: selectedAddress.value.address,
+    addressLat: selectedAddress.value.lat,
+    addressLng: selectedAddress.value.lng
   }
 
   const response = await authStore.signUp(signUpPayload);
@@ -44,7 +61,6 @@ const onSubmit = async () => {
       })
   }
 }
-
 </script>
 
 <template>
@@ -93,14 +109,20 @@ const onSubmit = async () => {
           outlined
           dense
           class="q-mb-md"
-        />
+        >
+          <template v-slot:append>
+            <q-icon name="apple"/>
+          </template>
+        </q-file>
 
         <q-input
-          v-model="address"
-          label="주소"
+          class="q-mb-md"
+          v-model="selectedAddress.address"
+          @click="handleSearchAddressDialog"
           dense
           outlined
-          class="q-mb-md"
+          readonly
+          label="주소"
         />
 
         <q-input
@@ -118,6 +140,11 @@ const onSubmit = async () => {
       </q-form>
     </div>
   </div>
+  <search-address-dialog
+    :isOpenSearchAddressDialog="isOpenSearchAddressDialog"
+    @handleSearchAddressDialog="handleSearchAddressDialog"
+    @updateSelectedAddress="updateSelectedAddress"
+  ></search-address-dialog>
 </template>
 
 <style scoped>
