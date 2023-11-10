@@ -49,20 +49,20 @@ const onSubmit = async () => {
 
 <template>
   <div class="main-container">
-    <div class="text-center">
-      <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
-        <span class="logo-font">F</span>
-        <span class="logo-font">L</span>
-        <q-icon name="house" class="logo-icon"/>
-        <span class="logo-font">T</span>
-      </h5>
-    </div>
-
     <div class="form-outer-container">
       <q-form
         @submit="onSubmit"
         class="form-container"
       >
+        <div>
+          <h5 class="q-ma-none" style="font-weight: bold">
+            <span class="logo-font">F</span>
+            <span class="logo-font">L</span>
+            <q-icon name="house" class="logo-icon"/>
+            <span class="logo-font">T</span>
+          </h5>
+        </div>
+        <h5 class="text-bold q-mt-none">계정 생성에 필요한 정보를 입력해주세요.</h5>
         <q-input
           v-model="email"
           label="이메일"
@@ -108,17 +108,15 @@ const onSubmit = async () => {
           label="전화번호"
           dense
           outlined
-          class="q-mb-md"
         />
 
-        <q-btn label="회원가입" type="submit" class="full-width q-mb-md submit-btn"/>
+        <q-btn label="회원가입" type="submit" class="full-width q-mt-xl q-mb-lg submit-btn"/>
 
         <div class="text-subtitle1 text-center q-ma-none text">
           이미 계정이 있으신가요? | <a href="/sign-in" style="text-decoration: none;" class="text"> 로그인 </a>
         </div>
       </q-form>
     </div>
-
   </div>
 </template>
 
@@ -127,7 +125,7 @@ const onSubmit = async () => {
   padding: 80px;
   background-color: white;
   border-radius: 10px;
-  width: 50%;
+  width: 60%;
 }
 
 .logo-font {
@@ -149,10 +147,11 @@ const onSubmit = async () => {
 }
 
 .submit-btn {
-  background-color: #F2C4CE;
+  background-color: #117CE9;
+  color: #FFFFFF
 }
 
 .text {
-  color: #4F4F51;
+  color: #444444;
 }
 </style>
