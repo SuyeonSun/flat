@@ -35,19 +35,21 @@ const onSubmit = async () => {
 
 <template>
   <div class="main-container">
-    <div class="text-center">
-      <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
-        <span class="logo-font">F</span>
-        <span class="logo-font">L</span>
-        <q-icon name="house" class="logo-icon"/>
-        <span class="logo-font">T</span>
-      </h5>
-    </div>
     <div class="form-outer-container">
       <q-form
         @submit="onSubmit"
         class="form-container"
       >
+        <div>
+          <h5 class="q-ma-none" style="font-weight: bold">
+            <span class="logo-font">F</span>
+            <span class="logo-font">L</span>
+            <q-icon name="house" class="logo-icon"/>
+            <span class="logo-font">T</span>
+          </h5>
+        </div>
+        <h5 class="text-bold q-mt-none">로그인 정보를 입력해주세요.</h5>
+
         <q-input
           v-model="email"
           label="이메일"
@@ -61,10 +63,9 @@ const onSubmit = async () => {
           label="비밀번호"
           dense
           outlined
-          class="q-mb-md"
         />
 
-        <q-btn label="로그인" type="submit" class="full-width q-mb-md submit-btn"/>
+        <q-btn label="로그인" type="submit" class="full-width q-mt-lg q-mb-lg submit-btn"/>
 
         <div class="text-subtitle1 text-center q-ma-none text">
           가입이 필요하신가요? <a href="/sign-up" style="text-decoration: none;" class="text"> | 회원가입 </a>
@@ -75,7 +76,7 @@ const onSubmit = async () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .main-container {
   padding: 80px;
   background-color: white;
@@ -102,7 +103,8 @@ const onSubmit = async () => {
 }
 
 .submit-btn {
-  background-color: #F2C4CE;
+  background-color: $dark-blue; // #117CE9
+  color: #FFFFFF
 }
 
 .text {

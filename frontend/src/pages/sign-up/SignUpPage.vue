@@ -78,7 +78,9 @@ const onSubmit = async () => {
             <span class="logo-font">T</span>
           </h5>
         </div>
-        <h5 class="text-bold q-mt-none">계정 생성에 필요한 정보를 입력해주세요.</h5>
+        <h5 class="text-bold q-mt-none q-mb-sm">계정 생성에 필요한 정보를 입력해주세요.</h5>
+        <p class="q-mb-xl">입력하신 정보로 회원님의 계정이 생성됩니다.</p>
+
         <q-input
           v-model="email"
           label="이메일"
@@ -147,7 +149,7 @@ const onSubmit = async () => {
   ></search-address-dialog>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .main-container {
   padding: 80px;
   background-color: white;
@@ -174,11 +176,11 @@ const onSubmit = async () => {
 }
 
 .submit-btn {
-  background-color: #117CE9;
+  background-color: $dark-blue; // #117CE9
   color: #FFFFFF
 }
 
 .text {
-  color: #444444;
+  color: #4F4F51;
 }
 </style>

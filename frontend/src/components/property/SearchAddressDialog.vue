@@ -73,19 +73,33 @@ const clickOkBtn = () => {
             </q-item-section>
           </q-item>
         </q-list>
-        <div v-else class="q-mt-md q-ml-xs"> 검색 결과가 없습니다. </div>
+        <div v-else class="q-mt-md q-ml-xs no-search-result-text"> 검색 결과가 없습니다. </div>
 
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn color="primary" label="확인" @click="clickOkBtn"/>
-        <q-btn color="primary" label="취소" @click="closeDialog"/>
+        <q-btn label="확인" @click="clickOkBtn" class="confirm-btn"/>
+        <q-btn label="취소" @click="closeDialog" class="cancel-btn"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .dialog-container {
   min-width: 500px;
+}
+
+.no-search-result-text {
+  color: $text-grey;
+}
+
+.confirm-btn {
+  background-color: $dark-blue;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: $dark-grey;
+  color: white;
 }
 </style>
