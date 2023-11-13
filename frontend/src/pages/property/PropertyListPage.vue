@@ -2,6 +2,9 @@
 import {usePropertyStore} from "stores/property/property-store";
 import {onMounted, ref} from "vue";
 import {storeToRefs} from "pinia";
+import {useRouter} from "vue-router";
+
+const $router = useRouter();
 
 const propertyStore = usePropertyStore();
 
@@ -10,12 +13,16 @@ const {propertyList} = storeToRefs(propertyStore);
 onMounted(() => {
   propertyStore.getPropertyList();
 })
+
+const goToDetailPage = (id) => {
+  $router.push(`/property/${id}`)
+}
 </script>
 
 <template>
   <q-page class="q-pa-xl row q-col-gutter-x-xl q-col-gutter-y-xl">
     <div v-for="property in propertyList" class="col-3">
-      <q-card class="property-card">
+      <q-card class="property-card" @click="goToDetailPage(property.id)">
         <q-card-section>
           <q-img :src="property.image === null ? 'https://flat-bucket.s3.ap-northeast-2.amazonaws.com/e2560779-3efb-4815-91b9-14e4b1e1afd7.png' : property.image" no-native-menu class="q-mb-md">
             <q-badge
