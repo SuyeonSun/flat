@@ -12,6 +12,7 @@ const authStore = useAuthStore();
 
 const $route = useRoute();
 const propertyStore = usePropertyStore();
+const {email} = storeToRefs(authStore);
 const {propertyDetail} = storeToRefs(propertyStore);
 
 const title = ref(undefined);
@@ -33,13 +34,16 @@ const averageEtcPrice = ref(undefined);
 const averageHeatPrice = ref(undefined);
 
 const name = ref(undefined);
-const email = ref(undefined);
+const writerEmail = ref(undefined);
 const phoneNumber = ref(undefined);
+
+const isUserLiked = ref(false);
+const likeCount = ref(0);
 
 onMounted(async () => {
   // http://localhost:8080/property/502
   const propertyId = $route.params.propertyId;
-  await propertyStore.getPropertyDetail(propertyId);
+  await propertyStore.getPropertyDetail(propertyId, email.value);
 
   title.value = propertyDetail.value.title;
   image.value = propertyDetail.value.image;
@@ -60,10 +64,25 @@ onMounted(async () => {
   averageHeatPrice.value = propertyDetail.value.averageHeatPrice;
 
   name.value = propertyDetail.value.name;
-  email.value = propertyDetail.value.email;
+  writerEmail.value = propertyDetail.value.email;
   phoneNumber.value = propertyDetail.value.phoneNumber;
+
+  isUserLiked.value = propertyDetail.value.isUserLiked;
+  likeCount.value = propertyDetail.value.likeCount;
 })
 
+const clickLikeBtn = (status) => {
+  isUserLiked.value = status;
+  const likePayload = {
+    email: email.value,
+    isLike: status,
+    propertyId: Number($route.params.propertyId)
+  }
+  propertyStore.like(likePayload);
+}
+
+// watch -> isUserLiked
+// likeCount update
 </script>
 
 <template>
@@ -71,8 +90,19 @@ onMounted(async () => {
     <div class="row justify-between">
       <q-card class="property-info-card">
         <q-card-section>
-          <!-- 제목 -->
-          <h6 class="q-ma-none q-mb-md">{{ title }}</h6>
+          <div class="row justify-between items-center q-mb-md">
+            <!-- 제목 -->
+            <h6 class="q-ma-none">{{ title }}</h6>
+            <div>
+              <span v-if="isUserLiked">
+                <q-icon name="favorite" size="sm" @click="clickLikeBtn(false)"/>
+              </span>
+              <span v-else>
+                <q-icon name="favorite_border" size="sm" @click="clickLikeBtn(true)"/>
+              </span>
+              <span>좋아요 {{likeCount}}개</span>
+            </div>
+          </div>
           <!-- 이미지 -->
           <q-img :src="image" no-native-menu class="q-mb-md">
             <q-icon class="absolute all-pointer-events" size="32px" name="info" color="white"
@@ -134,7 +164,7 @@ onMounted(async () => {
               <q-item-section>게시자: {{ name }}</q-item-section>
             </q-item>
             <q-item>
-              <q-item-section>이메일: {{ email }}</q-item-section>
+              <q-item-section>이메일: {{ writerEmail }}</q-item-section>
             </q-item>
             <q-item>
               <q-item-section>전화번호: {{ phoneNumber }}</q-item-section>
