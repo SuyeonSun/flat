@@ -5,6 +5,7 @@ import {useAuthStore} from "stores/auth/auth-store";
 export const usePropertyStore = defineStore('propertyStore', {
   state: () => ({
     propertyDetail: undefined,
+    propertyList: []
   }),
 
   actions: {
@@ -22,6 +23,15 @@ export const usePropertyStore = defineStore('propertyStore', {
         await api.post(`/property?email=${email}`, registerPayload);
       } catch (error) {
         console.log("error");
+      }
+    },
+
+    async getPropertyList() {
+      try {
+        const response = await api.get("/property/list");
+        this.propertyList = response.data.data;
+      } catch (error) {
+        console.log("error")
       }
     },
 
