@@ -24,7 +24,6 @@ public class LikeService {
     private final UserRepository userRepository;
 
     public ResponseEntity<BaseResponseDto<LikeResDto>> like(LikeReqDto likeReqDto) {
-        System.out.println("====================================="+ likeReqDto.getEmail());
         Boolean isUserLiked;
         if (likeReqDto.getIsLike()) {
             Property property = propertyRepository.findById(likeReqDto.getPropertyId()).orElseThrow();
