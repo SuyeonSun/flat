@@ -7,6 +7,8 @@ import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.property.service.PropertyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,9 +39,10 @@ public class PropertyController {
     }
 
     // 전체 매물 조회
+    // /list?page=0&size=10&sort=propertyId,DESC
     @GetMapping("/list")
-    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll() {
-        return propertyService.selectListAll();
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll(Pageable pageable) {
+        return propertyService.selectListAll(pageable);
     }
 
     // 매물 상세 조회

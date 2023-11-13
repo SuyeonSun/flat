@@ -14,6 +14,8 @@ import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,9 +86,9 @@ public class PropertyService {
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll() {
-        List<Property> result = propertyRepository.findAll();
-        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll(Pageable pageable) {
+        Page<Property> result = propertyRepository.findAll(pageable);
+        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result.getContent());
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
