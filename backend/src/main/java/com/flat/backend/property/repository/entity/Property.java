@@ -1,12 +1,17 @@
 package com.flat.backend.property.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.flat.backend.like.repository.entity.Like;
 import com.flat.backend.user.repository.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "properties")
 @Builder
@@ -53,4 +58,7 @@ public class Property {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     User user;
+
+    @OneToMany(mappedBy = "property")
+    List<Like> likes = new ArrayList<>();
 }

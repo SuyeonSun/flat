@@ -1,6 +1,7 @@
 package com.flat.backend.property.controller;
 
 import com.flat.backend.common.dto.BaseResponseDto;
+import com.flat.backend.property.dto.req.DetailReqDto;
 import com.flat.backend.property.dto.req.RegisterReqDto;
 import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.entity.Property;
@@ -43,7 +44,7 @@ public class PropertyController {
 
     // 매물 상세 조회
     @GetMapping("/detail/{propertyId}")
-    public ResponseEntity<BaseResponseDto<DetailResDto>> selectDetail(@PathVariable Long propertyId) {
-        return propertyService.selectDetail(propertyId);
+    public ResponseEntity<BaseResponseDto<DetailResDto>> selectDetail(@PathVariable Long propertyId, @RequestParam String email) {
+        return propertyService.selectDetail(propertyId, email);
     }
 }

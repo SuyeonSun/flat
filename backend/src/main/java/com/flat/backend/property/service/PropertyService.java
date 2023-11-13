@@ -3,6 +3,9 @@ package com.flat.backend.property.service;
 import com.flat.backend.common.BaseException;
 import com.flat.backend.common.BaseResponseStatus;
 import com.flat.backend.common.dto.BaseResponseDto;
+import com.flat.backend.like.repository.LikeRepository;
+import com.flat.backend.like.repository.entity.Like;
+import com.flat.backend.property.dto.req.DetailReqDto;
 import com.flat.backend.property.dto.req.RegisterReqDto;
 import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.PropertyRepository;
@@ -27,6 +30,7 @@ import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
 public class PropertyService {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
+    private final LikeRepository likeRepository;
 
     public ResponseEntity<BaseResponseDto<?>> register(String email, RegisterReqDto registerReqDto) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
@@ -86,9 +90,18 @@ public class PropertyService {
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public ResponseEntity<BaseResponseDto<DetailResDto>> selectDetail(Long propertyId) {
+    public ResponseEntity<BaseResponseDto<DetailResDto>> selectDetail(Long propertyId, String email) {
         Property property = propertyRepository.findById(propertyId).orElseThrow();
-        User user = property.getUser();
+        User writer = property.getUser();
+        User user = userRepository.findByEmail(email).orElseThrow();
+
+        Like like = likeRepository.findByUserIdAndPropertyId(user.getId(), propertyId);
+        Boolean isUserLiked;
+        if (like == null) isUserLiked = false;
+        else isUserLiked = true;
+        List<Like> likes = likeRepository.findByPropertyId(propertyId);
+        int likeCount = likes.size();
+
         DetailResDto detailResDto = DetailResDto.builder()
                 .title(property.getTitle())
                 .image(property.getImage())
@@ -109,9 +122,11 @@ public class PropertyService {
                 .averageHeatPrice(property.getAverageHeatPrice())
                 .area1(property.getArea1())
                 .area2(property.getArea2())
-                .name(user.getName())
-                .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
+                .name(writer.getName())
+                .email(writer.getEmail())
+                .phoneNumber(writer.getPhoneNumber())
+                .isUserLiked(isUserLiked)
+                .likeCount(likeCount)
                 .build();
         BaseResponseDto<DetailResDto> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), detailResDto);
         return ResponseEntity.ok().body(baseResponseDto);

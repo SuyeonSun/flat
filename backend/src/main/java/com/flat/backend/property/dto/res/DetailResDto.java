@@ -30,6 +30,9 @@ public class DetailResDto {
     private int area1;
     private int area2;
 
+    private Boolean isUserLiked;
+    private int likeCount;
+
     private String name;
     private String email;
     private String phoneNumber;

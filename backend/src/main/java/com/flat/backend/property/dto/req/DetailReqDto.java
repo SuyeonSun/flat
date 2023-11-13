@@ -1,2 +1,8 @@
-package com.flat.backend.property.dto.req;public class DetailReqDto {
+package com.flat.backend.property.dto.req;
+
+import lombok.Getter;
+
+@Getter
+public class DetailReqDto {
+    private String email;
 }
