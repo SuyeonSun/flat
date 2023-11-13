@@ -92,10 +92,10 @@ const clickLikeBtn = async (status) => {
             <!-- 제목 -->
             <h6 class="q-ma-none">{{ title }}</h6>
             <div>
-              <span v-if="isUserLiked">
+              <span v-if="isUserLiked" class="q-mr-sm">
                 <q-icon name="favorite" size="sm" @click="clickLikeBtn(false)"/>
               </span>
-              <span v-else>
+              <span v-else class="q-mr-sm">
                 <q-icon name="favorite_border" size="sm" @click="clickLikeBtn(true)"/>
               </span>
               <span>좋아요 {{likeCount}}개</span>
