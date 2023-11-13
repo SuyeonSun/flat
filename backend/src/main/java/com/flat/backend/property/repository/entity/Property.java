@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +58,7 @@ public class Property {
     @JsonIgnore
     User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "property")
     List<Like> likes = new ArrayList<>();
 }
