@@ -71,18 +71,16 @@ onMounted(async () => {
   likeCount.value = propertyDetail.value.likeCount;
 })
 
-const clickLikeBtn = (status) => {
-  isUserLiked.value = status;
+const clickLikeBtn = async (status) => {
   const likePayload = {
     email: email.value,
     isLike: status,
     propertyId: Number($route.params.propertyId)
   }
-  propertyStore.like(likePayload);
+  const response = await propertyStore.like(likePayload);
+  likeCount.value = response.likeCount;
+  isUserLiked.value = response.isUserLiked;
 }
-
-// watch -> isUserLiked
-// likeCount update
 </script>
 
 <template>

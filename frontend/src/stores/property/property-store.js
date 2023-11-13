@@ -27,8 +27,8 @@ export const usePropertyStore = defineStore('propertyStore', {
 
     async like(likePayload) {
       try {
-        await api.post("/like", likePayload);
-        console.log(likePayload)
+        const response = await api.post("/like", likePayload);
+        return response.data.data;
       } catch (error) {
         console.log("error");
       }
