@@ -25,7 +25,7 @@ const signOut = async () => {
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header elevated height-hint="98">
-      <q-toolbar class="q-pt-md q-pb-sm tool-bar" style="display: flex; justify-content: space-between; align-items: center">
+      <q-toolbar class="q-pt-md q-pb-sm q-px-xl tool-bar" style="display: flex; justify-content: space-between; align-items: center">
         <div class="q-pl-md">
           <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
             <span class="logo-font">F</span>
@@ -44,18 +44,18 @@ const signOut = async () => {
         </div>
       </q-toolbar>
 
-      <q-tabs align="left" class="tabs">
+      <q-tabs align="left" class="tabs q-px-xl">
         <q-route-tab to="/page1" label="Page One"/>
         <q-route-tab to="/page2" label="Page Two"/>
         <q-route-tab to="/my-page" label="마이 페이지"/>
       </q-tabs>
     </q-header>
 
-    <q-page-container>
+    <q-page-container class="q-px-xl ">
       <router-view/>
     </q-page-container>
 
-    <q-footer elevated class="footer full-width q-py-lg q-mx-md">
+    <q-footer elevated class="footer full-width q-py-lg q-px-md">
       <div class="q-pl-lg">
         <div class="row items-center">
           <div class="text-subtitle1 text-bold q-mr-sm">FLAT</div>

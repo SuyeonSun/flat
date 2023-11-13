@@ -28,7 +28,8 @@ export const usePropertyStore = defineStore('propertyStore', {
 
     async getPropertyList() {
       try {
-        const response = await api.get("/property/list");
+        // http://localhost:8000/property/list?page=0&size=10
+        const response = await api.get("/property/list?page=0&size=10");
         this.propertyList = response.data.data;
       } catch (error) {
         console.log("error")
