@@ -64,12 +64,9 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="main-container">
-    <div class="form-outer-container">
-      <q-form
-        @submit="onSubmit"
-        class="form-container"
-      >
+  <q-header elevated height-hint="98">
+    <q-toolbar class="q-pt-md q-px-xl q-pb-sm" style="display: flex; justify-content: space-between; align-items: center; background-color: #FFFFFF">
+      <div class="q-pl-xl">
         <div>
           <h5 class="q-ma-none" style="font-weight: bold">
             <span class="logo-font">F</span>
@@ -78,68 +75,80 @@ const onSubmit = async () => {
             <span class="logo-font">T</span>
           </h5>
         </div>
-        <h5 class="text-bold q-mt-none q-mb-sm">계정 생성에 필요한 정보를 입력해주세요.</h5>
-        <p class="q-mb-xl">입력하신 정보로 회원님의 계정이 생성됩니다.</p>
+      </div>
+    </q-toolbar>
+  </q-header>
 
-        <q-input
-          v-model="email"
-          label="이메일"
-          dense
-          outlined
-          class="q-mb-md"
-        />
-
-        <q-input
-          v-model="name"
-          label="이름"
-          dense
-          outlined
-          class="q-mb-md"
-        />
-
-        <q-input
-          v-model="password"
-          label="비밀번호"
-          dense
-          outlined
-          class="q-mb-md"
-        />
-
-        <q-file
-          v-model="profile"
-          label="프로필"
-          outlined
-          dense
-          class="q-mb-md"
+  <div class="row">
+    <div class="main-container">
+      <div class="form-outer-container">
+        <q-form
+          @submit="onSubmit"
+          class="form-container"
         >
-          <template v-slot:append>
-            <q-icon name="apple"/>
-          </template>
-        </q-file>
+          <h5 class="q-mt-none q-mb-sm" style="font-weight: bold">회원가입</h5>
+          <p class="q-mb-xl">입력하신 정보로 회원님의 계정이 생성됩니다.</p>
 
-        <q-input
-          class="q-mb-md"
-          v-model="selectedAddress.address"
-          @click="handleSearchAddressDialog"
-          dense
-          outlined
-          readonly
-          label="주소"
-        />
+          <q-input
+            v-model="email"
+            label="이메일"
+            dense
+            outlined
+            class="q-mb-md"
+          />
 
-        <q-input
-          v-model="phoneNumber"
-          label="전화번호"
-          dense
-          outlined
-        />
+          <q-input
+            v-model="name"
+            label="이름"
+            dense
+            outlined
+            class="q-mb-md"
+          />
 
-        <q-btn label="회원가입" type="submit" class="full-width q-mt-xl q-mb-lg submit-btn"/>
+          <q-input
+            v-model="password"
+            label="비밀번호"
+            dense
+            outlined
+            class="q-mb-md"
+          />
 
-        <div class="text-subtitle1 text-center q-ma-none text">
-          이미 계정이 있으신가요? | <a href="/sign-in" style="text-decoration: none;" class="text"> 로그인 </a>
-        </div>
-      </q-form>
+          <q-file
+            v-model="profile"
+            label="프로필"
+            outlined
+            dense
+            class="q-mb-md"
+          >
+            <template v-slot:append>
+              <q-icon name="apple"/>
+            </template>
+          </q-file>
+
+          <q-input
+            class="q-mb-md"
+            v-model="selectedAddress.address"
+            @click="handleSearchAddressDialog"
+            dense
+            outlined
+            readonly
+            label="주소"
+          />
+
+          <q-input
+            v-model="phoneNumber"
+            label="전화번호"
+            dense
+            outlined
+          />
+
+          <q-btn label="회원가입" type="submit" class="full-width q-mt-xl q-mb-lg submit-btn"/>
+
+          <div class="text-subtitle1 q-ma-none text">
+            <a href="/sign-in" style="text-decoration: none; color: #117CE9; font-size: 15px; font-weight: bold" class="text"> 로그인 </a>
+          </div>
+        </q-form>
+      </div>
     </div>
   </div>
   <search-address-dialog
@@ -151,19 +160,22 @@ const onSubmit = async () => {
 
 <style scoped lang="scss">
 .main-container {
-  padding: 80px;
+  padding: 60px;
   background-color: white;
   border-radius: 10px;
-  width: 60%;
+  min-width: 50%;
+  margin-top: 43px;
 }
 
 .logo-font {
-  font-size: 30px;
+  color: black;
+  font-size: 25px;
 }
 
 .logo-icon {
-  font-size: 37px;
-  margin-bottom: 10px;
+  color: black;
+  font-size: 30px;
+  margin-bottom: 7px;
 }
 
 .form-outer-container {
@@ -172,7 +184,7 @@ const onSubmit = async () => {
 }
 
 .form-container {
-  min-width: 300px;
+  min-width: 400px;
 }
 
 .submit-btn {

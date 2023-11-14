@@ -102,7 +102,7 @@ const onSubmit = async () => {
 <style scoped lang="scss">
 .main-container {
   padding: 45px;
-  background-color: #f6f7f8;
+  background-color: white;
   border-radius: 10px;
   min-width: 550px;
   min-height: 500px;
