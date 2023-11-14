@@ -75,11 +75,11 @@ const signOut = async () => {
 
 <style scoped lang="scss">
 .logo-font {
-  font-size: 30px;
+  font-size: 25px;
 }
 
 .logo-icon {
-  font-size: 31px;
+  font-size: 30px;
   margin-bottom: 7px;
 }
 

@@ -34,12 +34,9 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="main-container">
-    <div class="form-outer-container">
-      <q-form
-        @submit="onSubmit"
-        class="form-container"
-      >
+  <q-header elevated height-hint="98">
+    <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar" style="display: flex; justify-content: space-between; align-items: center">
+      <div class="q-pl-xl">
         <div>
           <h5 class="q-ma-none" style="font-weight: bold">
             <span class="logo-font">F</span>
@@ -48,6 +45,16 @@ const onSubmit = async () => {
             <span class="logo-font">T</span>
           </h5>
         </div>
+      </div>
+    </q-toolbar>
+  </q-header>
+
+  <div class="main-container">
+    <div class="form-outer-container">
+      <q-form
+        @submit="onSubmit"
+        class="form-container"
+      >
         <h5 class="text-bold q-mt-none">로그인 정보를 입력해주세요.</h5>
 
         <q-input
@@ -103,12 +110,12 @@ const onSubmit = async () => {
 }
 
 .logo-font {
-  font-size: 30px;
+  font-size: 25px;
 }
 
 .logo-icon {
-  font-size: 37px;
-  margin-bottom: 10px;
+  font-size: 30px;
+  margin-bottom: 7px;
 }
 
 .submit-btn {
