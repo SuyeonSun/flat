@@ -38,11 +38,11 @@ public class PropertyController {
         return propertyService.selectList(email);
     }
 
-    // 전체 매물 조회
-    // /list?page=0&size=10&sort=propertyId,DESC
+    // TODO: 전체 매물 조회
+    // list?page=0&size=20&keyword="주차"&tradeTypeName="월세"&direction="남향"
     @GetMapping("/list")
-    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable) {
-        return propertyService.selectListAll(pageable);
+    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable, @RequestParam String searchKeyword) {
+        return propertyService.selectListAll(pageable, searchKeyword);
     }
 
     // 매물 상세 조회
