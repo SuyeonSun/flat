@@ -5,7 +5,10 @@ import {useAuthStore} from "stores/auth/auth-store";
 export const usePropertyStore = defineStore('propertyStore', {
   state: () => ({
     propertyDetail: undefined,
-    propertyList: []
+    propertyList: [],
+    pageable: {
+      totalPages: 0,
+    }
   }),
 
   actions: {
@@ -26,11 +29,12 @@ export const usePropertyStore = defineStore('propertyStore', {
       }
     },
 
-    async getPropertyList() {
+    async getPropertyList(pageablePayload) {
       try {
         // http://localhost:8000/property/list?page=0&size=10
-        const response = await api.get("/property/list?page=0&size=10");
-        this.propertyList = response.data.data;
+        const response = await api.get(`/property/list?page=${pageablePayload.page}&size=${pageablePayload.size}`);
+        this.propertyList = response.data.data.content;
+        this.pageable.totalPages = response.data.data.totalPages;
       } catch (error) {
         console.log("error")
       }

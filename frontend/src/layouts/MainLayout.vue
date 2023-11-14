@@ -23,10 +23,10 @@ const signOut = async () => {
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf" style="padding-left: 50px; padding-right: 50px">
     <q-header elevated height-hint="98">
-      <q-toolbar class="q-pt-md q-pb-sm q-px-xl tool-bar" style="display: flex; justify-content: space-between; align-items: center">
-        <div class="q-pl-md">
+      <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar" style="display: flex; justify-content: space-between; align-items: center">
+        <div class="q-pl-xl">
           <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
             <span class="logo-font">F</span>
             <span class="logo-font">L</span>
@@ -34,7 +34,7 @@ const signOut = async () => {
             <span class="logo-font">T</span>
           </h5>
         </div>
-        <div style="display: flex; align-items: center">
+        <div style="display: flex; align-items: center" class="q-pr-xl">
           <div class="q-mr-sm">
             <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
           </div>
@@ -44,14 +44,14 @@ const signOut = async () => {
         </div>
       </q-toolbar>
 
-      <q-tabs align="left" class="tabs q-px-xl">
+      <q-tabs align="left" style="padding-left: 80px">
         <q-route-tab to="/page1" label="Page One"/>
         <q-route-tab to="/page2" label="Page Two"/>
         <q-route-tab to="/my-page" label="마이 페이지"/>
       </q-tabs>
     </q-header>
 
-    <q-page-container class="q-px-xl ">
+    <q-page-container class="q-px-xl">
       <router-view/>
     </q-page-container>
 
