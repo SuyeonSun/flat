@@ -68,26 +68,35 @@ watch(() => direction.value, (newVal, oldVal) => {
 const goToDetailPage = (id) => {
   $router.push(`/property/${id}`)
 }
+
+const goToRegisterPage = () => {
+  $router.push("/property/register")
+}
 </script>
 
 <template>
   <q-page class="q-pa-xl">
     <!-- 검색 -->
-    <div class="row justify-end q-mb-lg">
-      <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm" style="width: 100px" label="거래 유형"/>
-      <q-select outlined v-model="direction" :options="directionOptions" stack-label dense class="q-mr-sm" style="width: 100px" label="방향 유형"/>
-
+    <div class="row justify-between items-center q-mb-lg">
+      <div>
+        <q-btn size="md" unelevated outline @click="goToRegisterPage">매물 등록</q-btn>
+      </div>
       <div class="row">
-        <q-input
-          v-model="searchKeyword"
-          dense
-          outlined
-          label="검색 키워드"
-        >
-          <template v-slot:append>
-            <q-icon name="search" @click="search"/>
-          </template>
-        </q-input>
+        <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm" style="width: 100px" label="거래 유형"/>
+        <q-select outlined v-model="direction" :options="directionOptions" stack-label dense class="q-mr-sm" style="width: 100px" label="방향 유형"/>
+
+        <div class="row">
+          <q-input
+            v-model="searchKeyword"
+            dense
+            outlined
+            label="검색 키워드"
+          >
+            <template v-slot:append>
+              <q-icon name="search" @click="search"/>
+            </template>
+          </q-input>
+        </div>
       </div>
     </div>
 

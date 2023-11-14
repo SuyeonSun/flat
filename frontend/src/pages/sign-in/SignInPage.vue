@@ -22,7 +22,7 @@ const onSubmit = async () => {
   }
   const response = await authStore.signIn(signInPayload);
   if (response) {
-    await $router.push("/test");
+    await $router.push("/property/main");
   } else {
     Notify.create({
       message: '유효하지 않은 회원 정보입니다.',
