@@ -87,8 +87,8 @@ public class PropertyService {
     }
 
     // TODO: 전체 매물 조회
-    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable, String searchKeyword) {
-        Page<Property> result = propertyRepository.findAll(pageable, searchKeyword);
+    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable, String searchKeyword, String tradeTypeName, String direction) {
+        Page<Property> result = propertyRepository.findAll(pageable, searchKeyword, tradeTypeName, direction);
         BaseResponseDto<Page<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
         return ResponseEntity.ok().body(baseResponseDto);
     }

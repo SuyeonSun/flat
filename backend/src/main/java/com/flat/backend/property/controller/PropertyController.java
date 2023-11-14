@@ -41,8 +41,8 @@ public class PropertyController {
     // TODO: 전체 매물 조회
     // list?page=0&size=20&keyword="주차"&tradeTypeName="월세"&direction="남향"
     @GetMapping("/list")
-    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable, @RequestParam String searchKeyword) {
-        return propertyService.selectListAll(pageable, searchKeyword);
+    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable, @RequestParam String searchKeyword, @RequestParam String tradeTypeName, @RequestParam String direction) {
+        return propertyService.selectListAll(pageable, searchKeyword, tradeTypeName, direction);
     }
 
     // 매물 상세 조회

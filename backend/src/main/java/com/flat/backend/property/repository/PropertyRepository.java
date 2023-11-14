@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PropertyRepository extends JpaRepository<Property, Long> {
-    @Query(value = "select * from properties p where p.title like concat('%', :searchKeyword, '%')", nativeQuery = true)
-    Page<Property> findAll(Pageable pageable, @Param("searchKeyword") String searchKeyword);
+    @Query(value = "select * from properties p where p.article_feature_desc like concat('%', :searchKeyword, '%') and p.trade_type_name like concat('%', :tradeTypeName, '%') and p.direction like concat('%', :direction, '%')",
+            nativeQuery = true)
+    Page<Property> findAll(Pageable pageable, @Param("searchKeyword") String searchKeyword, @Param("tradeTypeName") String tradeTypeName, @Param("direction") String direction);
 }
