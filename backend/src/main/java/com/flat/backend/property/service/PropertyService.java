@@ -86,9 +86,9 @@ public class PropertyService {
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll(Pageable pageable) {
+    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable) {
         Page<Property> result = propertyRepository.findAll(pageable);
-        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result.getContent());
+        BaseResponseDto<Page<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
         return ResponseEntity.ok().body(baseResponseDto);
     }
 

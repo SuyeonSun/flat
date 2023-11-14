@@ -41,7 +41,7 @@ public class PropertyController {
     // 전체 매물 조회
     // /list?page=0&size=10&sort=propertyId,DESC
     @GetMapping("/list")
-    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll(Pageable pageable) {
+    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable) {
         return propertyService.selectListAll(pageable);
     }
 
