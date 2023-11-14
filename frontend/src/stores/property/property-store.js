@@ -29,10 +29,10 @@ export const usePropertyStore = defineStore('propertyStore', {
       }
     },
 
-    async getPropertyList(pageablePayload) {
+    async getPropertyList(pageablePayload, searchPayload) {
       try {
-        // http://localhost:8000/property/list?page=0&size=10
-        const response = await api.get(`/property/list?page=${pageablePayload.page}&size=${pageablePayload.size}`);
+        // ?page=0&size=20&searchKeyword=&tradeTypeName=&direction=남향
+        const response = await api.get(`/property/list?page=${pageablePayload.page}&size=${pageablePayload.size}&searchKeyword=${searchPayload.searchKeyword}&tradeTypeName=${searchPayload.tradeTypeName}&direction=${searchPayload.direction}`);
         this.propertyList = response.data.data.content;
         this.pageable.totalPages = response.data.data.totalPages;
       } catch (error) {
