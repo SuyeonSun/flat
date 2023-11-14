@@ -74,16 +74,15 @@ const goToDetailPage = (id) => {
   <q-page class="q-pa-xl">
     <!-- 검색 -->
     <div class="row justify-end q-mb-lg">
-      <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense />
-      <q-select outlined v-model="direction" :options="directionOptions" stack-label dense />
-
+      <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm" style="width: 100px" label="거래 유형"/>
+      <q-select outlined v-model="direction" :options="directionOptions" stack-label dense class="q-mr-sm" style="width: 100px" label="방향 유형"/>
 
       <div class="row">
         <q-input
           v-model="searchKeyword"
           dense
           outlined
-          placeholder="예) 주차"
+          label="검색 키워드"
         >
           <template v-slot:append>
             <q-icon name="search" @click="search"/>

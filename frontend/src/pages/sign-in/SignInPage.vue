@@ -8,8 +8,8 @@ import {useTestStore} from "stores/test/test-store";
 
 const authStore = useAuthStore();
 
-const email = ref(undefined);
-const password = ref(undefined);
+const email = ref("");
+const password = ref("");
 
 const $router = useRouter();
 const testStore = useTestStore();
@@ -56,14 +56,23 @@ const onSubmit = async () => {
           dense
           outlined
           class="q-mb-md"
-        />
+        >
+          <template v-slot:append>
+            <q-icon v-if="email !== ''" name="close" @click="email = ''"/>
+          </template>
+        </q-input>
 
         <q-input
           v-model="password"
           label="비밀번호"
           dense
           outlined
-        />
+          type="password"
+        >
+          <template v-slot:append>
+            <q-icon v-if="password !== ''" name="close" @click="password = ''"/>
+          </template>
+        </q-input>
 
         <q-btn label="로그인" type="submit" class="full-width q-mt-lg q-mb-lg submit-btn"/>
 
