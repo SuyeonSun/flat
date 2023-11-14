@@ -35,7 +35,7 @@ const onSubmit = async () => {
 
 <template>
   <q-header elevated height-hint="98">
-    <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar" style="display: flex; justify-content: space-between; align-items: center">
+    <q-toolbar class="q-pt-md q-px-xl q-pb-sm" style="display: flex; justify-content: space-between; align-items: center; background-color: #FFFFFF">
       <div class="q-pl-xl">
         <div>
           <h5 class="q-ma-none" style="font-weight: bold">
@@ -49,55 +49,63 @@ const onSubmit = async () => {
     </q-toolbar>
   </q-header>
 
-  <div class="main-container">
-    <div class="form-outer-container">
-      <q-form
-        @submit="onSubmit"
-        class="form-container"
-      >
-        <h5 class="text-bold q-mt-none">로그인 정보를 입력해주세요.</h5>
-
-        <q-input
-          v-model="email"
-          label="이메일"
-          dense
-          outlined
-          class="q-mb-md"
+  <div>
+    <div class="main-container">
+      <div class="form-outer-container">
+        <q-form
+          @submit="onSubmit"
+          class="form-container"
         >
-          <template v-slot:append>
-            <q-icon v-if="email !== ''" name="close" @click="email = ''"/>
-          </template>
-        </q-input>
+          <h5 class="q-mt-none" style="font-weight: bold">로그인</h5>
+          <q-btn label="메인 계정" unelevated class="q-mb-md" style="color: #117CE9; border: 2px solid #117CE9; min-width: 145px; background-color: #F0F0F0"/>
 
-        <q-input
-          v-model="password"
-          label="비밀번호"
-          dense
-          outlined
-          type="password"
-        >
-          <template v-slot:append>
-            <q-icon v-if="password !== ''" name="close" @click="password = ''"/>
-          </template>
-        </q-input>
+          <q-input
+            v-model="email"
+            label="아이디(이메일)를 입력해 주십시오."
+            dense
+            outlined
+            class="q-mb-md"
+          >
+            <template v-slot:append>
+              <q-icon v-if="email !== ''" name="close" @click="email = ''"/>
+            </template>
+          </q-input>
 
-        <q-btn label="로그인" type="submit" class="full-width q-mt-lg q-mb-lg submit-btn"/>
+          <q-input
+            v-model="password"
+            label="비밀번호를 입력해 주십시오."
+            dense
+            outlined
+            type="password"
+            class="q-mb-sm"
+          >
+            <template v-slot:append>
+              <q-icon v-if="password !== ''" name="close" @click="password = ''"/>
+            </template>
+          </q-input>
+          <div class="row items-center">
+            <input type="checkbox" class="q-mr-sm"/>
+            <label style="padding-top: 3px">아이디 저장</label>
+          </div>
 
-        <div class="text-subtitle1 text-center q-ma-none text">
-          가입이 필요하신가요? <a href="/sign-up" style="text-decoration: none;" class="text"> | 회원가입 </a>
-        </div>
-      </q-form>
+          <q-btn label="로그인" type="submit" class="full-width q-mt-lg q-mb-lg submit-btn"/>
+
+          <div class="text-subtitle1 q-ma-none text">
+            <a href="/sign-up" style="text-decoration: none; color: #117CE9; font-size: 15px; font-weight: bold" class="text"> 회원가입 </a>
+          </div>
+        </q-form>
+      </div>
     </div>
-
   </div>
 </template>
 
 <style scoped lang="scss">
 .main-container {
-  padding: 80px;
-  background-color: white;
+  padding: 45px;
+  background-color: #f6f7f8;
   border-radius: 10px;
-  width: 60%;
+  min-width: 550px;
+  min-height: 500px;
 }
 
 .form-outer-container {
@@ -106,14 +114,16 @@ const onSubmit = async () => {
 }
 
 .form-container {
-  min-width: 300px;
+  min-width: 400px;
 }
 
 .logo-font {
+  color: black;
   font-size: 25px;
 }
 
 .logo-icon {
+  color: black;
   font-size: 30px;
   margin-bottom: 7px;
 }
