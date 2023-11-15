@@ -44,7 +44,7 @@ const signOut = async () => {
         </div>
       </q-toolbar>
 
-      <q-tabs align="left" style="padding-left: 80px; background-color: black">
+      <q-tabs align="left" style="padding-left: 80px; background-color: #14ADEA">
         <q-route-tab to="/property/main" label="메인"/>
         <q-route-tab to="/property/map" label="지도"/>
         <q-route-tab to="/property/list" label="매물"/>
