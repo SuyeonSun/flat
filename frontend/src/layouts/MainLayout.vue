@@ -55,22 +55,21 @@ const signOut = async () => {
     <q-page-container class="q-px-xl">
       <router-view/>
     </q-page-container>
-
-    <q-footer elevated class="footer full-width q-py-lg q-px-md">
-      <div class="q-pl-lg">
-        <div class="row items-center">
-          <div class="text-subtitle1 text-bold q-mr-sm">FLAT</div>
-          <div style="font-size: 13px">서비스 이용약관 | 개인정보처리방침 | 인재채용 | 제휴 문의</div>
-        </div>
-        <div class="row q-mb-xs" style="font-size: 13px">
-          <div class="q-mr-sm">사업자등록번호: 123-45-67899</div>
-          <div>전화문의 1234-5678</div>
-        </div>
-        <div class="q-mb-xs" style="font-size: 13px">주소: 서울특별시 강남구 역삼동 테헤란로 212</div>
-        <div style="font-size: 13px">© FLAT. All Rights Reserved.</div>
-      </div>
-    </q-footer>
   </q-layout>
+  <div elevated class="footer full-width q-py-lg q-px-md">
+    <div class="q-pl-lg">
+      <div class="row items-center">
+        <div class="text-subtitle1 text-bold q-mr-sm">FLAT</div>
+        <div style="font-size: 13px">서비스 이용약관 | 개인정보처리방침 | 인재채용 | 제휴 문의</div>
+      </div>
+      <div class="row q-mb-xs" style="font-size: 13px">
+        <div class="q-mr-sm">사업자등록번호: 123-45-67899</div>
+        <div>전화문의 1234-5678</div>
+      </div>
+      <div class="q-mb-xs" style="font-size: 13px">주소: 서울특별시 강남구 역삼동 테헤란로 212</div>
+      <div style="font-size: 13px">© FLAT. All Rights Reserved.</div>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
