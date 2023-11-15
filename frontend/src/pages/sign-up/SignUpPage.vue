@@ -91,7 +91,7 @@ const onSubmit = async () => {
 
           <q-input
             v-model="email"
-            label="이메일"
+            label="이메일을 입력해 주십시오."
             dense
             outlined
             class="q-mb-md"
@@ -99,7 +99,7 @@ const onSubmit = async () => {
 
           <q-input
             v-model="name"
-            label="이름"
+            label="이름을 입력해 주십시오."
             dense
             outlined
             class="q-mb-md"
@@ -107,7 +107,7 @@ const onSubmit = async () => {
 
           <q-input
             v-model="password"
-            label="비밀번호"
+            label="비밀번호를 입력해 주십시오."
             dense
             outlined
             class="q-mb-md"
@@ -115,13 +115,13 @@ const onSubmit = async () => {
 
           <q-file
             v-model="profile"
-            label="프로필"
+            label="프로필을 등록해 주십시오."
             outlined
             dense
             class="q-mb-md"
           >
             <template v-slot:append>
-              <q-icon name="apple"/>
+              <q-icon name="folder" size="sm"/>
             </template>
           </q-file>
 
@@ -132,12 +132,13 @@ const onSubmit = async () => {
             dense
             outlined
             readonly
-            label="주소"
-          />
+            label="주소를 검색해 주십시오."
+          >
+          </q-input>
 
           <q-input
             v-model="phoneNumber"
-            label="전화번호"
+            label="전화번호를 입력해 주십시오."
             dense
             outlined
           />

@@ -53,7 +53,10 @@ const clickOkBtn = () => {
 <template>
   <q-dialog v-model="props.isOpenSearchAddressDialog" persistent>
     <q-card class="q-pa-lg dialog-container">
-      <h5 class="text-bold q-ma-none">주소를 검색해주세요.</h5>
+      <div class="row justify-between items-center">
+        <h6 class="text-bold q-ma-none">주소를 검색해주세요.</h6>
+        <q-icon name="close" size="sm" @click="closeDialog"/>
+      </div>
       <q-card-section class="q-px-none">
         <q-input
           v-model="search"
@@ -67,6 +70,7 @@ const clickOkBtn = () => {
         </q-input>
 
         <q-list bordered seperator v-if="addresses?.length > 0">
+          <div class="q-ml-md q-mt-md" style="text-decoration: none; color: #14ADEA; font-size: 13px; font-weight: bold"> 자동완성 검색어 </div>
           <q-item v-for="(address) in addresses" clickable v-ripple @click="clickAddress(address)">
             <q-item-section>
               <q-item-label>{{address.roadAddress}}</q-item-label>
@@ -78,7 +82,6 @@ const clickOkBtn = () => {
       </q-card-section>
       <q-card-actions align="right">
         <q-btn label="확인" @click="clickOkBtn" class="confirm-btn"/>
-        <q-btn label="취소" @click="closeDialog" class="cancel-btn"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
