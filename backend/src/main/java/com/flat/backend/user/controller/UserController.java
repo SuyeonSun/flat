@@ -4,6 +4,8 @@ import com.flat.backend.common.BaseException;
 import com.flat.backend.common.BaseResponseStatus;
 import com.flat.backend.friends.dto.SendReqDto;
 import com.flat.backend.friends.repository.entity.ReqFriendDto;
+import com.flat.backend.user.dto.req.ChangeAddressDto;
+import com.flat.backend.user.dto.req.ChangeProfileDto;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -108,4 +111,33 @@ public class UserController {
         return ResponseEntity.ok()
                 .body(response);
     }
+
+    @Transactional
+    @ResponseBody
+    @PostMapping("/address")
+    public ResponseEntity<?> changeAddress(@RequestBody ChangeAddressDto changeAddressDto) {
+        User user = userRepository.findByEmail(changeAddressDto.getEmail()).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+
+        user.setAddress(changeAddressDto.getAddress());
+        user.setAddressLat(changeAddressDto.getLat());
+        user.setAddressLng(changeAddressDto.getLng());
+
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @Transactional
+    @ResponseBody
+    @PostMapping("/change-profile")
+    public ResponseEntity<?> changeProfile(@RequestBody ChangeProfileDto changeProfileDto) {
+        User user = userRepository.findByEmail(changeProfileDto.getEmail()).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+
+        user.setProfile(changeProfileDto.getProfile());
+
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
 }

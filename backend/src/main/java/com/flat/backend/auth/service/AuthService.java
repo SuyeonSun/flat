@@ -1,9 +1,7 @@
 package com.flat.backend.auth.service;
 
-import com.flat.backend.auth.dto.req.ReIssueReqDto;
-import com.flat.backend.auth.dto.req.SignInReqDto;
-import com.flat.backend.auth.dto.req.SignOutReqDto;
-import com.flat.backend.auth.dto.req.SignUpReqDto;
+import com.amazonaws.Response;
+import com.flat.backend.auth.dto.req.*;
 import com.flat.backend.auth.dto.res.ReIssueResDto;
 import com.flat.backend.auth.dto.res.SignInResDto;
 import com.flat.backend.common.BaseException;
@@ -127,5 +125,28 @@ public class AuthService {
         return ResponseEntity
                 .ok()
                 .body(baseResponseDto);
+    }
+
+    // 비밀번호 변경
+    @Transactional
+    public ResponseEntity<BaseResponseDto<?>> changePassword(ChangePwdDto changePwdDto) {
+        User user = userRepository.findByEmail(changePwdDto.getEmail()).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+        if(!passwordEncoder.matches(changePwdDto.getPrevPwd(), user.getPassword())) {
+            return ResponseEntity
+                    .ok()
+                    .body(new BaseResponseDto<>(BaseResponseStatus.INVALID_USER_PASSWORD.getStatusCode(), BaseResponseStatus.INVALID_USER_PASSWORD.getStatusMessage()));
+        }
+
+        if(passwordEncoder.matches(changePwdDto.getNewPwd(), user.getPassword())) {
+            return ResponseEntity
+                    .ok()
+                    .body(new BaseResponseDto<>(BaseResponseStatus.SAME_PASSWORD_ERROR.getStatusCode(), BaseResponseStatus.SAME_PASSWORD_ERROR.getStatusMessage()));
+        }
+
+        user.setPassword(passwordEncoder.encode(changePwdDto.getNewPwd()));
+
+        return ResponseEntity
+                .ok()
+                .body(new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage()));
     }
 }

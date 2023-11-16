@@ -118,6 +118,7 @@ const onSubmit = async () => {
             label="프로필을 등록해 주십시오."
             outlined
             dense
+
             class="q-mb-md"
           >
             <template v-slot:append>

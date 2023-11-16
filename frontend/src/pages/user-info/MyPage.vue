@@ -3,9 +3,10 @@ import { ref, watch, onMounted } from 'vue';
 import {useAuthStore} from "stores/auth/auth-store";
 import {useUserStore} from "stores/user/user-store";
 import {useChatStore} from "stores/chat/chat-store";
-import friendRequest from "pages/FriendRequest.vue";
-import addForm from "pages/FriendAddForm.vue"
+import friendRequest from "pages/friend/FriendRequest.vue";
+import addForm from "pages/friend/FriendAddForm.vue"
 import ChatRoomDetail from "pages/chat/ChatRoomDetail.vue";
+import userInfo from "pages/user-info/UserInfo.vue";
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
@@ -13,8 +14,9 @@ const chatStore = useChatStore()
 
 const tab = ref('likes')
 
-onMounted(() => {
-  userStore.getUserInfo(authStore.$state.email)
+onMounted(async () => {
+  await userStore.getUserInfo(authStore.$state.email)
+  console.log("@@@@@@", userStore.$state.user)
 })
 
 watch(tab, async (n) => {
@@ -44,6 +46,9 @@ const enterRoom = (room) => {
 </script>
 
 <template>
+  <main>
+    <user-info/>
+  </main>
   <div class="q-pa-md">
     <div class="q-gutter-y-md" style="max-width: 90%">
       <q-card>
@@ -76,6 +81,9 @@ const enterRoom = (room) => {
           </q-tab-panel>
 
           <q-tab-panel name="friends">
+            <div>
+              친구 수 : {{userStore.$state.friends.length}}
+            </div>
             <div class="row justify-between">
               <div class="q-pa-md row items-start q-gutter-md">
                 <q-card v-for="friend in userStore.$state.friends" :key="friend" class="my-card">
