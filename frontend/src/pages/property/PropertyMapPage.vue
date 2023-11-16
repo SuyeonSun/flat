@@ -3,16 +3,28 @@ import {onMounted, ref, watch} from "vue";
 import {usePropertyStore} from "stores/property/property-store";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
+import {useAuthStore} from "stores/auth/auth-store";
+import {useUserStore} from "stores/user/user-store";
 
 const $router = useRouter();
 
 const propertyStore = usePropertyStore();
+const authStore = useAuthStore();
+const userStore = useUserStore();
+
 const {mapList} = storeToRefs(propertyStore);
+const {email} = storeToRefs(authStore);
+const {user, friends} = storeToRefs(userStore); // user.id
 
 let map;
 let markers = [];
 
+const isToggle = ref(false)
+
 onMounted(async () => {
+  await userStore.getUserInfo(email.value);
+  await userStore.findFriends(user.value.id);
+
   const searchPayload = {
     address: address.value,
     tradeTypeName: tradeTypeName.value.value
@@ -21,6 +33,7 @@ onMounted(async () => {
 })
 
 watch(() => mapList.value, (newVal, oldVal) => {
+  markers = []
   mapList.value = newVal;
   const script = document.createElement("script");
   script.src =
@@ -50,7 +63,38 @@ watch(() => mapList.value, (newVal, oldVal) => {
       });
       markers.push(marker);
     })
+
+    // isToggle.value가 true라면 친구 marker 추가
+    if (isToggle.value) {
+      friends.value.forEach((friend) => {
+        let marker = new naver.maps.Marker({
+          position: new naver.maps.LatLng(friend.addressLat, friend.addressLng),
+          map: map
+        });
+        markers.push(marker);
+      })
+    }
   };
+})
+
+watch(() => isToggle.value, (newVal, oldVal) => {
+  if (newVal) {
+    friends.value.forEach((friend) => {
+      let marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(friend.addressLat, friend.addressLng),
+        map: map
+      });
+      markers.push(marker);
+    })
+  } else {
+    // 토글 해제 시, 친구 marker 제거
+    markers = []
+    const searchPayload = {
+      address: address.value,
+      tradeTypeName: tradeTypeName.value.value
+    }
+    propertyStore.getMapList(searchPayload);
+  }
 })
 
 const contentStyle = {
@@ -66,8 +110,8 @@ const contentActiveStyle = {
 const thumbStyle = {
   right: '2px',
   borderRadius: '5px',
-  backgroundColor: '#027be3',
-  width: '5px',
+  backgroundColor: '#F0F0F0',
+  width: '10px',
   opacity: '0.75'
 }
 
@@ -105,19 +149,30 @@ const clickProperty = (mapId) => {
       <!-- 검색 바-->
       <!-- address, tradeTypeName -->
       <div class="q-pa-lg">
-        <div class="row">
-          <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
-                    style="width: 100px" label="거래 유형"/>
-          <q-input
-            v-model="address"
-            dense
-            outlined
-            label="검색할 매물 주소"
-          >
-            <template v-slot:append>
-              <q-icon name="search"/>
-            </template>
-          </q-input>
+        <div class="row justify-between items-center">
+          <div class="row">
+            <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
+                      style="width: 100px" label="거래 유형"/>
+            <q-input
+              v-model="address"
+              dense
+              outlined
+              label="검색할 매물 주소"
+            >
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+          </div>
+          <div>
+            <q-toggle
+              v-model="isToggle"
+              checked-icon="person"
+              color="red"
+              label="친구 집 위치도 함께 표시할래요"
+              unchecked-icon="clear"
+            />
+          </div>
         </div>
         <div class="row justify-between">
           <q-item-label caption class="q-mt-xs">검색 조건을 변경 시, 자동 검색 됩니다.</q-item-label>
@@ -173,6 +228,5 @@ const clickProperty = (mapId) => {
         </div>
       </div>
     </div>
-
   </q-page>
 </template>
