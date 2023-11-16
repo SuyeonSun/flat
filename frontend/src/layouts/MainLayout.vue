@@ -23,7 +23,7 @@ const signOut = async () => {
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf" style="padding-left: 50px; padding-right: 50px">
+  <q-layout view="hHh lpR fFf">
     <q-header elevated height-hint="98">
       <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar" style="display: flex; justify-content: space-between; align-items: center">
         <div class="q-pl-xl">
@@ -52,7 +52,7 @@ const signOut = async () => {
       </q-tabs>
     </q-header>
 
-    <q-page-container class="q-px-xl">
+    <q-page-container>
       <router-view/>
     </q-page-container>
   </q-layout>
