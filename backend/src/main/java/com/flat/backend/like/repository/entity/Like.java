@@ -1,5 +1,6 @@
 package com.flat.backend.like.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.user.repository.entity.User;
 import jakarta.persistence.*;
@@ -23,6 +24,7 @@ public class Like {
     @JoinColumn(name = "property_id")
     private Property property;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -62,6 +62,7 @@ public class User {
     @OneToMany(mappedBy = "receiverId", cascade = CascadeType.ALL)
     private List<ReqFriendDto> receivedFriendRequests = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Like> likes = new ArrayList<>();
 }
