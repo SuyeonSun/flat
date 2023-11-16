@@ -8,7 +8,8 @@ export const usePropertyStore = defineStore('propertyStore', {
     propertyList: [],
     pageable: {
       totalPages: 0,
-    }
+    },
+    mapList: []
   }),
 
   actions: {
@@ -44,6 +45,16 @@ export const usePropertyStore = defineStore('propertyStore', {
       try {
         const response = await api.post("/like", likePayload);
         return response.data.data;
+      } catch (error) {
+        console.log("error");
+      }
+    },
+
+    async getMapList() {
+      try {
+        const response = await api.get("/property/map");
+        this.mapList = response.data.data;
+
       } catch (error) {
         console.log("error");
       }
