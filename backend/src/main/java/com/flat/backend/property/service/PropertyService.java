@@ -1,5 +1,6 @@
 package com.flat.backend.property.service;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.flat.backend.common.BaseException;
 import com.flat.backend.common.BaseResponseStatus;
 import com.flat.backend.common.dto.BaseResponseDto;
@@ -131,6 +132,12 @@ public class PropertyService {
                 .likeCount(likeCount)
                 .build();
         BaseResponseDto<DetailResDto> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), detailResDto);
+        return ResponseEntity.ok().body(baseResponseDto);
+    }
+
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectMapList (String address, String tradeTypeName) {
+        List<Property> propertyList = propertyRepository.findMapList(address, tradeTypeName);
+        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), propertyList);
         return ResponseEntity.ok().body(baseResponseDto);
     }
 }

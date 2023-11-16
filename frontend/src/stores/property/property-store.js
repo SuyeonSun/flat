@@ -50,9 +50,9 @@ export const usePropertyStore = defineStore('propertyStore', {
       }
     },
 
-    async getMapList() {
+    async getMapList(searchPayload) {
       try {
-        const response = await api.get("/property/map");
+        const response = await api.get(`/property/map?address=${searchPayload.address}&tradeTypeName=${searchPayload.tradeTypeName}`);
         this.mapList = response.data.data;
 
       } catch (error) {

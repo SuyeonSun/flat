@@ -52,7 +52,8 @@ public class PropertyController {
     }
 
     // 지도에 사용할 매물 리스트 조회
-    // @GetMapping("/map")
-    // PropertyReqDto : address, tradeTypeName, article_feature_desc
-    // PropertyResDto :
+    @GetMapping("/map")
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectMapList(@RequestParam String address, @RequestParam String tradeTypeName) {
+        return propertyService.selectMapList(address, tradeTypeName);
+    }
 }

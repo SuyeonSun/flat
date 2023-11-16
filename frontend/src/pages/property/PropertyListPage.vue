@@ -75,7 +75,7 @@ const goToRegisterPage = () => {
 </script>
 
 <template>
-  <q-page class="q-pa-xl">
+  <q-page class="q-pa-xl" style="padding-left: 200px; padding-right: 200px;">
     <!-- 검색 -->
     <div class="row justify-between items-center q-mb-lg">
       <div>
