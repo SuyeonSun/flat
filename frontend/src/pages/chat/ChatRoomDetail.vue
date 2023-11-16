@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import {useChatStore} from "stores/chat/chat-store";
 import {useUserStore} from "stores/user/user-store";
 import moment from "moment"
@@ -17,8 +17,8 @@ const input = ref('');
 const receiverProfile = ref('')
 const scrollRef = ref(null)
 
-const sendMsg = () => {
-  chatStore.sendMessage(input.value);
+const sendMsg = async () => {
+  await chatStore.sendMessage(input.value);
   input.value='';
 };
 
@@ -37,14 +37,20 @@ const getGap = (date) => {
   return res
 }
 
-
-
 onMounted(async () => {
   await chatStore.readyToChat();
   const response = await userStore.getUserProfile(chatStore.$state.receiver)
   receiverProfile.value = response.data
-  scrollRef.value.setScrollPercentage('vertical', 1)
+  await scrollRef.value.setScrollPercentage('vertical', 1)
+  console.log("~!~!~@~!@", scrollRef.value.getScrollPosition())
 })
+
+watch(() => chatStore.$state.messages, (newVal, oldVal) => {
+  console.log("######", scrollRef.value.getScroll())
+}, {
+  deep: true
+  }
+)
 </script>
 
 <template>
