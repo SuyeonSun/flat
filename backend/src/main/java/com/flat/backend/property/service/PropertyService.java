@@ -3,6 +3,9 @@ package com.flat.backend.property.service;
 import com.flat.backend.common.BaseException;
 import com.flat.backend.common.BaseResponseStatus;
 import com.flat.backend.common.dto.BaseResponseDto;
+import com.flat.backend.like.repository.LikeRepository;
+import com.flat.backend.like.repository.entity.Like;
+import com.flat.backend.property.dto.req.DetailReqDto;
 import com.flat.backend.property.dto.req.RegisterReqDto;
 import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.PropertyRepository;
@@ -11,6 +14,8 @@ import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +32,7 @@ import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
 public class PropertyService {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
+    private final LikeRepository likeRepository;
 
     public ResponseEntity<BaseResponseDto<?>> register(String email, RegisterReqDto registerReqDto) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
@@ -80,15 +86,24 @@ public class PropertyService {
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public ResponseEntity<BaseResponseDto<List<Property>>> selectListAll() {
-        List<Property> result = propertyRepository.findAll();
-        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
+    public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable, String searchKeyword, String tradeTypeName, String direction) {
+        Page<Property> result = propertyRepository.findAll(pageable, searchKeyword, tradeTypeName, direction);
+        BaseResponseDto<Page<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public ResponseEntity<BaseResponseDto<DetailResDto>> selectDetail(Long propertyId) {
+    public ResponseEntity<BaseResponseDto<DetailResDto>> selectDetail(Long propertyId, String email) {
         Property property = propertyRepository.findById(propertyId).orElseThrow();
-        User user = property.getUser();
+        User writer = property.getUser();
+        User user = userRepository.findByEmail(email).orElseThrow();
+
+        Like like = likeRepository.findByUserIdAndPropertyId(user.getId(), propertyId);
+        Boolean isUserLiked;
+        if (like == null) isUserLiked = false;
+        else isUserLiked = true;
+        List<Like> likes = likeRepository.findByPropertyId(propertyId);
+        int likeCount = likes.size();
+
         DetailResDto detailResDto = DetailResDto.builder()
                 .title(property.getTitle())
                 .image(property.getImage())
@@ -109,9 +124,11 @@ public class PropertyService {
                 .averageHeatPrice(property.getAverageHeatPrice())
                 .area1(property.getArea1())
                 .area2(property.getArea2())
-                .name(user.getName())
-                .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
+                .name(writer.getName())
+                .email(writer.getEmail())
+                .phoneNumber(writer.getPhoneNumber())
+                .isUserLiked(isUserLiked)
+                .likeCount(likeCount)
                 .build();
         BaseResponseDto<DetailResDto> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), detailResDto);
         return ResponseEntity.ok().body(baseResponseDto);

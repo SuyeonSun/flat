@@ -1,6 +1,7 @@
 package com.flat.backend.user.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.flat.backend.like.repository.entity.Like;
 import com.flat.backend.property.repository.entity.Property;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flat.backend.friends.repository.entity.Friends;
@@ -61,4 +62,7 @@ public class User {
     @OneToMany(mappedBy = "receiverId", cascade = CascadeType.ALL)
     private List<ReqFriendDto> receivedFriendRequests = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Like> likes = new ArrayList<>();
 }

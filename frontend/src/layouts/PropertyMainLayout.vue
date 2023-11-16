@@ -23,11 +23,12 @@ const signOut = async () => {
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf" style="padding-left: 50px; padding-right: 50px">
-    <q-header elevated height-hint="98">
-      <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar" style="display: flex; justify-content: space-between; align-items: center">
+  <q-layout view="hHh lpR fFf">
+    <q-header height-hint="98" style="background: transparent">
+      <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar"
+                 style="display: flex; justify-content: space-between; align-items: center">
         <div class="q-pl-xl">
-          <h5 class="q-ma-none" style="font-weight: bold">
+          <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
             <span class="logo-font">F</span>
             <span class="logo-font">L</span>
             <q-icon name="house" class="logo-icon"/>
@@ -39,12 +40,12 @@ const signOut = async () => {
             <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
           </div>
           <div>
-            <q-btn size="md" unelevated outline @click="signOut()" class="bg-black text-white">로그아웃</q-btn>
+            <q-btn size="md" unelevated outline @click="signOut()">로그아웃</q-btn>
           </div>
         </div>
       </q-toolbar>
 
-      <q-tabs align="left" style="padding-left: 80px; background-color: #14ADEA">
+      <q-tabs align="left" style="padding-left: 80px;">
         <q-route-tab to="/property/main" label="메인"/>
         <q-route-tab to="/property/map" label="지도"/>
         <q-route-tab to="/property/list" label="매물"/>
@@ -52,7 +53,17 @@ const signOut = async () => {
       </q-tabs>
     </q-header>
 
-    <q-page-container class="q-px-xl">
+    <div class="">
+      <div class="row justify-between">
+        <q-parallax
+          src="images/wallpaper.jpg"
+        >
+          <h3 class="text-white">Basic</h3>
+        </q-parallax>
+      </div>
+    </div>
+
+    <q-page-container>
       <router-view/>
     </q-page-container>
   </q-layout>
@@ -82,11 +93,6 @@ const signOut = async () => {
   margin-bottom: 7px;
 }
 
-.tool-bar {
-  background-color: white;
-  color: black;
-}
-
 .tabs {
   color: white;
 }
@@ -96,5 +102,3 @@ const signOut = async () => {
   color: #b3b1b1;
 }
 </style>
-
-
