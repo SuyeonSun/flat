@@ -16,7 +16,6 @@ const tab = ref('likes')
 
 onMounted(async () => {
   await userStore.getUserInfo(authStore.$state.email)
-  console.log("@@@@@@", userStore.$state.user)
 })
 
 watch(tab, async (n) => {
@@ -28,7 +27,6 @@ watch(tab, async (n) => {
 watch(tab, async (n) => {
   if(n === 'chats') {
     await chatStore.findRooms(authStore.$state.name)
-    console.log("@@@@@@@@", chatStore.$state.myRooms)
   }
 })
 

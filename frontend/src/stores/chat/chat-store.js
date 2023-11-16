@@ -94,7 +94,6 @@ export const useChatStore = defineStore('chatStore', {
         roomId: this.roomId
       });
       this.messages = res.data;
-      console.log("message@@@@@@@@@", this.messages)
     },
 
     connectWebSocket() {

@@ -41,16 +41,20 @@ onMounted(async () => {
   await chatStore.readyToChat();
   const response = await userStore.getUserProfile(chatStore.$state.receiver)
   receiverProfile.value = response.data
-  await scrollRef.value.setScrollPercentage('vertical', 1)
-  console.log("~!~!~@~!@", scrollRef.value.getScrollPosition())
+  scrollRef.value.setScrollPercentage('vertical', 1)
 })
 
-watch(() => chatStore.$state.messages, (newVal, oldVal) => {
-  console.log("######", scrollRef.value.getScroll())
-}, {
-  deep: true
+// 스크롤 맨 아래로 유지
+watch(() => {
+  if(scrollRef.value && scrollRef.value.getScroll().verticalPercentage !== 1) {
+    scrollRef.value.getScroll().verticalPercentage
+  }},  () => {
+    scrollRef.value.setScrollPercentage('vertical', 1)
+  }, {
+    deep: true
   }
 )
+
 </script>
 
 <template>
@@ -90,7 +94,7 @@ watch(() => chatStore.$state.messages, (newVal, oldVal) => {
             <q-page padding>
               <div class="row justify-center">
                 <div style="width: 100%; max-width: 400px">
-                  <div v-for="message in chatStore.$state.messages" :key="message">
+                  <div v-for="(message, index) in chatStore.$state.messages" :key="message">
                     <q-chat-message
                       v-if="message.sender === chatStore.$state.sender"
                       :name=message.sender
