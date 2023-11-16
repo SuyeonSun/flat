@@ -8,6 +8,7 @@ export const useUserStore = defineStore('userStore', {
     friends: [],
     reqDialog: false,
     addFormDialog: false,
+    changePwdDialog: false,
     recvRequests: [],
     sendRequests: [],
 
@@ -142,6 +143,21 @@ export const useUserStore = defineStore('userStore', {
 
     clear() {
       this.reqDialog = false
+    },
+
+    // 프로필 변경
+    async changeProfile(changeProfileRequest) {
+      return await api.post('/user/change-profile', changeProfileRequest)
+    },
+
+    // 비밀번호 변경
+    async changePassword(changePwdRequest) {
+      return await api.post('/auth/change-password', changePwdRequest)
+    },
+
+    // 주소 변경
+    async changeAddress(changeAddressRequest) {
+      return await api.post('/user/address', changeAddressRequest)
     },
   },
 })

@@ -18,7 +18,7 @@ const routes = [
       { path: '/property/register', component: () => import('pages/property/RegisterPropertyPage')},
       { path: '/property/list', component: () => import('pages/property/PropertyListPage.vue')},
       { path: '/property/:propertyId', component: () => import('pages/property/PropertyDetailPage')},
-      { path: '/my-page', component: () => import('pages/MyPage.vue')}
+      { path: '/my-page', component: () => import('pages/user-info/MyPage.vue')}
     ]
   },
   {

@@ -91,7 +91,7 @@ const sendReq = async (senderId, receiverId) => {
               <q-card-section>
                 <div class="text-subtitle2">name : {{searchUser.name}}</div>
                 <div class="text-subtitle2">email : {{searchUser.email}}</div>
-                <div class="text-subtitle2">address : {{searchUser.address === null ? 'null' : friend.address}}</div>
+                <div class="text-subtitle2">address : {{searchUser.address === null ? 'null' : searchUser.address}}</div>
                 <q-btn v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)">요청 보내기</q-btn>
                 <div v-else-if="friendState === 1" class="text-subtitle2">이미 친구 입니다.</div>
                 <div v-else class="text-subtitle2">요청 대기중</div>

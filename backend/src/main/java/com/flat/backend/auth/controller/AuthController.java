@@ -1,5 +1,6 @@
 package com.flat.backend.auth.controller;
 
+import com.flat.backend.auth.dto.req.ChangePwdDto;
 import com.flat.backend.common.dto.BaseResponseDto;
 import com.flat.backend.auth.dto.req.SignInReqDto;
 import com.flat.backend.auth.dto.req.SignOutReqDto;
@@ -28,5 +29,10 @@ public class AuthController {
     @PostMapping("/sign-out")
     public void signOut(@RequestBody SignOutReqDto signOutDto) {
         authService.signOut(signOutDto);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePwdDto changePwdDto) {
+        return authService.changePassword(changePwdDto);
     }
 }
