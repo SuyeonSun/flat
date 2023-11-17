@@ -107,7 +107,7 @@ const goToRegisterPage = () => {
     <!-- 목록 -->
     <div class="row justify-center">
       <div v-for="property in propertyList" class="q-ma-md col-3">
-        <q-card @click="goToDetailPage(property.id)" style="min-height: 400px">
+        <q-card @click="goToDetailPage(property.id)" style="min-height: 400px" class="property-card">
           <q-img :src="property.image === null ? 'https://flat-bucket.s3.ap-northeast-2.amazonaws.com/6b1b1562-2cb2-4469-940d-112b3837300b.PNG' : property.image">
             <q-badge
               v-if="property.tradeTypeName === '월세'"
@@ -149,6 +149,10 @@ const goToRegisterPage = () => {
 </template>
 
 <style scoped lang="scss">
+.property-card {
+  cursor: pointer;
+}
+
 .sub-text {
   color: $text-grey;
 }
