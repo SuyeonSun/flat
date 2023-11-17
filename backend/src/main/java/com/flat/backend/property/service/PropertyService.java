@@ -87,6 +87,17 @@ public class PropertyService {
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectLikeList(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+        List<Property> result = new ArrayList<>();
+        for(Like like : user.getLikes()) {
+            result.add(like.getProperty());
+        }
+
+        BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);
+        return ResponseEntity.ok().body(baseResponseDto);
+    }
+
     public ResponseEntity<BaseResponseDto<Page<Property>>> selectListAll(Pageable pageable, String searchKeyword, String tradeTypeName, String direction) {
         Page<Property> result = propertyRepository.findAll(pageable, searchKeyword, tradeTypeName, direction);
         BaseResponseDto<Page<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), result);

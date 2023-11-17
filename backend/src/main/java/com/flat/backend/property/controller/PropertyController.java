@@ -32,6 +32,11 @@ public class PropertyController {
         return propertyService.delete(propertyId, email);
     }
 
+    @GetMapping("/like")
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectLikeList(@RequestParam String email) {
+        return propertyService.selectLikeList(email);
+    }
+
     // 내가 등록한 매물 리스트 조회
     @GetMapping("")
     public ResponseEntity<BaseResponseDto<List<Property>>> selectList(@RequestParam String email) {
