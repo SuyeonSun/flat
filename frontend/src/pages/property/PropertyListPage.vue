@@ -78,7 +78,7 @@ const goToRegisterPage = () => {
   <div >
     <div class="row justify-between">
       <q-img
-        src="images/wallpaper2.png"
+        src="images/wallpaper2.jpg"
         style="height: 500px"
       />
     </div>
