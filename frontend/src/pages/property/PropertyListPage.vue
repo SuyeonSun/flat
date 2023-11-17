@@ -75,7 +75,16 @@ const goToRegisterPage = () => {
 </script>
 
 <template>
+  <div >
+    <div class="row justify-between">
+      <q-img
+        src="images/wallpaper2.png"
+        style="height: 500px"
+      />
+    </div>
+  </div>
   <q-page class="q-py-xl" style="padding-left: 200px; padding-right: 200px">
+
     <!--검색-->
     <div class="row justify-center">
       <div style="width: 79%">
