@@ -18,6 +18,7 @@ const {user, friends} = storeToRefs(userStore); // user.id
 
 let map;
 let markers = [];
+let infoWindows = [];
 
 const isToggle = ref(false)
 
@@ -61,31 +62,37 @@ watch(() => mapList.value, (newVal, oldVal) => {
         position: new naver.maps.LatLng(element.lat, element.lng),
         map: map
       });
+      // 마커 클릭 시 상세 매물 정보로 이동하기
+      let infoWindow = new naver.maps.InfoWindow({
+        content: `<div style="width:250px; text-align:center; padding:10px; border-radius: 10px;">
+            <div>${element.address} ${element.buildingName}</div>
+            <div>${element.tradeTypeName} ${element.rentPrc} ${ element.area1 }/${ element.area2 }㎡</div>
+            <a href="http://localhost:8080/property/${element.id}">매물 상세</a>
+        </div>`
+      });
+      naver.maps.Event.addListener(marker, "click", function(e) {
+        if (infoWindow.getMap()) {
+          infoWindow.close();
+        } else {
+          infoWindow.open(map, marker);
+        }
+      });
+
       markers.push(marker);
+      infoWindows.push(infoWindow);
     })
 
     // isToggle.value가 true라면 친구 marker 추가
     if (isToggle.value) {
-      friends.value.forEach((friend) => {
-        let marker = new naver.maps.Marker({
-          position: new naver.maps.LatLng(friend.addressLat, friend.addressLng),
-          map: map
-        });
-        markers.push(marker);
-      })
+      addFriendMarker();
     }
   };
 })
 
 watch(() => isToggle.value, (newVal, oldVal) => {
+  // isToggle.value가 true라면 친구 marker 추가
   if (newVal) {
-    friends.value.forEach((friend) => {
-      let marker = new naver.maps.Marker({
-        position: new naver.maps.LatLng(friend.addressLat, friend.addressLng),
-        map: map
-      });
-      markers.push(marker);
-    })
+    addFriendMarker();
   } else {
     // 토글 해제 시, 친구 marker 제거
     markers = []
@@ -96,6 +103,41 @@ watch(() => isToggle.value, (newVal, oldVal) => {
     propertyStore.getMapList(searchPayload);
   }
 })
+
+const addFriendMarker = () => {
+  friends.value.forEach((friend) => {
+    let content = [
+      "<div>",
+      `<img src="${friend.profile}" alt="친구 위치" style="height: 30px; width: 30px; border-radius: 70%" />`,
+      "</div>",
+    ].join("");
+
+    let marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(friend.addressLat, friend.addressLng),
+      icon: {
+        content: content,
+        size: new naver.maps.Size(32, 32),
+        anchor: new naver.maps.Point(16, 16),
+      },
+      map: map
+    });
+
+    let infoWindow = new naver.maps.InfoWindow({
+      content: `<div style="width:150px;text-align:center;padding:10px;"> ${friend.name} </div>`
+    });
+
+    naver.maps.Event.addListener(marker, "click", function(e) {
+      if (infoWindow.getMap()) {
+        infoWindow.close();
+      } else {
+        infoWindow.open(map, marker);
+      }
+    });
+
+    markers.push(marker);
+    infoWindows.push(infoWindow);
+  })
+}
 
 const contentStyle = {
   // backgroundColor: 'rgba(0,0,0,0.02)',
