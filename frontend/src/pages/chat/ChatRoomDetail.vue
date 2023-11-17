@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import {useChatStore} from "stores/chat/chat-store";
 import {useUserStore} from "stores/user/user-store";
 import moment from "moment"
@@ -17,8 +17,8 @@ const input = ref('');
 const receiverProfile = ref('')
 const scrollRef = ref(null)
 
-const sendMsg = () => {
-  chatStore.sendMessage(input.value);
+const sendMsg = async () => {
+  await chatStore.sendMessage(input.value);
   input.value='';
 };
 
@@ -37,14 +37,24 @@ const getGap = (date) => {
   return res
 }
 
-
-
 onMounted(async () => {
   await chatStore.readyToChat();
   const response = await userStore.getUserProfile(chatStore.$state.receiver)
   receiverProfile.value = response.data
   scrollRef.value.setScrollPercentage('vertical', 1)
 })
+
+// 스크롤 맨 아래로 유지
+watch(() => {
+  if(scrollRef.value && scrollRef.value.getScroll().verticalPercentage !== 1) {
+    scrollRef.value.getScroll().verticalPercentage
+  }},  () => {
+    scrollRef.value.setScrollPercentage('vertical', 1)
+  }, {
+    deep: true
+  }
+)
+
 </script>
 
 <template>
@@ -84,7 +94,7 @@ onMounted(async () => {
             <q-page padding>
               <div class="row justify-center">
                 <div style="width: 100%; max-width: 400px">
-                  <div v-for="message in chatStore.$state.messages" :key="message">
+                  <div v-for="(message, index) in chatStore.$state.messages" :key="message">
                     <q-chat-message
                       v-if="message.sender === chatStore.$state.sender"
                       :name=message.sender

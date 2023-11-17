@@ -22,6 +22,24 @@ export const usePropertyStore = defineStore('propertyStore', {
       }
     },
 
+    async getMyProperty(email) {
+      try {
+        const response = await api.get(`/property?email=${email}`)
+        this.propertyList = response.data.data
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async getMyLikeProperty(email) {
+      try {
+        const response = await api.get(`/property/like?email=${email}`)
+        this.propertyList = response.data.data
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
     async registerProperty(email, registerPayload) {
       try {
         await api.post(`/property?email=${email}`, registerPayload);
