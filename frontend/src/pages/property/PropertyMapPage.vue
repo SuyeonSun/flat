@@ -18,6 +18,7 @@ const {user, friends} = storeToRefs(userStore); // user.id
 
 let map;
 let markers = [];
+let infoWindows = [];
 
 const isToggle = ref(false)
 
@@ -82,14 +83,28 @@ watch(() => mapList.value, (newVal, oldVal) => {
           },
           map: map
         });
+
+        let infoWindow = new naver.maps.InfoWindow({
+          content: `<div style="width:150px;text-align:center;padding:10px;"> ${friend.name} </div>`
+        });
+
+        naver.maps.Event.addListener(marker, "click", function(e) {
+          if (infoWindow.getMap()) {
+            infoWindow.close();
+          } else {
+            infoWindow.open(map, marker);
+          }
+        });
+
         markers.push(marker);
+        infoWindows.push(infoWindow);
       })
     }
   };
 })
 
 watch(() => isToggle.value, (newVal, oldVal) => {
-  // TODO: isToggle.value가 true라면 친구 marker 추가
+  // isToggle.value가 true라면 친구 marker 추가
   if (newVal) {
     friends.value.forEach((friend) => {
       let content = [
@@ -107,7 +122,21 @@ watch(() => isToggle.value, (newVal, oldVal) => {
         },
         map: map
       });
+
+      let infoWindow = new naver.maps.InfoWindow({
+        content: `<div style="width:150px;text-align:center;padding:10px;"> ${friend.name} </div>`
+      });
+
+      naver.maps.Event.addListener(marker, "click", function(e) {
+        if (infoWindow.getMap()) {
+          infoWindow.close();
+        } else {
+          infoWindow.open(map, marker);
+        }
+      });
+
       markers.push(marker);
+      infoWindows.push(infoWindow);
     })
   } else {
     // 토글 해제 시, 친구 marker 제거
