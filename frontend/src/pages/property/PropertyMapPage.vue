@@ -64,11 +64,22 @@ watch(() => mapList.value, (newVal, oldVal) => {
       markers.push(marker);
     })
 
-    // isToggle.value가 true라면 친구 marker 추가
+    // TODO: isToggle.value가 true라면 친구 marker 추가
     if (isToggle.value) {
       friends.value.forEach((friend) => {
+        let content = [
+          "<div>",
+          `<img :src="friend.profile" width="85" height="85" alt="현재 위치"/>`,
+          "</div>",
+        ].join("");
+
         let marker = new naver.maps.Marker({
           position: new naver.maps.LatLng(friend.addressLat, friend.addressLng),
+          icon: {
+            content: content,
+            size: new naver.maps.Size(32, 32),
+            anchor: new naver.maps.Point(16, 16),
+          },
           map: map
         });
         markers.push(marker);
@@ -78,10 +89,22 @@ watch(() => mapList.value, (newVal, oldVal) => {
 })
 
 watch(() => isToggle.value, (newVal, oldVal) => {
+  // TODO: isToggle.value가 true라면 친구 marker 추가
   if (newVal) {
     friends.value.forEach((friend) => {
+      let content = [
+        "<div>",
+        `<img :src="friend.profile" width="85" height="85" alt="현재 위치"/>`,
+        "</div>",
+      ].join("");
+
       let marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(friend.addressLat, friend.addressLng),
+        icon: {
+          content: content,
+          size: new naver.maps.Size(32, 32),
+          anchor: new naver.maps.Point(16, 16),
+        },
         map: map
       });
       markers.push(marker);
