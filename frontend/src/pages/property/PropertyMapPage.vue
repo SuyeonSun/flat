@@ -69,7 +69,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
       friends.value.forEach((friend) => {
         let content = [
           "<div>",
-          `<img :src="friend.profile" width="85" height="85" alt="현재 위치"/>`,
+          `<img src="images/user.png" alt="현재 위치" style="height: 30px; width: 30px"/>`,
           "</div>",
         ].join("");
 
@@ -94,7 +94,7 @@ watch(() => isToggle.value, (newVal, oldVal) => {
     friends.value.forEach((friend) => {
       let content = [
         "<div>",
-        `<img :src="friend.profile" width="85" height="85" alt="현재 위치"/>`,
+        `<img src="images/user.png" alt="현재 위치" style="height: 30px; width: 30px"/>`,
         "</div>",
       ].join("");
 
