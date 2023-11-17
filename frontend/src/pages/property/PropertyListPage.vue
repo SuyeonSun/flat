@@ -72,19 +72,28 @@ const goToDetailPage = (id) => {
 const goToRegisterPage = () => {
   $router.push("/property/register")
 }
+
+const slide = ref(1);
 </script>
 
 <template>
   <div >
-    <div class="row justify-between">
-      <q-img
-        src="images/wallpaper2.jpg"
-        style="height: 500px"
-      />
-    </div>
+    <q-carousel
+      swipeable
+      animated
+      v-model="slide"
+      thumbnails
+      infinite
+      :autoplay="1500"
+    >
+      <q-carousel-slide :name="1" img-src="images/wallpaper2.jpg" />
+      <q-carousel-slide :name="2" img-src="images/wallpaper3.jpg" />
+      <q-carousel-slide :name="3" img-src="images/wallpaper4.jpg" />
+      <q-carousel-slide :name="4" img-src="images/wallpaper5.jpg" />
+    </q-carousel>
   </div>
-  <q-page class="q-py-xl" style="padding-left: 200px; padding-right: 200px">
 
+  <q-page class="q-py-xl" style="padding-left: 200px; padding-right: 200px">
     <!--검색-->
     <div class="row justify-center">
       <div style="width: 79%">
