@@ -1,6 +1,6 @@
 <script setup>
 import {usePropertyStore} from "stores/property/property-store";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
 
@@ -29,6 +29,10 @@ onMounted(() => {
     searchKeyword: searchKeyword.value
   }
   propertyStore.getPropertyList(pageablePayload, searchPayload);
+})
+
+onUnmounted(() => {
+  propertyList.value = []
 })
 
 watch(() => current.value, (newVal, oldVal) => {
