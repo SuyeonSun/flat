@@ -21,6 +21,7 @@ const tab = ref('likes')
 
 onMounted(async () => {
   await userStore.getUserInfo(authStore.$state.email)
+  await propertyStore.getMyLikeProperty(authStore.$state.email)
 })
 
 // 매물
