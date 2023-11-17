@@ -108,7 +108,7 @@ const addFriendMarker = () => {
   friends.value.forEach((friend) => {
     let content = [
       "<div>",
-      `<img src="images/user.png" alt="현재 위치" style="height: 30px; width: 30px"/>`,
+      `<img src="${friend.profile}" alt="친구 위치" style="height: 30px; width: 30px; border-radius: 70%" />`,
       "</div>",
     ].join("");
 
