@@ -1,4 +1,5 @@
 const routes = [
+
   {
     path: '',
     component: () => import('layouts/AuthLayout.vue'),

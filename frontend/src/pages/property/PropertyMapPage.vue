@@ -31,6 +31,7 @@ onMounted(async () => {
     tradeTypeName: tradeTypeName.value.value
   }
   await propertyStore.getMapList(searchPayload);
+  console.log("!@!@!@!@", localStorage.getItem("authStore"))
 })
 
 watch(() => mapList.value, (newVal, oldVal) => {
@@ -38,7 +39,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
   mapList.value = newVal;
   const script = document.createElement("script");
   script.src =
-    "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=osz1qut3m0";
+    `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env["CLIENT_ID"]}`;
   script.async = true;
   script.defer = true;
   document.head.appendChild(script);
