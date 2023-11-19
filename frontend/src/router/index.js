@@ -31,7 +31,11 @@ export default route(function (/* { store, ssrContext } */) {
     const userToken = localStorage.getItem('authStore');
 
     // 사용자 토큰이 존재하면 로그인된 것으로 간주
-    return !(userToken.length <= 2)
+    if(userToken) {
+      return !(userToken.length <= 2)
+    } else {
+      return false
+    }
   }
 
   Router.beforeEach((to, from, next) => {
