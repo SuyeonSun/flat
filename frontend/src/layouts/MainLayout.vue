@@ -44,10 +44,11 @@ const signOut = async () => {
         </div>
       </q-toolbar>
 
-      <q-tabs align="left" style="padding-left: 80px; background-color: whitesmoke; color:black">
-        <q-route-tab to="/property/map" label="지도"/>
-        <q-route-tab to="/property/list" label="매물"/>
-        <q-route-tab to="/my-page" label="MY"/>
+      <q-tabs align="left" style="padding-left: 80px; background-color: whitesmoke; color:black" indicator-color="primary" active-color="primary">
+        <q-route-tab to="/property/map"><span style="font-weight: bolder">지도</span></q-route-tab>
+        <q-route-tab to="/property/list"><span style="font-weight: bolder">검색</span></q-route-tab>
+        <q-route-tab to="/property/register"><span style="font-weight: bolder">방내놓기</span></q-route-tab>
+        <q-route-tab to="/my-page"><span style="font-weight: bolder">MY</span></q-route-tab>
       </q-tabs>
     </q-header>
 
@@ -93,6 +94,10 @@ const signOut = async () => {
 .footer {
   background-color: $dark-grey;
   color: #b3b1b1;
+}
+
+:deep(.q-tab__label) {
+  font-weight: bolder;
 }
 </style>
 
