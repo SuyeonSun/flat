@@ -20,6 +20,10 @@ const signOut = async () => {
 
   $router.push("/sign-in");
 }
+
+const clickGoToRegisterBtn = () => {
+  $router.push("/property/register");
+}
 </script>
 
 <template>
@@ -61,7 +65,7 @@ const signOut = async () => {
           <h3 class="text-white text-bold" style="font-size: 30px; margin-bottom: 0px">FLAT에서 원하는 조건의 아파트를 탐색하고 골라보세요.</h3>
           <h3 class="text-white" style="font-size: 20px; margin-top: 0px">
             <span class="text-bold"> 매물을 등록하고 홍보 해보세요! </span>
-            <q-btn rounded flat class="q-mb-xs q-ml-sm bg-white text-black text-bold">매물 등록하기</q-btn>
+            <q-btn rounded flat class="q-mb-xs q-ml-sm bg-white text-black text-bold" @click="clickGoToRegisterBtn">매물 등록하기</q-btn>
           </h3>
         </q-parallax>
       </div>
