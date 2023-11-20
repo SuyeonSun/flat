@@ -21,7 +21,7 @@ const current = ref(1);
 onMounted(() => {
   const pageablePayload = {
     page: 0,
-    size: 9
+    size: 8
   }
   const searchPayload = {
     tradeTypeName: tradeTypeName.value.value,
@@ -38,7 +38,7 @@ onUnmounted(() => {
 watch(() => current.value, (newVal, oldVal) => {
   const pageablePayload = {
     page: newVal - 1,
-    size: 9
+    size: 8
   }
   const searchPayload = {
     tradeTypeName: tradeTypeName.value.value,
@@ -51,7 +51,7 @@ watch(() => current.value, (newVal, oldVal) => {
 const search = () => {
   const pageablePayload = {
     page: current.value - 1,
-    size: 9
+    size: 8
   }
   const searchPayload = {
     tradeTypeName: tradeTypeName.value.value,
@@ -100,7 +100,7 @@ const slide = ref(1);
   <q-page class="q-py-xl" style="padding-left: 200px; padding-right: 200px">
     <!--검색-->
     <div class="row justify-center">
-      <div style="width: 79%">
+      <div style="width: 86%">
         <div class="row justify-between items-center">
           <div>
             <q-btn size="md" unelevated outline @click="goToRegisterPage">매물 등록</q-btn>
@@ -128,8 +128,8 @@ const slide = ref(1);
 
     <!-- 목록 -->
     <div class="row justify-center">
-      <div v-for="property in propertyList" class="q-ma-md col-3">
-        <q-card @click="goToDetailPage(property.id)" style="min-height: 400px" class="property-card">
+      <div v-for="property in propertyList" class="q-ma-md" style="min-width: 300px; max-width: 300px">
+        <div @click="goToDetailPage(property.id)" style="min-height: 350px" class="property-card">
           <q-img :src="property.image === null ? 'https://flat-bucket.s3.ap-northeast-2.amazonaws.com/6b1b1562-2cb2-4469-940d-112b3837300b.PNG' : property.image">
             <q-badge
               v-if="property.tradeTypeName === '월세'"
@@ -148,12 +148,12 @@ const slide = ref(1);
             </q-badge>
           </q-img>
 
-          <q-card-section>
-            <h6 class="q-ma-none q-mb-xs">{{ property.title === null ? "-" : property.title }}</h6>
-            <div class="q-mb-sm">{{ property.address }}</div>
-            <div class="sub-text">{{ property.articleFeatureDesc }}</div>
+          <q-card-section class="q-px-none">
+            <h6 class="q-ma-none q-mb-xs text-weight-bold">{{ property.rentPrc }}</h6>
+            <div class="q-mb-sm sub-text">{{ property.address }}</div>
+            <div class="sub-text">{{property.direction}}, {{ property.floorInfo }}층, 관리비 {{property.averageCommonPrice}} 만원</div>
           </q-card-section>
-        </q-card>
+        </div>
       </div>
     </div>
 
