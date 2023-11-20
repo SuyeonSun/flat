@@ -65,11 +65,17 @@ watch(() => mapList.value, (newVal, oldVal) => {
       });
       // 마커 클릭 시 상세 매물 정보로 이동하기
       let infoWindow = new naver.maps.InfoWindow({
-        content: `<div style="width:250px; text-align:center; padding:10px; border-radius: 10px;">
+        content:
+          `<div style="text-align:center; padding:10px;">
             <div>${element.address} ${element.buildingName}</div>
             <div>${element.tradeTypeName} ${element.rentPrc} ${ element.area1 }/${ element.area2 }㎡</div>
-            <a href="http://localhost:8080/property/${element.id}">매물 상세</a>
-        </div>`
+            <a href="http://localhost:8080/property/${element.id}" style="text-decoration: none">
+               ▶ 매물 상세 보기
+            </a>
+          </div>`,
+        backgroundColor: "#FFFFFF",
+        borderColor: "#FFFFFF",
+        borderWidth: 5,
       });
       naver.maps.Event.addListener(marker, "click", function(e) {
         if (infoWindow.getMap()) {
@@ -124,7 +130,13 @@ const addFriendMarker = () => {
     });
 
     let infoWindow = new naver.maps.InfoWindow({
-      content: `<div style="width:150px;text-align:center;padding:10px;"> ${friend.name} </div>`
+      content: `<div style="text-align:center;padding:10px;">
+                    <div>${friend.name}</div>
+                    <div>${friend.address}</div>
+                </div>`,
+      backgroundColor: "#FFFFFF",
+      borderColor: "#FFFFFF",
+      borderWidth: 5,
     });
 
     naver.maps.Event.addListener(marker, "click", function(e) {
