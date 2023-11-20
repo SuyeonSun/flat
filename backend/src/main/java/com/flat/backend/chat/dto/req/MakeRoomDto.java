@@ -6,4 +6,5 @@ import lombok.Getter;
 public class MakeRoomDto {
     private String sender;
     private String receiver;
+    private Long propertyId;
 }

@@ -4,12 +4,14 @@ import {useRouter} from "vue-router";
 import SockJS from 'sockjs-client';
 import Stomp from 'webstomp-client';
 import {charAt} from "core-js/internals/string-multibyte";
+import {Notify} from "quasar";
 import moment from "moment"
 
 export const useChatStore = defineStore('chatStore', {
   state: () => ({
     sender: '',
     receiver: '',
+    propertyId: 0,
     roomId: undefined,
     isDialog: false,
     ws: null,
@@ -19,9 +21,10 @@ export const useChatStore = defineStore('chatStore', {
   }),
 
   actions: {
-    setSenderReceiver(sender, receiver) {
+    setSenderReceiver(sender, receiver, propertyId) {
       this.sender = sender
       this.receiver = receiver
+      this.propertyId = propertyId
     },
 
     // 방 번호 찾기: 외부에서 호출x
@@ -29,7 +32,8 @@ export const useChatStore = defineStore('chatStore', {
       try {
         return await api.post('/chat/find/room', {
           sender: this.sender,
-          receiver: this.receiver
+          receiver: this.receiver,
+          propertyId: this.propertyId
         })
       } catch (e) {
         console.log(e);
@@ -51,9 +55,17 @@ export const useChatStore = defineStore('chatStore', {
 
 
     // 방 번호 찾고, 없으면 방 생성
-    async createRoom(sender, receiver) {
+    async createRoom(sender, receiver, propertyId) {
       try {
-        this.setSenderReceiver(sender, receiver)
+        if(sender === receiver) {
+          Notify.create({
+            message: '자신의 매물입니다.',
+            color: "red"
+          })
+          return
+        }
+
+        this.setSenderReceiver(sender, receiver, propertyId)
         const res1 = await this.findRoomId();
 
         if(res1.data) {
@@ -63,7 +75,8 @@ export const useChatStore = defineStore('chatStore', {
         if(!this.roomId) {
           const res2 = await api.post('/chat/room', {
             sender: this.sender,
-            receiver: this.receiver
+            receiver: this.receiver,
+            propertyId: this.propertyId
           })
 
           this.roomId = res2.data.roomId;
@@ -75,9 +88,10 @@ export const useChatStore = defineStore('chatStore', {
       }
     },
 
-    enterRoom(sender, receiver, roomId) {
+    enterRoom(sender, receiver, roomId, propertyId) {
       this.sender = sender
       this.receiver = receiver
+      this.propertyId = propertyId
       this.roomId = roomId
       this.isDialog = true
     },

@@ -173,7 +173,7 @@ const clickLikeBtn = async (status) => {
 
     <div>
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
-        <q-btn fab icon="headset" style="background-color: black; color: white" @click="chatStore.createRoom(authStore.$state.name, name)" />
+        <q-btn fab icon="headset" style="background-color: black; color: white" @click="chatStore.createRoom(authStore.$state.name, name, $route.params.propertyId)" />
       </q-page-sticky>
     </div>
 

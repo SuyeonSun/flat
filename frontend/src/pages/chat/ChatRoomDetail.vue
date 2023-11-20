@@ -2,10 +2,13 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import {useChatStore} from "stores/chat/chat-store";
 import {useUserStore} from "stores/user/user-store";
+import {storeToRefs} from "pinia";
 import moment from "moment"
 
 const chatStore = useChatStore();
 const userStore = useUserStore();
+
+const {messages} = storeToRefs(chatStore)
 
 const moreContent = ref(true)
 const contentSize = computed(() => moreContent.value ? 150 : 5)
@@ -15,6 +18,7 @@ const drawerR = ref(false)
 const input = ref('');
 
 const receiverProfile = ref('')
+const senderProfile = ref('')
 const scrollRef = ref(null)
 
 const sendMsg = async () => {
@@ -39,18 +43,21 @@ const getGap = (date) => {
 
 onMounted(async () => {
   await chatStore.readyToChat();
-  const response = await userStore.getUserProfile(chatStore.$state.receiver)
-  receiverProfile.value = response.data
+  const response = await userStore.getUserProfile(chatStore.$state.sender)
+  senderProfile.value = response.data
+  const response2 = await userStore.getUserProfile(chatStore.$state.receiver)
+  receiverProfile.value = response2.data
   scrollRef.value.setScrollPercentage('vertical', 1)
 })
 
 // 스크롤 맨 아래로 유지
-watch(() => {
-  if(scrollRef.value && scrollRef.value.getScroll().verticalPercentage !== 1) {
-    scrollRef.value.getScroll().verticalPercentage
-  }},  () => {
+watch(messages, (n) => {
+
+  setTimeout(function () {
     scrollRef.value.setScrollPercentage('vertical', 1)
-  }, {
+  }, 100)},
+
+  {
     deep: true
   }
 )
@@ -59,37 +66,31 @@ watch(() => {
 
 <template>
   <div class="q-pa-md q-gutter-sm">
-<!--    <q-btn label="Click me" color="primary" @click="layout = true" />-->
 
     <q-dialog v-model="chatStore.$state.isDialog" persistent>
       <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
+
         <q-header class="bg-primary">
           <q-toolbar>
-<!--            <q-btn flat @click="drawer = !drawer" round dense icon="menu" />-->
             <q-toolbar-title class="text-center">1:1 문의</q-toolbar-title>
-<!--            <q-btn flat @click="drawerR = !drawerR" round dense icon="menu" />-->
             <q-btn flat v-close-popup round dense icon="close" @click="chatStore.clear()"/>
           </q-toolbar>
         </q-header>
 
-        <q-footer class="bg-white text-dark">
+        <q-footer class="bg-white text-dark" bordered>
           <q-toolbar>
-              <q-input type="text" v-model="input" @keyup.enter="sendMsg" ></q-input>
-              <div class="input-group-append">
-                  <button class="btn btn-primary" type="button" @click="sendMsg">보내기</button>
-              </div>
+            <q-input bottom-slots v-model="input" label="채팅을 입력해주세요." @keyup.enter="sendMsg" style="width: 100%">
+              <template v-slot:append>
+                <q-icon v-if="input !== ''" name="close" @click="input = ''" class="cursor-pointer" />
+              </template>
+              <template v-slot:after>
+                <q-btn round dense flat icon="send" @click="sendMsg"/>
+              </template>
+            </q-input>
           </q-toolbar>
         </q-footer>
 
-<!--        <q-drawer bordered v-model="drawer" :width="200" :breakpoint="600" class="bg-grey-3 text-dark q-pa-sm">-->
-<!--          <div v-for="n in 50" :key="n">Drawer {{ n }} / 50</div>-->
-<!--        </q-drawer>-->
-
-<!--        <q-drawer side="right" bordered v-model="drawerR" :width="200" :breakpoint="300" class="bg-grey-3 text-dark q-pa-sm">-->
-<!--          <div v-for="n in 50" :key="n">Drawer {{ n }} / 50</div>-->
-<!--        </q-drawer>-->
-
-        <q-scroll-area style="height: 800px;" ref="scrollRef">
+        <q-scroll-area style="height: 915px;" ref="scrollRef">
           <q-page-container>
             <q-page padding>
               <div class="row justify-center">
@@ -98,7 +99,7 @@ watch(() => {
                     <q-chat-message
                       v-if="message.sender === chatStore.$state.sender"
                       :name=message.sender
-                      :avatar=userStore.user.profile
+                      :avatar=senderProfile
                       :text="[message.message]"
                       :stamp= getGap(message.date)
                       sent

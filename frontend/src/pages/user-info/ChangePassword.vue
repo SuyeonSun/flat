@@ -45,21 +45,22 @@ const changePassword = async () => {
     <!--    <q-btn label="Click me" color="primary" @click="layout = true" />-->
 
     <q-dialog v-model="userStore.$state.changePwdDialog" persistent>
-      <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
+      <q-layout view="Lhh lpR fff" container class="bg-white text-dark"
+        style="max-height: 250px">
         <q-header class="bg-primary">
-          <q-toolbar>
+          <q-toolbar style="height: 50px">
             <q-toolbar-title class="text-center">비밀번호 변경</q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close"/>
           </q-toolbar>
         </q-header>
 
-        <q-scroll-area style="height: 800px;" ref="scrollRef">
-          <q-page-container>
-            <q-page padding>
-              <div class="row justify-center">
+        <q-page-container>
+          <q-page padding>
+            <div class="row justify-end">
+              <div style="width: 100%" class="row justify-center">
                 <q-input
                   v-model="prevPwd"
-                  style="width: 100%; max-width: 400px"
+                  style="width: 100%; max-width: 80%"
                   label="현재 비밀번호를 입력해 주십시오."
                   dense
                   outlined
@@ -69,7 +70,7 @@ const changePassword = async () => {
                 </q-input>
                 <q-input
                   v-model="newPwd"
-                  style="width: 100%; max-width: 400px"
+                  style="width: 100%; max-width: 80%"
                   label="새로운 비밀번호를 입력해 주십시오."
                   dense
                   outlined
@@ -78,17 +79,17 @@ const changePassword = async () => {
                 >
                 </q-input>
               </div>
-              <div>
+              <div style="margin-right: 10%">
                 <q-btn
                   @click="changePassword()"
                 >
                   비밀번호 변경
                 </q-btn>
               </div>
-            </q-page>
-          </q-page-container>
+            </div>
+          </q-page>
+        </q-page-container>
 
-        </q-scroll-area>
       </q-layout>
     </q-dialog>
   </div>

@@ -16,5 +16,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<List<ChatRoom>> findByUser(@Param("user") String user);
     Optional<List<ChatRoom>> findByReceiver(String receiver);
 
-    Optional<ChatRoom> findBySenderAndReceiver(String sender, String receiver);
+    @Query(value = "select * from chat_room c where c.sender = :sender and c.receiver = :receiver and property_id = :propertyId", nativeQuery = true)
+    Optional<ChatRoom> findBySenderAndReceiverAndPropertyId(@Param("sender") String sender, @Param("receiver") String receiver, @Param("propertyId") Long propertyId);
 }
