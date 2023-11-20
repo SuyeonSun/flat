@@ -70,9 +70,9 @@ watch(messages, (n) => {
     <q-dialog v-model="chatStore.$state.isDialog" persistent>
       <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
 
-        <q-header class="bg-primary">
+        <q-header style="background-color: black">
           <q-toolbar>
-            <q-toolbar-title class="text-center">1:1 문의</q-toolbar-title>
+            <q-toolbar-title class="text-center" style="font-size: 16px;">1:1 문의</q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close" @click="chatStore.clear()"/>
           </q-toolbar>
         </q-header>
