@@ -43,9 +43,11 @@ export default route(function (/* { store, ssrContext } */) {
     const isAuthenticated = checkUserAuthentication()
 
     // 로그인이 안 되어 있는 상태에서만 리디렉션을 시도
-    if (!isAuthenticated && to.path !== '/sign-in') {
-      console.log("!@#!@#@!#", from.path);
+    if (!isAuthenticated && to.path !== '/sign-in' && to.path !== '/sign-up') {
       next('/sign-in');
+    }
+    else if(!isAuthenticated && to.path === '/sign-up') {
+      next()
     }
     else if(isAuthenticated && to.path === '/') {
       next('/property/map')
