@@ -1,6 +1,7 @@
 package com.flat.backend.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.flat.backend.property.repository.entity.Property;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,11 @@ public class ChatRoom {
 
     private String sender;
     private String receiver;
+
+    @OneToOne
+    @JoinColumn(name = "property_id")
+    @JsonIgnore
+    private Property property;
 
 
     @JsonIgnore

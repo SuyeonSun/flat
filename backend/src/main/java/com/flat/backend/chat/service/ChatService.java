@@ -2,10 +2,12 @@ package com.flat.backend.chat.service;
 
 import com.flat.backend.chat.dto.req.MakeRoomDto;
 import com.flat.backend.chat.dto.req.MessageDto;
+import com.flat.backend.chat.dto.res.FindRoomsDto;
 import com.flat.backend.chat.entity.ChatMessage;
 import com.flat.backend.chat.entity.ChatRoom;
 import com.flat.backend.chat.repository.ChatMessageRepository;
 import com.flat.backend.chat.repository.ChatRoomRepository;
+import com.flat.backend.property.repository.PropertyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final PropertyRepository propertyRepository;
 
 
     //채팅방 정보 가져오기
@@ -35,7 +38,7 @@ public class ChatService {
     }
 
     public ResponseEntity<?> findRoom(MakeRoomDto makeRoomDto) {
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findBySenderAndReceiver(makeRoomDto.getSender(), makeRoomDto.getReceiver());
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findBySenderAndReceiverAndPropertyId(makeRoomDto.getSender(), makeRoomDto.getReceiver(), makeRoomDto.getPropertyId());
         if(chatRoom.isEmpty()) {
             return ResponseEntity.ok().build();
         }
@@ -46,13 +49,26 @@ public class ChatService {
 
     public ResponseEntity<?> findRooms(String user) {
         Optional<List<ChatRoom>> chatRooms = chatRoomRepository.findByUser(user);
+        List<FindRoomsDto> result = new ArrayList<>();
 
         if(chatRooms.isEmpty()) {
             return ResponseEntity.ok().build();
         }
+        else {
+            for(ChatRoom cr : chatRooms.get()) {
+                FindRoomsDto findRoomsDto = FindRoomsDto.builder()
+                        .roomId(cr.getRoomId())
+                        .sender(cr.getSender())
+                        .receiver(cr.getReceiver())
+                        .title(cr.getProperty().getTitle())
+                        .image(cr.getProperty().getImage())
+                        .build();
+                result.add(findRoomsDto);
+            }
+        }
 
         return ResponseEntity.ok()
-                .body(chatRooms.get());
+                .body(result);
 
     }
 
@@ -63,6 +79,7 @@ public class ChatService {
         ChatRoom chatRoom = ChatRoom.builder()
                 .sender(makeRoomDto.getSender())
                 .receiver(makeRoomDto.getReceiver())
+                .property(propertyRepository.findById(makeRoomDto.getPropertyId()).orElseThrow())
                 .build();
 
         chatRoomRepository.save(chatRoom);

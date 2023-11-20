@@ -91,45 +91,60 @@ const handleSearchAddressDialog = () => {
     <div style="margin-right: 30px">
       <img :src="userStore.$state.user.profile" style="border-radius: 70%; width: 200px; height: 200px"/>
     </div>
-    <div>
-      <q-input
-        v-model="userStore.$state.user.name"
-        dense
-        outlined
-        readonly
-        class="q-mb-md"
-      >
-      </q-input>
+    <div style="width: 500px">
+      <div>
+        <div>
+          <q-input
+            v-model="userStore.$state.user.name"
+            dense
+            outlined
+            readonly
+            class="q-mb-md"
+            label="이름"
+          >
+          </q-input>
 
-      <q-input
-        v-model="userStore.$state.user.email"
-        dense
-        outlined
-        readonly
-        class="q-mb-md"
-      >
-      </q-input>
+          <q-input
+            v-model="userStore.$state.user.email"
+            dense
+            outlined
+            readonly
+            class="q-mb-md"
+            label="이메일"
+          >
+          </q-input>
 
-      <q-input
-        v-model="userStore.$state.user.address"
-        dense
-        outlined
-        readonly
-        class="q-mb-md"
-      >
-      </q-input>
-      <q-btn
-        @click="triggerFileInput"
-      >프로필 변경</q-btn>
-      <q-file v-show="false"
-        ref="file"
-        v-model="newProfile"
-        label="프로필 변경"
-      >
-        <!--        @input="onChangeProfile"-->
-      </q-file>
-      <q-btn @click="onChangePwd"> 비밀번호 변경</q-btn>
-      <q-btn @click="handleSearchAddressDialog">주소 수정</q-btn>
+          <q-input
+            v-model="userStore.$state.user.address"
+            dense
+            outlined
+            readonly
+            class="q-mb-md"
+            label="주소"
+          >
+          </q-input>
+        </div>
+      </div>
+
+      <div class="row justify-center">
+        <div style="width: 400px">
+          <div class="row" style="justify-content: space-around">
+            <q-btn
+              @click="triggerFileInput"
+            >프로필 변경</q-btn>
+            <q-file v-show="false"
+                    ref="file"
+                    v-model="newProfile"
+                    label="프로필 변경"
+            >
+              <!--        @input="onChangeProfile"-->
+            </q-file>
+            <q-btn @click="onChangePwd"> 비밀번호 변경</q-btn>
+            <q-btn @click="handleSearchAddressDialog">주소 수정</q-btn>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
