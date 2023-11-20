@@ -93,7 +93,7 @@ const slide = ref(1);
       <q-carousel-slide :name="1" img-src="images/wallpaper2.jpg" />
       <q-carousel-slide :name="2" img-src="images/wallpaper3.jpg" />
       <q-carousel-slide :name="3" img-src="images/wallpaper4.jpg" />
-      <q-carousel-slide :name="4" img-src="images/wallpaper5.jpg" />
+      <q-carousel-slide :name="4" img-src="images/wallpaper6.jpg" />
     </q-carousel>
   </div>
 

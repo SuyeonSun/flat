@@ -76,7 +76,7 @@ const register = async () => {
     lng: selectedAddress.value.lng,
   }
   await propertyStore.registerProperty(email.value, registerPayload);
-  $router.push("/property/map");
+  $router.push("/property/list");
 }
 </script>
 
@@ -101,6 +101,7 @@ const register = async () => {
               dense
               outlined
               readonly
+              label="주소 검색"
             />
           </div>
           <!-- 동, 층 -->
@@ -111,6 +112,7 @@ const register = async () => {
                 v-model="buildingName"
                 dense
                 outlined
+                placeholder="예) 1동"
               />
             </div>
             <div class="row items-center col-6">
@@ -119,6 +121,7 @@ const register = async () => {
                 v-model="floorInfo"
                 dense
                 outlined
+                placeholder="예) 9/19"
               />
             </div>
           </div>
@@ -134,6 +137,7 @@ const register = async () => {
               v-model="title"
               dense
               outlined
+              placeholder="조용한 위치"
             />
           </div>
           <!-- 이미지 -->
@@ -141,20 +145,23 @@ const register = async () => {
             <div class="col-3">이미지</div>
             <q-file
               v-model="file"
-              label="Pick one file"
               outlined
               dense
+              label="이미지 등록"
             />
           </div>
           <!-- 태그 -->
           <div class="row items-center col-12 q-mb-sm">
             <div class="col-3">태그</div>
-            <q-input
-              class="col-4"
-              v-model="tagList"
-              dense
-              outlined
-            />
+            <div>
+              <q-input
+                v-model="tagList"
+                dense
+                outlined
+                placeholder="조용한 역근처 신축"
+              />
+              <q-item-label caption class="q-mt-xs">띄어쓰기를 기준으로 태그가 구분됩니다.</q-item-label>
+            </div>
           </div>
           <!-- 매물 특징 -->
           <div class="row items-center col-12">
@@ -165,6 +172,7 @@ const register = async () => {
               v-model="articleFeatureDesc"
               dense
               outlined
+              placeholder="매물 특징을 입력해 주십시오."
             />
           </div>
         </q-card>
@@ -191,6 +199,7 @@ const register = async () => {
               v-model="rentPrc"
               dense
               outlined
+              placeholder="예) 1억 3천만"
             />
           </div>
           <!-- 공용 면적, 전용 면적 -->
