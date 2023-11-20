@@ -61,6 +61,8 @@ public class PropertyService {
                 .build();
         propertyRepository.save(property);
         user.getProperties().add(property);
+
+
         return ResponseEntity
                 .ok()
                 .body(new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage()));
