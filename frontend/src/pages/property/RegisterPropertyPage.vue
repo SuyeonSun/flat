@@ -5,10 +5,13 @@ import {usePropertyStore} from "stores/property/property-store";
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
 import SearchAddressDialog from "components/property/SearchAddressDialog";
+import {useRouter} from "vue-router";
 
 const authStore = useAuthStore();
 const s3Store = useS3Store();
 const propertyStore = usePropertyStore();
+
+const $router = useRouter();
 
 const {email} = storeToRefs(authStore);
 
@@ -73,186 +76,208 @@ const register = async () => {
     lng: selectedAddress.value.lng,
   }
   await propertyStore.registerProperty(email.value, registerPayload);
-  // TODO: 추후 목록 페이지로 이동
+  $router.push("/property/map");
 }
 </script>
 
 <template>
-  <q-page class="q-pa-xl">
-    <h5 class="q-ma-none q-mb-md">매물 등록</h5>
-    <div class="row items-center q-mb-md">
-      <div class="col-2">제목</div>
-      <q-input
-        class="col-4"
-        v-model="title"
-        dense
-        outlined
-      />
-    </div>
+  <q-page class="q-pa-xl row justify-center">
+    <div style="width: 70%">
+      <div>
+        <div class="row items-center justify-between q-mb-md">
+          <h5 class="q-ma-none q-mb-md">매물 등록</h5>
+          <q-btn outline dense label="등록" @click="register" class="register-btn"/>
+        </div>
 
-    <div class="row items-center q-mb-md">
-      <div class="col-2">이미지</div>
-      <q-file
-        class="col-4"
-        v-model="file"
-        label="Pick one file"
-        outlined
-        dense
-      />
-    </div>
+        <!-- 기본 정보 -->
+        <q-card bordered flat class="q-mb-lg card q-pa-lg">
+          <div style="font-size: 18px; font-weight: bold">기본 정보</div>
+          <!-- 주소 -->
+          <div class="row items-center col-12 q-mb-sm">
+            <div class="col-3">주소</div>
+            <q-input
+              v-model="selectedAddress.address"
+              @click="handleSearchAddressDialog"
+              dense
+              outlined
+              readonly
+            />
+          </div>
+          <!-- 동, 층 -->
+          <div class="row col-12">
+            <div class="row items-center col-6">
+              <div class="col-6">동</div>
+              <q-input
+                v-model="buildingName"
+                dense
+                outlined
+              />
+            </div>
+            <div class="row items-center col-6">
+              <div class="col-6">층</div>
+              <q-input
+                v-model="floorInfo"
+                dense
+                outlined
+              />
+            </div>
+          </div>
+        </q-card>
 
-    <div class="row items-center q-mb-md">
-      <div class="col-2">주소</div>
-      <q-input
-        class="col-4"
-        v-model="selectedAddress.address"
-        @click="handleSearchAddressDialog"
-        dense
-        outlined
-        readonly
-      />
-    </div>
+        <!-- 설명 -->
+        <q-card bordered flat class="q-mb-lg q-pa-lg card">
+          <div style="font-size: 18px; font-weight: bold">설명</div>
+          <!-- 제목 -->
+          <div class="row items-center col-12 q-mb-sm">
+            <div class="col-3">제목</div>
+            <q-input
+              v-model="title"
+              dense
+              outlined
+            />
+          </div>
+          <!-- 이미지 -->
+          <div class="row items-center col-12 q-mb-sm">
+            <div class="col-3">이미지</div>
+            <q-file
+              v-model="file"
+              label="Pick one file"
+              outlined
+              dense
+            />
+          </div>
+          <!-- 태그 -->
+          <div class="row items-center col-12 q-mb-sm">
+            <div class="col-3">태그</div>
+            <q-input
+              class="col-4"
+              v-model="tagList"
+              dense
+              outlined
+            />
+          </div>
+          <!-- 매물 특징 -->
+          <div class="row items-center col-12">
+            <div class="col-3">매물 특징</div>
+            <q-input
+              type="textarea"
+              class="col-4"
+              v-model="articleFeatureDesc"
+              dense
+              outlined
+            />
+          </div>
+        </q-card>
 
-    <div class="row items-center q-mb-md">
-      <div class="col-2">동</div>
-      <q-input
-        class="col-4"
-        v-model="buildingName"
-        dense
-        outlined
-      />
-    </div>
+        <!-- 상세 정보 -->
+        <q-card bordered flat class="q-mb-lg q-pa-lg card">
+          <div style="font-size: 18px; font-weight: bold">상세 정보</div>
+          <!-- 거래 유형 -->
+          <!-- 방향 -->
+          <div class="row col-12 q-mb-sm">
+            <div class="row items-center col-6">
+              <div class="col-6">거래 유형</div>
+              <q-select class="col-4" outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense />
+            </div>
+            <div class="row items-center col-6">
+              <div class="col-6">방향</div>
+              <q-select class="col-4" outlined v-model="direction" :options="directionOptions" stack-label dense />
+            </div>
+          </div>
+          <!-- 가격 -->
+          <div class="row items-center col-12 q-mb-sm">
+            <div class="col-3">가격</div>
+            <q-input
+              v-model="rentPrc"
+              dense
+              outlined
+            />
+          </div>
+          <!-- 공용 면적, 전용 면적 -->
+          <div class="row col-12 q-mb-sm">
+            <div class="row items-center col-6">
+              <div class="col-6">전용 면적 (제곱 미터)</div>
+              <q-input
+                v-model="area1"
+                type="number"
+                dense
+                outlined
+              />
+            </div>
+            <div class="row items-center col-6">
+              <div class="col-6">공용 면적 (제곱 미터)</div>
+              <q-input
+                v-model="area2"
+                type="number"
+                dense
+                outlined
+              />
+            </div>
+          </div>
 
-    <div class="row items-center q-mb-md">
-      <div class="col-2">층</div>
-      <q-input
-        class="col-4"
-        v-model="floorInfo"
-        dense
-        outlined
-      />
-    </div>
+          <!-- 방 개수, 화장실 개수 -->
+          <div class="row col-12">
+            <div class="row items-center col-6">
+              <div class="col-6">방 개수</div>
+              <q-input
+                v-model="roomCnt"
+                type="number"
+                dense
+                outlined
+              />
+            </div>
+            <div class="row items-center col-6">
+              <div class="col-6">화장실 개수</div>
+              <q-input
+                v-model="bathroomCnt"
+                type="number"
+                dense
+                outlined
+              />
+            </div>
+          </div>
+        </q-card>
 
-    <div class="row items-center q-mb-md">
-      <div class="col-2">태그</div>
-      <q-input
-        class="col-4"
-        v-model="tagList"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">매물 특징</div>
-      <q-input
-        type="textarea"
-        class="col-4"
-        v-model="articleFeatureDesc"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">거래 유형</div>
-      <q-select outlined class="col-4" v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">가격</div>
-      <q-input
-        class="col-4"
-        v-model="rentPrc"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">방향</div>
-      <q-select outlined class="col-4" v-model="direction" :options="directionOptions" stack-label dense />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">전용 면적 (제곱 미터)</div>
-      <q-input
-        class="col-4"
-        v-model="area1"
-        type="number"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">공용 면적 (제곱 미터)</div>
-      <q-input
-        class="col-4"
-        v-model="area2"
-        type="number"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">방 개수</div>
-      <q-input
-        class="col-4"
-        v-model="roomCnt"
-        type="number"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">화장실 개수</div>
-      <q-input
-        class="col-4"
-        v-model="bathroomCnt"
-        type="number"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">관리비 (만원)</div>
-      <q-input
-        class="col-4"
-        v-model="averageCommonPrice"
-        type="number"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">전기 요금 (만원)</div>
-      <q-input
-        class="col-4"
-        v-model="averageEtcPrice"
-        type="number"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center q-mb-md">
-      <div class="col-2">난방비 (만원)</div>
-      <q-input
-        class="col-4"
-        v-model="averageHeatPrice"
-        type="number"
-        dense
-        outlined
-      />
-    </div>
-
-    <div class="row items-center justify-end">
-      <q-btn outline dense label="등록" @click="register" class="register-btn"/>
+        <!-- 요금 -->
+        <q-card bordered flat class="q-mb-lg q-pa-lg card">
+          <div style="font-size: 18px; font-weight: bold">요금</div>
+          <!-- 관리비 -->
+          <!-- 전기 요금 -->
+          <!-- 난방비 -->
+          <div class="row col-12">
+            <div class="row items-center col-4">
+              <div class="col-6">관리비 (만원)</div>
+              <q-input
+                class="col-4"
+                v-model="averageCommonPrice"
+                type="number"
+                dense
+                outlined
+              />
+            </div>
+            <div class="row items-center col-4">
+              <div class="col-6">전기 요금 (만원)</div>
+              <q-input
+                class="col-4"
+                v-model="averageEtcPrice"
+                type="number"
+                dense
+                outlined
+              />
+            </div>
+            <div class="row items-center col-4">
+              <div class="col-6">난방비 (만원)</div>
+              <q-input
+                class="col-4"
+                v-model="averageHeatPrice"
+                type="number"
+                dense
+                outlined
+              />
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
 
     <search-address-dialog
@@ -264,8 +289,7 @@ const register = async () => {
 </template>
 
 <style scoped>
-.input {
-  max-width: 300px;
+.card {
 }
 
 .register-btn {

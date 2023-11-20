@@ -130,7 +130,7 @@ const slide = ref(1);
     <div class="row justify-center">
       <div v-for="property in propertyList" class="q-ma-md" style="min-width: 300px; max-width: 300px">
         <div @click="goToDetailPage(property.id)" style="min-height: 350px" class="property-card">
-          <q-img :src="property.image === null ? 'https://flat-bucket.s3.ap-northeast-2.amazonaws.com/6b1b1562-2cb2-4469-940d-112b3837300b.PNG' : property.image">
+          <q-img :src="property.image === null ? 'https://flat-bucket.s3.ap-northeast-2.amazonaws.com/6b1b1562-2cb2-4469-940d-112b3837300b.PNG' : property.image" style="max-width: 300px; max-height: 190px;">
             <q-badge
               v-if="property.tradeTypeName === '월세'"
               class="absolute" style="top: 8px; left: 8px; padding: 11px; width: 60px;">
