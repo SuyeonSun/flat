@@ -130,7 +130,7 @@ const enterRoom = (room) => {
                       <h6 class="q-ma-none q-mb-xs">{{ property.title === null ? "-" : property.title }}</h6>
                       <div class="q-mb-sm">{{ property.address }}</div>
                       <div>
-                        <q-btn dense disable label="매물 특징">
+                        <q-btn dense label="매물 특징">
                           <q-tooltip>
                             {{ property.articleFeatureDesc }}
                           </q-tooltip>
@@ -172,7 +172,7 @@ const enterRoom = (room) => {
                       <h6 class="q-ma-none q-mb-xs">{{ property.title === null ? "-" : property.title }}</h6>
                       <div class="q-mb-sm">{{ property.address }}</div>
                       <div>
-                        <q-btn dense disable label="매물 특징">
+                        <q-btn dense label="매물 특징">
                           <q-tooltip>
                             {{ property.articleFeatureDesc }}
                           </q-tooltip>
@@ -223,7 +223,7 @@ const enterRoom = (room) => {
                       </div>
                       <div class="text-subtitle2">
                         <span style="padding-right: 5px">
-                          <q-btn disable label="주소" style="margin-top: 5px">
+                          <q-btn label="주소" style="margin-top: 5px">
                           <q-tooltip>
                             {{friend.address === null ? 'null' : friend.address}}
                           </q-tooltip>
