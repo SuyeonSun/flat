@@ -57,7 +57,7 @@ const onSubmit = async () => {
           class="form-container"
         >
           <h5 class="q-mt-none" style="font-weight: bold">로그인</h5>
-          <q-btn label="메인 계정" unelevated class="q-mb-md" style="color: #117CE9; border: 2px solid #117CE9; min-width: 145px; background-color: #F0F0F0"/>
+          <q-btn label="메인 계정" unelevated class="q-mb-md" style="color: black; border: 1px solid black; min-width: 145px; background-color: #F0F0F0"/>
 
           <q-input
             v-model="email"
@@ -129,7 +129,7 @@ const onSubmit = async () => {
 }
 
 .submit-btn {
-  background-color: $dark-blue; // #117CE9
+  background-color: black; // #117CE9
   color: #FFFFFF
 }
 

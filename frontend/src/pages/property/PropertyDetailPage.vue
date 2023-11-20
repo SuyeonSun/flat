@@ -84,13 +84,28 @@ const clickLikeBtn = async (status) => {
 </script>
 
 <template>
-  <q-page class="q-pa-xl">
-    <div class="row justify-between">
+  <q-page class="q-pa-xl row justify-center">
+    <div style="min-width: 50%">
+      <h5 class="q-ma-none q-mb-md">{{ title }}</h5>
+      <div class="user-info-card q-mb-sm">
+        <q-card>
+          <q-list bordered separator>
+            <q-item>
+              <q-item-section>게시자: {{ name }}</q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>이메일: {{ writerEmail }}</q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>전화번호: {{ phoneNumber }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-card>
+      </div>
+
       <q-card class="property-info-card">
         <q-card-section>
           <div class="row justify-between items-center q-mb-md">
-            <!-- 제목 -->
-            <h6 class="q-ma-none">{{ title }}</h6>
             <div>
               <span v-if="isUserLiked" class="q-mr-sm">
                 <q-icon name="favorite" size="sm" @click="clickLikeBtn(false)"/>
@@ -154,22 +169,6 @@ const clickLikeBtn = async (status) => {
           </div>
         </q-card-section>
       </q-card>
-
-      <div class="user-info-card">
-        <q-card>
-          <q-list bordered separator>
-            <q-item>
-              <q-item-section>게시자: {{ name }}</q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>이메일: {{ writerEmail }}</q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>전화번호: {{ phoneNumber }}</q-item-section>
-            </q-item>
-          </q-list>
-        </q-card>
-      </div>
     </div>
 
     <div>
@@ -188,11 +187,11 @@ const clickLikeBtn = async (status) => {
 <style scoped>
 .property-info-card {
   width: 100%;
-  max-width: 55%;
+  //max-width: 55%;
 }
 
 .user-info-card {
   width: 100%;
-  max-width: 40%;
+  //max-width: 40%;
 }
 </style>
