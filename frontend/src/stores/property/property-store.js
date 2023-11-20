@@ -76,6 +76,18 @@ export const usePropertyStore = defineStore('propertyStore', {
       } catch (error) {
         console.log("error");
       }
+    },
+
+    async getInterestAreaMapList(lat, lng) {
+      try {
+        const response = await api.post('/property/map/interestArea', {
+          lat: lat,
+          lng: lng
+        })
+        this.mapList = response.data.data
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
 })

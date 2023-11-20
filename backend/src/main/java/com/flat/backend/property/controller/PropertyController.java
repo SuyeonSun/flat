@@ -2,10 +2,12 @@ package com.flat.backend.property.controller;
 
 import com.flat.backend.common.dto.BaseResponseDto;
 import com.flat.backend.property.dto.req.DetailReqDto;
+import com.flat.backend.property.dto.req.InterestAreaMapReqDto;
 import com.flat.backend.property.dto.req.RegisterReqDto;
 import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.property.service.PropertyService;
+import com.flat.backend.user.dto.req.InterestAreaReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,5 +62,10 @@ public class PropertyController {
     @GetMapping("/map")
     public ResponseEntity<BaseResponseDto<List<Property>>> selectMapList(@RequestParam String address, @RequestParam String tradeTypeName) {
         return propertyService.selectMapList(address, tradeTypeName);
+    }
+
+    @PostMapping("/map/interestArea")
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaMapList(@RequestBody InterestAreaMapReqDto interestAreaMapReqDto) {
+        return propertyService.selectInterestAreaMapList(interestAreaMapReqDto.getLat(), interestAreaMapReqDto.getLng());
     }
 }

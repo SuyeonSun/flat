@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
+import static com.flat.backend.common.BaseResponseStatus.OK;
 
 @Service
 @RequiredArgsConstructor
@@ -152,5 +153,36 @@ public class PropertyService {
         List<Property> propertyList = propertyRepository.findMapList(address, tradeTypeName);
         BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), propertyList);
         return ResponseEntity.ok().body(baseResponseDto);
+    }
+
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaMapList(String lat, String lng) {
+        List<Property> properties = propertyRepository.findAll();
+
+        List<Property> result = new ArrayList<>();
+        for(Property p : properties) {
+
+            double dist = Math.sin(deg2rad(Double.parseDouble(lat))) * Math.sin(deg2rad(Double.parseDouble(p.getLat())))
+                    + Math.cos(deg2rad(Double.parseDouble(lat))) * Math.cos(deg2rad(Double.parseDouble(p.getLat())))
+                    * Math.cos(deg2rad(Double.parseDouble(lng) - Double.parseDouble(p.getLng())));
+
+            dist = Math.acos(dist);
+            dist = rad2deg(dist);
+            dist = dist * 60 * 1.1515 * 1609.344;
+
+            if(dist <= 1000) {
+                result.add(p);
+            }
+        }
+
+        return ResponseEntity.ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage(), result));
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 }
