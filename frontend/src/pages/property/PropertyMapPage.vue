@@ -21,6 +21,7 @@ let markers = [];
 let infoWindows = [];
 
 const isToggle = ref(false)
+const isSearch = ref(true)
 
 onMounted(async () => {
   await userStore.getUserInfo(email.value);
@@ -35,6 +36,7 @@ onMounted(async () => {
 })
 
 watch(() => mapList.value, (newVal, oldVal) => {
+  console.log("~!!!!!!!!!!!!!!!!!!!!!!")
   markers = []
   mapList.value = newVal;
   const script = document.createElement("script");
@@ -45,13 +47,22 @@ watch(() => mapList.value, (newVal, oldVal) => {
   document.head.appendChild(script);
 
   script.onload = () => {
-    const center = [newVal[0].lat, newVal[0].lng]
+    if(isSearch.value) {
+      const center = [newVal[0].lat, newVal[0].lng]
 
-    // 네이버 지도 생성
-    map = new window.naver.maps.Map("map", {
-      center: new window.naver.maps.LatLng(center[0], center[1]),
-      zoom: 15
-    });
+      // 네이버 지도 생성
+      map = new window.naver.maps.Map("map", {
+        center: new window.naver.maps.LatLng(center[0], center[1]),
+        zoom: 15
+      });
+
+      isSearch.value = false
+    } else {
+      map = new window.naver.maps.Map("map", {
+        center: new window.naver.maps.LatLng(map.center._lat, map.center._lng),
+        zoom: map.zoom
+      })
+    }
 
     // for (let element in newVal) {
     //   console.log(element + "===============")
@@ -96,7 +107,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
   };
 })
 
-watch(() => isToggle.value, (newVal, oldVal) => {
+watch(() => isToggle.value, async (newVal, oldVal) => {
   // isToggle.value가 true라면 친구 marker 추가
   if (newVal) {
     addFriendMarker();
@@ -107,7 +118,7 @@ watch(() => isToggle.value, (newVal, oldVal) => {
       address: address.value,
       tradeTypeName: tradeTypeName.value.value
     }
-    propertyStore.getMapList(searchPayload);
+    await propertyStore.getMapList(searchPayload);
   }
 })
 
@@ -178,6 +189,7 @@ const address = ref("")
 const tradeTypeName = ref(tradeTypeOptions[0])
 
 watch(() => tradeTypeName.value, (newVal, oldVal) => {
+  isSearch.value = true
   const searchPayload = {
     address: address.value,
     tradeTypeName: newVal.value
@@ -186,6 +198,7 @@ watch(() => tradeTypeName.value, (newVal, oldVal) => {
 })
 
 watch(() => address.value, (newVal, oldVal) => {
+  isSearch.value = true
   const searchPayload = {
     address: newVal,
     tradeTypeName: tradeTypeName.value.value
