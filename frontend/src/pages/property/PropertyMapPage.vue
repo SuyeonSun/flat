@@ -18,6 +18,7 @@ const {user, friends} = storeToRefs(userStore); // user.id
 
 let map;
 let markers = ref([]);
+let friendsMarkers = ref([]);
 let infoWindows = [];
 
 const isToggle = ref(false)
@@ -96,7 +97,6 @@ watch(() => mapList.value, (newVal, oldVal) => {
       });
       naver.maps.Event.addListener(marker, "click", function (e) {
         /////////////////////////////////////////////////////////////////
-        console.log("================", `${idx}번째 마커 클릭`);
         selectedMarkerIdx.value = idx;
         markers.value.forEach((marker, i) => {
           if (i === idx) {
@@ -138,7 +138,7 @@ watch(() => isToggle.value, async (newVal, oldVal) => {
     addFriendMarker();
   } else {
     // 토글 해제 시, 친구 marker 제거
-    markers.value = []
+    friendsMarkers.value = []
     const searchPayload = {
       address: address.value,
       tradeTypeName: tradeTypeName.value.value
@@ -183,7 +183,7 @@ const addFriendMarker = () => {
       }
     });
 
-    markers.value.push(marker);
+    friendsMarkers.value.push(marker);
     infoWindows.push(infoWindow);
   })
 }
