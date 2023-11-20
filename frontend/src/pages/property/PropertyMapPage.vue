@@ -96,7 +96,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
         borderWidth: 5,
       });
       naver.maps.Event.addListener(marker, "click", function (e) {
-        /////////////////////////////////////////////////////////////////
+        // TODO: 마커 색상 변경
         selectedMarkerIdx.value = idx;
         markers.value.forEach((marker, i) => {
           if (i === idx) {
@@ -113,7 +113,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
             })
           }
         })
-        /////////////////////////////////////////////////////////////////
+
         if (infoWindow.getMap()) {
           infoWindow.close();
         } else {
@@ -232,6 +232,7 @@ watch(() => address.value, (newVal, oldVal) => {
 })
 
 const clickProperty = (idx) => {
+  // TODO: 마커 색상 변경
   selectedMarkerIdx.value = idx;
   markers.value.forEach((marker, i) => {
     if (i === idx) {
@@ -343,8 +344,8 @@ const clickProperty = (idx) => {
   </q-page>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .selected-class {
-  background-color: red;
+  background-color: $light-grey;
 }
 </style>
