@@ -133,7 +133,7 @@ const onSubmit = async () => {
             dense
             outlined
             readonly
-            label="주소를 검색해 주십시오."
+            placeholder="주소를 검색해 주십시오."
           >
           </q-input>
 

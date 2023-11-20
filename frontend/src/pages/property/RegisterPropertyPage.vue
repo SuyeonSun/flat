@@ -101,7 +101,7 @@ const register = async () => {
               dense
               outlined
               readonly
-              label="주소 검색"
+              placeholder="주소 검색"
             />
           </div>
           <!-- 동, 층 -->
