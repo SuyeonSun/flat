@@ -5,16 +5,19 @@ import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "stores/auth/auth-store";
 import {useUserStore} from "stores/user/user-store";
+import {usePoliceStore} from "stores/police/police-store";
 
 const $router = useRouter();
 
 const propertyStore = usePropertyStore();
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const policeStore = usePoliceStore();
 
 const {mapList} = storeToRefs(propertyStore);
 const {email} = storeToRefs(authStore);
 const {user, friends} = storeToRefs(userStore); // user.id
+const {policeStationList} = storeToRefs(policeStore);
 
 let map;
 let markers = ref([]);
@@ -27,6 +30,15 @@ const isSearch = ref(true)
 const selectedMarkerIdx = ref(0);
 
 onMounted(async () => {
+  await policeStore.getPoliceStation();
+  // 서울 안의 경찰서만 선별
+  const seoulPoliceStationList = policeStationList.value.filter((police) => {
+    if (police["경찰서"].includes("서울")) return police
+  })
+  // 서울 안의 경찰서만 좌표 변환
+  // 구분, 주소, 경도, 위도
+
+
   await userStore.getUserInfo(email.value);
   await userStore.findFriends(user.value.id);
 
