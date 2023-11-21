@@ -13,13 +13,14 @@ const isUser = ref(false)
 const friendState = ref(0)
 
 const search = async (email) => {
+  isUser.value = false
+
   if(email === authStore.email) {
     Notify.create({
       message: '본인은 친구 추가 불가능합니다.',
       color: "red"
     })
 
-    isUser.value = false
     text.value = ''
     return
   }
@@ -38,10 +39,9 @@ const search = async (email) => {
   }
 
   searchUser.value = response.data
-  isUser.value = true
-
   text.value = ''
   friendState.value = await userStore.getFriendState(searchUser.value)
+  isUser.value = true
 }
 
 const sendReq = async (senderId, receiverId) => {
@@ -58,25 +58,17 @@ const sendReq = async (senderId, receiverId) => {
 <template>
   <div class="q-pa-md">
     <q-dialog v-model="userStore.addFormDialog" persistent>
-      <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
+      <q-layout view="Lhh lpR fff" container class="bg-white text-dark" style="max-height: 550px; max-width: 430px">
         <q-header style="background-color: white">
           <q-toolbar>
-            <q-toolbar-title>
-              <div class="text-center q-mt-sm">
-                <h5 class="q-ma-none" style="font-weight: bold; color: black">
-                  <span class="logo-font">F</span>
-                  <span class="logo-font">L</span>
-                  <q-icon name="house" class="logo-icon"/>
-                  <span class="logo-font">T</span>
-                </h5>
-              </div>
-            </q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close" style="color: black"/>
           </q-toolbar>
         </q-header>
+
         <q-page-container style="display: flex; justify-content: center;">
           <div>
-            <q-input bottom-slots v-model="text" label="email" @keyup.enter="search(text)" dense style="min-width: 300px">
+            <q-item-label caption class="q-mb-xs">추가하고 싶은 친구의 이메일을 검색해주세요.</q-item-label>
+            <q-input bottom-slots v-model="text" label="이메일" @keyup.enter="search(text)" dense style="min-width: 300px">
               <template v-slot:append>
                 <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
                 <q-icon name="search" @click="search(text)"/>
@@ -84,20 +76,41 @@ const sendReq = async (senderId, receiverId) => {
             </q-input>
           </div>
         </q-page-container>
+
         <div style="display: flex; justify-content: center;">
-          <template v-if="isUser">
-            <q-card class="my-card">
-              <img :src="searchUser.profile">
-              <q-card-section>
-                <div class="text-subtitle2">name : {{searchUser.name}}</div>
-                <div class="text-subtitle2">email : {{searchUser.email}}</div>
-                <div class="text-subtitle2">address : {{searchUser.address === null ? 'null' : searchUser.address}}</div>
-                <q-btn v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)">요청 보내기</q-btn>
-                <div v-else-if="friendState === 1" class="text-subtitle2">이미 친구 입니다.</div>
-                <div v-else class="text-subtitle2">요청 대기중</div>
-              </q-card-section>
-            </q-card>
-          </template>
+          <div v-if="isUser">
+            <q-item clickable v-ripple>
+              <q-item-section side>
+                <q-avatar rounded size="48px">
+                  <img :src="searchUser.profile" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{searchUser.email}}</q-item-label>
+                <q-item-label caption>{{searchUser.name}}</q-item-label>
+                <q-item-label caption>{{searchUser.address === null ? 'null' : searchUser.address}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <div class="row justify-end q-mb-xs">
+              <q-btn outline v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)" style="background-color: #14ADEA">요청</q-btn>
+              <q-item-label style="font-size: 12px; color: darkred" v-if="friendState === 1">이미 친구 입니다.</q-item-label>
+              <q-item-label style="font-size: 12px; color: #117CE9" v-if="friendState === 2">요청 대기중</q-item-label>
+            </div>
+<!--            <q-card>-->
+<!--              <img :src="searchUser.profile">-->
+<!--              <q-card-section>-->
+<!--                <div class="text-subtitle2">name : {{searchUser.name}}</div>-->
+<!--                <div class="text-subtitle2">email : {{searchUser.email}}</div>-->
+<!--                <div class="text-subtitle2">address : {{searchUser.address === null ? 'null' : searchUser.address}}</div>-->
+<!--                <q-btn v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)">요청 보내기</q-btn>-->
+<!--                <div v-else-if="friendState === 1" class="text-subtitle2">이미 친구 입니다.</div>-->
+<!--                <div v-else class="text-subtitle2">요청 대기중</div>-->
+<!--              </q-card-section>-->
+<!--            </q-card>-->
+          </div>
+          <div v-else style="padding-top: 180px">
+            검색 결과가 없습니다.
+          </div>
         </div>
       </q-layout>
     </q-dialog>
