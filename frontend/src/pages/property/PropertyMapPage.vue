@@ -437,6 +437,9 @@ watch(() => address.value, (newVal, oldVal) => {
 })
 
 const clickProperty = (idx) => {
+  // TODO: scroll의 vertical 값을 index 만큼 나누어서 해당 index 클릭 시 그에 맞는 scroll 위치로 이동
+
+
   // TODO: 마커 색상 변경
   selectedMarkerIdx.value = idx;
   markers.value.forEach((marker, i) => {
@@ -456,6 +459,8 @@ const clickProperty = (idx) => {
     }
   })
 }
+
+const scrollRef = ref(null)
 </script>
 
 <template>
@@ -465,13 +470,28 @@ const clickProperty = (idx) => {
       <!-- address, tradeTypeName -->
       <div class="q-pa-lg q-px-xl">
         <div class="row justify-between items-center">
-          <div class="row">
+          <div class="row" v-if="!isOnlyInterestArea">
             <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
                       style="width: 100px" label="거래 유형"/>
             <q-input
               v-model="address"
               dense
               outlined
+              label="검색할 매물 주소"
+            >
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+          </div>
+          <div class="row" v-else>
+            <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense readonly class="q-mr-sm"
+                      style="width: 100px" label="거래 유형"/>
+            <q-input
+              v-model="address"
+              dense
+              outlined
+              readonly
               label="검색할 매물 주소"
             >
               <template v-slot:append>
@@ -527,6 +547,7 @@ const clickProperty = (idx) => {
             :content-style="contentStyle"
             :content-active-style="contentActiveStyle"
             class="full-height"
+            ref="scrollRef"
           >
             <q-list bordered separator>
               <q-item v-for="(map, idx) in mapList" clickable v-ripple @click="clickProperty(idx)"
