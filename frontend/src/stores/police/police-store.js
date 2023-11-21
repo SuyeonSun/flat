@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import axios from "axios";
+import {authApi} from "boot/auth-api";
 
 export const usePoliceStore = defineStore('policeStore', {
   state: () => ({
-    policeStationList : []
+    policeStationList : [],
+    policeStationLocationList: []
   }),
   actions: {
     async getPoliceStation() {
@@ -14,6 +16,26 @@ export const usePoliceStore = defineStore('policeStore', {
         console.log("error")
       }
     },
+
+    async getPoliceStationLocation(seoulPoliceStationList) {
+      // 구분, 주소, 경도, 위도
+      try {
+        for (const station of seoulPoliceStationList) {
+          const query = station["주소"];
+          const response = await authApi.get(`/geocode/${query}`);
+          if (JSON.parse(response.data.data.body).addresses.length !== 0) {
+            const locationInfo = {
+              address: query,
+              x: JSON.parse(response.data.data.body).addresses[0].x,
+              y: JSON.parse(response.data.data.body).addresses[0].y,
+            }
+            this.policeStationLocationList.push(locationInfo);
+          }
+        }
+      } catch (error) {
+        console.log("error", error)
+      }
+    }
   },
 
   persist: {

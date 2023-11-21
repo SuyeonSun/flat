@@ -17,11 +17,12 @@ const policeStore = usePoliceStore();
 const {mapList} = storeToRefs(propertyStore);
 const {email} = storeToRefs(authStore);
 const {user, friends} = storeToRefs(userStore); // user.id
-const {policeStationList} = storeToRefs(policeStore);
+const {policeStationList, policeStationLocationList} = storeToRefs(policeStore);
 
 let map;
 let markers = ref([]);
 let friendsMarkers = ref([]);
+let policeStationMarkers = ref([]);
 let infoWindows = [];
 
 const isToggle = ref(false)
@@ -30,15 +31,6 @@ const isSearch = ref(true)
 const selectedMarkerIdx = ref(0);
 
 onMounted(async () => {
-  await policeStore.getPoliceStation();
-  // 서울 안의 경찰서만 선별
-  const seoulPoliceStationList = policeStationList.value.filter((police) => {
-    if (police["경찰서"].includes("서울")) return police
-  })
-  // 서울 안의 경찰서만 좌표 변환
-  // 구분, 주소, 경도, 위도
-
-
   await userStore.getUserInfo(email.value);
   await userStore.findFriends(user.value.id);
 
@@ -47,15 +39,23 @@ onMounted(async () => {
     tradeTypeName: tradeTypeName.value.value
   }
   await propertyStore.getMapList(searchPayload);
+
+  // 경찰서
+  await policeStore.getPoliceStation();
+  // 서울 안의 경찰서만 선별
+  const seoulPoliceStationList = policeStationList.value.filter((police) => {
+    if (police["경찰서"].includes("서울")) return police
+  })
+  // 서울 안의 경찰서만 좌표 변환
+  await policeStore.getPoliceStationLocation(seoulPoliceStationList);
 })
 
 watch(() => mapList.value, (newVal, oldVal) => {
   markers.value = []
   mapList.value = newVal;
   const script = document.createElement("script");
-  // `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env["CLIENT_ID"]}`;
   script.src =
-    `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=osz1qut3m0`;
+    `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env["CLIENT_ID"]}`;
   script.async = true;
   script.defer = true;
   document.head.appendChild(script);
@@ -141,6 +141,9 @@ watch(() => mapList.value, (newVal, oldVal) => {
     if (isToggle.value) {
       addFriendMarker();
     }
+
+    // TODO: 경찰서 마커
+    addPoliceStationMarker();
   };
 })
 
@@ -196,6 +199,46 @@ const addFriendMarker = () => {
     });
 
     friendsMarkers.value.push(marker);
+    infoWindows.push(infoWindow);
+  })
+}
+
+const addPoliceStationMarker = () => {
+  policeStationLocationList.value.forEach((station) => {
+    let content = [
+      "<div>",
+      `<img src="/icons/police-station-pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`,
+      "</div>",
+    ].join("");
+
+    let marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(station.y, station.x),
+      icon: {
+        content: content,
+        size: new naver.maps.Size(32, 32),
+        anchor: new naver.maps.Point(16, 16),
+      },
+      map: map
+    });
+
+    let infoWindow = new naver.maps.InfoWindow({
+      content: `<div style="text-align:center;padding:10px;">
+                    <div>${station.address}</div>
+                </div>`,
+      backgroundColor: "#FFFFFF",
+      borderColor: "#FFFFFF",
+      borderWidth: 5,
+    });
+
+    naver.maps.Event.addListener(marker, "click", function (e) {
+      if (infoWindow.getMap()) {
+        infoWindow.close();
+      } else {
+        infoWindow.open(map, marker);
+      }
+    });
+
+    policeStationMarkers.value.push(marker);
     infoWindows.push(infoWindow);
   })
 }
