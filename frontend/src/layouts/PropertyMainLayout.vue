@@ -2,6 +2,13 @@
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
+import {ref} from "vue";
+
+const scrollInfo = ref({});
+const onScroll = (info) => {
+  scrollInfo.value = info;
+  console.log(scrollInfo.value.position.top) // 64
+}
 
 const $router = useRouter();
 const authStore = useAuthStore();
@@ -28,6 +35,7 @@ const clickGoToRegisterBtn = () => {
 
 <template>
   <q-layout view="hHh lpR fFf">
+    <q-scroll-observer @scroll="onScroll" />
     <q-header height-hint="98" style="background: transparent">
       <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar"
                  style="display: flex; justify-content: space-between; align-items: center">

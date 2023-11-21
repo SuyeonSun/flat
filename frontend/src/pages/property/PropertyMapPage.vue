@@ -17,7 +17,7 @@ const policeStore = usePoliceStore();
 const {mapList} = storeToRefs(propertyStore);
 const {email} = storeToRefs(authStore);
 const {user, friends} = storeToRefs(userStore); // user.id
-const {policeStationList, policeStationLocationList} = storeToRefs(policeStore);
+const {policeStationLocationList} = storeToRefs(policeStore);
 
 let map;
 let markers = ref([]);
@@ -41,14 +41,7 @@ onMounted(async () => {
   }
   await propertyStore.getMapList(searchPayload);
 
-  // 경찰서
-  await policeStore.getPoliceStation();
-  // 서울 안의 경찰서만 선별
-  const seoulPoliceStationList = policeStationList.value.filter((police) => {
-    if (police["경찰서"].includes("서울")) return police
-  })
-  // 서울 안의 경찰서만 좌표 변환
-  await policeStore.getPoliceStationLocation(seoulPoliceStationList);
+  await policeStore.getPoliceStationLocation();
 })
 
 watch(() => mapList.value, (newVal, oldVal) => {
@@ -228,7 +221,7 @@ const addPoliceStationMarker = () => {
     ].join("");
 
     let marker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(station.y, station.x),
+      position: new naver.maps.LatLng(station.lat, station.lng),
       icon: {
         content: content,
         size: new naver.maps.Size(32, 32),
