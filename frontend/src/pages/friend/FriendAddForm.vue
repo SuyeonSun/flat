@@ -61,6 +61,8 @@ const sendReq = async (senderId, receiverId) => {
       <q-layout view="Lhh lpR fff" container class="bg-white text-dark" style="max-height: 550px; max-width: 430px">
         <q-header style="background-color: white">
           <q-toolbar>
+            <q-toolbar-title>
+            </q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close" style="color: black"/>
           </q-toolbar>
         </q-header>
@@ -92,21 +94,10 @@ const sendReq = async (senderId, receiverId) => {
               </q-item-section>
             </q-item>
             <div class="row justify-end q-mb-xs">
-              <q-btn outline v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)" style="background-color: #14ADEA">요청</q-btn>
+              <q-btn outline v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)" style="background-color: lightskyblue">요청</q-btn>
               <q-item-label style="font-size: 12px; color: darkred" v-if="friendState === 1">이미 친구 입니다.</q-item-label>
               <q-item-label style="font-size: 12px; color: #117CE9" v-if="friendState === 2">요청 대기중</q-item-label>
             </div>
-<!--            <q-card>-->
-<!--              <img :src="searchUser.profile">-->
-<!--              <q-card-section>-->
-<!--                <div class="text-subtitle2">name : {{searchUser.name}}</div>-->
-<!--                <div class="text-subtitle2">email : {{searchUser.email}}</div>-->
-<!--                <div class="text-subtitle2">address : {{searchUser.address === null ? 'null' : searchUser.address}}</div>-->
-<!--                <q-btn v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)">요청 보내기</q-btn>-->
-<!--                <div v-else-if="friendState === 1" class="text-subtitle2">이미 친구 입니다.</div>-->
-<!--                <div v-else class="text-subtitle2">요청 대기중</div>-->
-<!--              </q-card-section>-->
-<!--            </q-card>-->
           </div>
           <div v-else style="padding-top: 180px">
             검색 결과가 없습니다.

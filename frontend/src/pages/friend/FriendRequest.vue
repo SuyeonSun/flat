@@ -13,18 +13,10 @@ const tab = ref('recv')
 <template>
   <div class="q-pa-md">
     <q-dialog v-model="userStore.reqDialog" persistent>
-      <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
+      <q-layout view="Lhh lpR fff" container class="bg-white text-dark" style="max-height: 550px; max-width: 800px">
         <q-header style="background-color: white">
           <q-toolbar>
             <q-toolbar-title>
-              <div class="text-center q-mt-sm">
-                <h5 class="q-ma-none" style="font-weight: bold; color: black">
-                  <span class="logo-font">F</span>
-                  <span class="logo-font">L</span>
-                  <q-icon name="house" class="logo-icon"/>
-                  <span class="logo-font">T</span>
-                </h5>
-              </div>
             </q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close" style="color: black"/>
           </q-toolbar>
@@ -49,27 +41,54 @@ const tab = ref('recv')
 
               <q-tab-panels v-model="tab" animated>
                 <q-tab-panel name="recv">
-                  <q-card v-for="friend in userStore.$state.recvRequests" :key="friend" class="my-card">
-                    <img :src="friend.profile">
-                    <q-card-section>
-                      <div class="text-subtitle2">name : {{friend.name}}</div>
-                      <div class="text-subtitle2">email : {{friend.email}}</div>
-                      <div class="text-subtitle2">address : {{friend.address === null ? 'null' : friend.address}}</div>
-                      <q-btn @click="userStore.acceptRequest(friend)">수락</q-btn>
-                      <q-btn @click="userStore.rejectRequest(friend)">거절</q-btn>
-                    </q-card-section>
+                  <q-card flat bordered v-for="friend in userStore.$state.recvRequests" :key="friend" class="row justify-between items-center">
+                    <q-item clickable v-ripple>
+                      <q-item-section side>
+                        <q-avatar rounded size="48px">
+                          <img :src="friend.profile" />
+                        </q-avatar>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{friend.email}}</q-item-label>
+                        <q-item-label caption>{{friend.name}}</q-item-label>
+                        <q-item-label caption>{{friend.address === null ? 'null' : friend.address}}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <div class="row justify-end">
+                      <div>
+                        <q-btn @click="userStore.acceptRequest(friend)" class="col-2 q-mr-sm" style="background-color: lightskyblue">수락</q-btn>
+                        <q-btn @click="userStore.rejectRequest(friend)" class="col-2 q-mr-md" style="background-color: lightgray">거절</q-btn>
+                      </div>
+                    </div>
                   </q-card>
                 </q-tab-panel>
 
                 <q-tab-panel name="send">
-                  <q-card v-for="friend in userStore.$state.sendRequests" :key="friend" class="my-card">
-                    <img :src="friend.profile">
-                    <q-card-section>
-                      <div class="text-subtitle2">name : {{friend.name}}</div>
-                      <div class="text-subtitle2">email : {{friend.email}}</div>
-                      <div class="text-subtitle2">address : {{friend.address === null ? 'null' : friend.address}}</div>
-                      <q-btn @click="userStore.removeRequest(friend)">요청 삭제</q-btn>
-                    </q-card-section>
+                  <q-card flat bordered v-for="friend in userStore.$state.sendRequests" :key="friend" class="row justify-between items-center">
+<!--                    <img :src="friend.profile">-->
+<!--                    <q-card-section>-->
+<!--                      <div class="text-subtitle2">name : {{friend.name}}</div>-->
+<!--                      <div class="text-subtitle2">email : {{friend.email}}</div>-->
+<!--                      <div class="text-subtitle2">address : {{friend.address === null ? 'null' : friend.address}}</div>-->
+<!--                      <q-btn @click="userStore.removeRequest(friend)">요청 삭제</q-btn>-->
+<!--                    </q-card-section>-->
+                    <q-item clickable v-ripple>
+                      <q-item-section side>
+                        <q-avatar rounded size="48px">
+                          <img :src="friend.profile" />
+                        </q-avatar>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{friend.email}}</q-item-label>
+                        <q-item-label caption>{{friend.name}}</q-item-label>
+                        <q-item-label caption>{{friend.address === null ? 'null' : friend.address}}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <div class="row justify-end">
+                      <div>
+                        <q-btn @click="userStore.removeRequest(friend)" class="col-2 q-mr-md" style="background-color: lightgray">삭제</q-btn>
+                      </div>
+                    </div>
                   </q-card>
                 </q-tab-panel>
               </q-tab-panels>
