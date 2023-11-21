@@ -65,13 +65,6 @@ const tab = ref('recv')
 
                 <q-tab-panel name="send">
                   <q-card flat bordered v-for="friend in userStore.$state.sendRequests" :key="friend" class="row justify-between items-center">
-<!--                    <img :src="friend.profile">-->
-<!--                    <q-card-section>-->
-<!--                      <div class="text-subtitle2">name : {{friend.name}}</div>-->
-<!--                      <div class="text-subtitle2">email : {{friend.email}}</div>-->
-<!--                      <div class="text-subtitle2">address : {{friend.address === null ? 'null' : friend.address}}</div>-->
-<!--                      <q-btn @click="userStore.removeRequest(friend)">요청 삭제</q-btn>-->
-<!--                    </q-card-section>-->
                     <q-item clickable v-ripple>
                       <q-item-section side>
                         <q-avatar rounded size="48px">

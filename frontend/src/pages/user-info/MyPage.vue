@@ -186,8 +186,8 @@ const enterRoom = (room) => {
 
             <q-tab-panel name="friends">
               <div class="row" style="justify-content: space-between; margin-bottom: 20px">
-                <div style="color: blue; font-weight: bold">
-                  친구 수 : {{userStore.$state.friends.length}}
+                <div style="color: #117CE9; font-weight: bold">
+                  총 {{userStore.$state.friends.length}}명의 친구
                 </div>
                 <div>
                   <q-btn style="margin-right: 10px" @click="userStore.viewAddForm">친구 추가</q-btn>
@@ -195,51 +195,27 @@ const enterRoom = (room) => {
                 </div>
               </div>
 
-              <div class="row justify-center">
+              <div class="">
                 <div v-for="friend in userStore.$state.friends"
                      style="padding-left: 20px; padding-right: 20px">
-                  <q-card class="my-card"
-                    style="width: 320px; height: 320px">
-                    <q-img
-                      :src="friend.profile"
-                      no-native-menu class="q-mb-md"
-                      style="width: 320px; height: 180px"/>
-                    <q-card-section>
-                      <div class="text-subtitle2" >
-                        <span style="font-weight: bold">
-                          이름
-                        </span>
-                        <span>
-                          : {{friend.name}}
-                        </span>
+                  <q-card flat bordered class="row justify-between items-center q-mb-sm">
+                    <q-item clickable v-ripple>
+                      <q-item-section side>
+                        <q-avatar rounded size="48px">
+                          <img :src="friend.profile" alt="친구 프로필"/>
+                        </q-avatar>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{friend.email}}</q-item-label>
+                        <q-item-label caption>{{friend.name}}</q-item-label>
+                        <q-item-label caption>{{friend.address === null ? 'null' : friend.address}}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <div class="row justify-end">
+                      <div>
+                        <q-btn @click="removeFriend(friend.id)" class="col-2 q-mr-md" style="background-color: lightgray">친구 삭제</q-btn>
                       </div>
-                      <div class="text-subtitle2">
-                        <span style="font-weight: bold">
-                          이메일
-                        </span>
-                        <span>
-                          : {{friend.email}}
-                        </span>
-                      </div>
-                      <div class="text-subtitle2">
-                        <span style="padding-right: 5px">
-                          <q-btn label="주소" style="margin-top: 5px">
-                          <q-tooltip>
-                            {{friend.address === null ? 'null' : friend.address}}
-                          </q-tooltip>
-                        </q-btn>
-                        </span>
-                        <span>
-                          <q-btn @click="removeFriend(friend.id)" style="margin-top: 5px">친구 삭제</q-btn>
-                        </span>
-<!--                        <span style="font-weight: bold">-->
-<!--                          주소-->
-<!--                        </span>-->
-<!--                        <span>-->
-<!--                          : {{friend.address === null ? 'null' : friend.address}}-->
-<!--                        </span>-->
-                      </div>
-                    </q-card-section>
+                    </div>
                   </q-card>
                 </div>
               </div>
