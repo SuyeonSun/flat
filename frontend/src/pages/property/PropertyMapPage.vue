@@ -524,6 +524,18 @@ const clickProperty = (idx) => {
         </div>
       </div>
     </div>
+
+    <div v-show="isInterest">
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-card style="height: 100px; width: 500px; background-color: rgba(255, 0, 0, 0.8);" class="row justify-center items-center">
+          <div style="font-weight: bold">
+            <div>관심 지역 설정 중입니다.</div>
+            <div>지도 영역 클릭 시 관심 지역이 업데이트 됩니다.</div>
+            <div>관심 지역 설정을 중단하고 싶다면, 관심 지역 설정 토글을 꺼주세요.</div>
+          </div>
+        </q-card>
+      </q-page-sticky>
+    </div>
   </q-page>
 </template>
 
