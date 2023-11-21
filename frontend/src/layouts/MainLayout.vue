@@ -35,6 +35,12 @@ const signOut = async () => {
           </h5>
         </div>
         <div style="display: flex; align-items: center" class="q-pr-xl q-mb-xs">
+<!--          <div class="q-mr-sm">-->
+<!--            <q-btn unelevated>-->
+<!--              <span style="scale: 2" class="material-icons">notifications</span>-->
+<!--              <q-badge color="red" floating rounded>NEW</q-badge>-->
+<!--            </q-btn>-->
+<!--          </div>-->
           <div class="q-mr-sm">
             <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
           </div>

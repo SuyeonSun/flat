@@ -1,17 +1,18 @@
 package com.flat.backend.user.controller;
 
 import com.flat.backend.common.BaseException;
-import com.flat.backend.common.BaseResponseStatus;
+import com.flat.backend.common.dto.BaseResponseDto;
 import com.flat.backend.friends.dto.SendReqDto;
 import com.flat.backend.friends.repository.entity.ReqFriendDto;
 import com.flat.backend.user.dto.req.ChangeAddressDto;
 import com.flat.backend.user.dto.req.ChangeProfileDto;
+import com.flat.backend.user.dto.req.InterestAreaReqDto;
+import com.flat.backend.user.dto.res.InterestAreaResDto;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
+import static com.flat.backend.common.BaseResponseStatus.OK;
 
 @Slf4j
 @Controller
@@ -138,6 +140,35 @@ public class UserController {
         return ResponseEntity
                 .ok()
                 .build();
+    }
+
+    @ResponseBody
+    @GetMapping("/interestArea")
+    public ResponseEntity<BaseResponseDto<InterestAreaResDto>> getInterestArea(@RequestParam String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+
+        InterestAreaResDto interestAreaDto = InterestAreaResDto.builder()
+                .lat(user.getInterestLat())
+                .lng(user.getInterestLng())
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage(), interestAreaDto));
+
+    }
+
+    @Transactional
+    @ResponseBody
+    @PostMapping("/interestArea")
+    public ResponseEntity<BaseResponseDto<?>> setInterestArea(@RequestBody InterestAreaReqDto interestAreaReqDto) {
+        User user = userRepository.findByEmail(interestAreaReqDto.getEmail()).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+
+        user.setInterestLat(interestAreaReqDto.getLat());
+        user.setInterestLng(interestAreaReqDto.getLng());
+
+        return ResponseEntity.ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage()));
     }
 
 }
