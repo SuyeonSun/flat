@@ -463,7 +463,7 @@ const clickProperty = (idx) => {
     <div>
       <!-- 검색 바-->
       <!-- address, tradeTypeName -->
-      <div class="q-pa-lg">
+      <div class="q-pa-lg q-px-xl">
         <div class="row justify-between items-center">
           <div class="row">
             <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
@@ -515,13 +515,13 @@ const clickProperty = (idx) => {
       </div>
 
       <!-- 컨텐트 -->
-      <div class="row">
+      <div class="row q-mx-xl">
         <!-- 지도 -->
         <div class="col-8">
-          <div id="map" style="height: 100vh"></div>
+          <div id="map" style="height: 75vh"></div>
         </div>
         <!-- 목록 -->
-        <div class="col-4" style="height: 100vh">
+        <div class="col-4" style="height: 75vh">
           <q-scroll-area
             :thumb-style="thumbStyle"
             :content-style="contentStyle"
