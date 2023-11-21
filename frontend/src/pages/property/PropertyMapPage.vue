@@ -88,6 +88,8 @@ watch(() => mapList.value, (newVal, oldVal) => {
           anchor: new naver.maps.Point(16, 16),
         }
       });
+
+
       // 마커 클릭 시 상세 매물 정보로 이동하기
       let infoWindow = new naver.maps.InfoWindow({
         content:
@@ -112,6 +114,16 @@ watch(() => mapList.value, (newVal, oldVal) => {
               size: new naver.maps.Size(32, 32),
               anchor: new naver.maps.Point(16, 16),
             })
+
+            // marker 클릭 시 스크롤 이동
+            let gap = scrollRef.value.getScroll().verticalSize / mapList.value.length
+            let nextScrollPosition = idx * gap
+            if(nextScrollPosition > scrollRef.value.getScroll().verticalSize) {
+              nextScrollPosition = scrollRef.value.getScroll().verticalSize
+            }
+
+            scrollRef.value.setScrollPosition('vertical', nextScrollPosition)
+
           } else {
             marker.setIcon({
               content: [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
@@ -437,8 +449,18 @@ watch(() => address.value, (newVal, oldVal) => {
 })
 
 const clickProperty = (idx) => {
-  // TODO: scroll의 vertical 값을 index 만큼 나누어서 해당 index 클릭 시 그에 맞는 scroll 위치로 이동
+  // 매물정보 클릭 시 스크롤 이동
+  // console.log("~~~~~~~~~~", scrollRef.value.getScroll())
+  // console.log("@@@@@@@@@@", scrollRef.value.getScroll().verticalSize)
+  // console.log("!!!!!!!!!!", mapList.value.length)
+  // console.log("##########", scrollRef.value.getScroll().verticalSize / mapList.value.length)
+  let gap = scrollRef.value.getScroll().verticalSize / mapList.value.length
+  let nextScrollPosition = idx * gap
+  if(nextScrollPosition > scrollRef.value.getScroll().verticalSize) {
+    nextScrollPosition = scrollRef.value.getScroll().verticalSize
+  }
 
+  scrollRef.value.setScrollPosition('vertical', nextScrollPosition)
 
   // TODO: 마커 색상 변경
   selectedMarkerIdx.value = idx;
