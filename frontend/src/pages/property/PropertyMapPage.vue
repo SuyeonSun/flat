@@ -5,6 +5,7 @@ import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "stores/auth/auth-store";
 import {useUserStore} from "stores/user/user-store";
+import {usePoliceStore} from "stores/police/police-store";
 import {Notify} from "quasar";
 
 const $router = useRouter();
@@ -12,17 +13,24 @@ const $router = useRouter();
 const propertyStore = usePropertyStore();
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const policeStore = usePoliceStore();
 
 const {mapList} = storeToRefs(propertyStore);
 const {email} = storeToRefs(authStore);
 const {user, friends} = storeToRefs(userStore); // user.id
+const {policeStationLocationList} = storeToRefs(policeStore);
 
 let map;
-let markers = [];
+let markers = ref([]);
+let friendsMarkers = ref([]);
+let policeStationMarkers = ref([]);
 let infoWindows = [];
 
-const isToggle = ref(false)
-const isSearch = ref(true)
+const isToggle = ref(false);
+const isPoliceStationToggle = ref(false);
+const isSearch = ref(true);
+
+const selectedMarkerIdx = ref(0);
 
 onMounted(async () => {
   await userStore.getUserInfo(email.value);
@@ -33,10 +41,12 @@ onMounted(async () => {
     tradeTypeName: tradeTypeName.value.value
   }
   await propertyStore.getMapList(searchPayload);
+
+  await policeStore.getPoliceStationLocation();
 })
 
 watch(() => mapList.value, (newVal, oldVal) => {
-  markers = []
+  markers.value = []
   mapList.value = newVal;
   const script = document.createElement("script");
   script.src =
@@ -46,7 +56,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
   document.head.appendChild(script);
 
   script.onload = () => {
-    if(isSearch.value) {
+    if (isSearch.value) {
       const center = [newVal[0].lat, newVal[0].lng]
 
       // 네이버 지도 생성
@@ -67,18 +77,23 @@ watch(() => mapList.value, (newVal, oldVal) => {
     //   console.log(element + "===============")
     // }
     // forEach 문으로 돌리기
-    newVal.forEach((element) => {
+    newVal.forEach((element, idx) => {
       // 마커
       let marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(element.lat, element.lng),
-        map: map
+        map: map,
+        icon: {
+          content: selectedMarkerIdx.value === idx ? [`<img src="/icons/selected-pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join("") : [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
+          size: new naver.maps.Size(32, 32),
+          anchor: new naver.maps.Point(16, 16),
+        }
       });
       // 마커 클릭 시 상세 매물 정보로 이동하기
       let infoWindow = new naver.maps.InfoWindow({
         content:
           `<div style="text-align:center; padding:10px;">
             <div>${element.address} ${element.buildingName}</div>
-            <div>${element.tradeTypeName} ${element.rentPrc} ${ element.area1 }/${ element.area2 }㎡</div>
+            <div>${element.tradeTypeName} ${element.rentPrc} ${element.area1}/${element.area2}㎡</div>
             <a href="http://localhost:8080/property/${element.id}" style="text-decoration: none">
                ▶ 매물 상세 보기
             </a>
@@ -87,7 +102,25 @@ watch(() => mapList.value, (newVal, oldVal) => {
         borderColor: "#FFFFFF",
         borderWidth: 5,
       });
-      naver.maps.Event.addListener(marker, "click", function(e) {
+      naver.maps.Event.addListener(marker, "click", function (e) {
+        // 마커 색상 변경
+        selectedMarkerIdx.value = idx;
+        markers.value.forEach((marker, i) => {
+          if (i === idx) {
+            marker.setIcon({
+              content: [`<img src="/icons/selected-pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
+              size: new naver.maps.Size(32, 32),
+              anchor: new naver.maps.Point(16, 16),
+            })
+          } else {
+            marker.setIcon({
+              content: [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
+              size: new naver.maps.Size(32, 32),
+              anchor: new naver.maps.Point(16, 16),
+            })
+          }
+        })
+
         if (infoWindow.getMap()) {
           infoWindow.close();
         } else {
@@ -95,13 +128,18 @@ watch(() => mapList.value, (newVal, oldVal) => {
         }
       });
 
-      markers.push(marker);
+      markers.value.push(marker);
       infoWindows.push(infoWindow);
     })
 
     // isToggle.value가 true라면 친구 marker 추가
     if (isToggle.value) {
       addFriendMarker();
+    }
+
+    // 경찰서 마커
+    if (isPoliceStationToggle.value) {
+      addPoliceStationMarker();
     }
   };
 })
@@ -112,7 +150,20 @@ watch(() => isToggle.value, async (newVal, oldVal) => {
     addFriendMarker();
   } else {
     // 토글 해제 시, 친구 marker 제거
-    markers = []
+    friendsMarkers.value = []
+    const searchPayload = {
+      address: address.value,
+      tradeTypeName: tradeTypeName.value.value
+    }
+    await propertyStore.getMapList(searchPayload);
+  }
+})
+
+watch (() => isPoliceStationToggle.value, async (newVal, oldVal) => {
+  if (newVal) {
+    addPoliceStationMarker();
+  } else {
+    policeStationMarkers.value = []
     const searchPayload = {
       address: address.value,
       tradeTypeName: tradeTypeName.value.value
@@ -149,7 +200,7 @@ const addFriendMarker = () => {
       borderWidth: 5,
     });
 
-    naver.maps.Event.addListener(marker, "click", function(e) {
+    naver.maps.Event.addListener(marker, "click", function (e) {
       if (infoWindow.getMap()) {
         infoWindow.close();
       } else {
@@ -157,7 +208,47 @@ const addFriendMarker = () => {
       }
     });
 
-    markers.push(marker);
+    friendsMarkers.value.push(marker);
+    infoWindows.push(infoWindow);
+  })
+}
+
+const addPoliceStationMarker = () => {
+  policeStationLocationList.value.forEach((station) => {
+    let content = [
+      "<div>",
+      `<img src="/icons/police-station-pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`,
+      "</div>",
+    ].join("");
+
+    let marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(station.lat, station.lng),
+      icon: {
+        content: content,
+        size: new naver.maps.Size(32, 32),
+        anchor: new naver.maps.Point(16, 16),
+      },
+      map: map
+    });
+
+    let infoWindow = new naver.maps.InfoWindow({
+      content: `<div style="text-align:center;padding:10px;">
+                    <div>${station.address}</div>
+                </div>`,
+      backgroundColor: "#FFFFFF",
+      borderColor: "#FFFFFF",
+      borderWidth: 5,
+    });
+
+    naver.maps.Event.addListener(marker, "click", function (e) {
+      if (infoWindow.getMap()) {
+        infoWindow.close();
+      } else {
+        infoWindow.open(map, marker);
+      }
+    });
+
+    policeStationMarkers.value.push(marker);
     infoWindows.push(infoWindow);
   })
 }
@@ -290,8 +381,24 @@ watch(() => address.value, (newVal, oldVal) => {
   propertyStore.getMapList(searchPayload);
 })
 
-const clickProperty = (mapId) => {
-  $router.push(`/property/${mapId}`)
+const clickProperty = (idx) => {
+  // TODO: 마커 색상 변경
+  selectedMarkerIdx.value = idx;
+  markers.value.forEach((marker, i) => {
+    if (i === idx) {
+      marker.setIcon({
+        content: [`<img src="/icons/selected-pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
+        size: new naver.maps.Size(32, 32),
+        anchor: new naver.maps.Point(16, 16),
+      })
+    } else {
+      marker.setIcon({
+        content: [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
+        size: new naver.maps.Size(32, 32),
+        anchor: new naver.maps.Point(16, 16),
+      })
+    }
+  })
 }
 </script>
 
@@ -322,17 +429,20 @@ const clickProperty = (mapId) => {
               color="red"
               label="관심지역 설정"
               unchecked-icon="clear"
-              />
-          </div>
-          <div>
+            />
             <q-toggle
               v-model="isOnlyInterestArea"
               color="red"
               label="관심지역 매물보기"
               unchecked-icon="clear"
             />
-          </div>
-          <div>
+            <q-toggle
+              v-model="isPoliceStationToggle"
+              checked-icon="check"
+              color="yellow"
+              label="주변 경찰서 위치도 함께 표시할래요"
+              unchecked-icon="clear"
+            />
             <q-toggle
               v-model="isToggle"
               checked-icon="person"
@@ -363,7 +473,8 @@ const clickProperty = (mapId) => {
             class="full-height"
           >
             <q-list bordered separator>
-              <q-item v-for="(map, idx) in mapList" clickable v-ripple @click="clickProperty(map.id)">
+              <q-item v-for="(map, idx) in mapList" clickable v-ripple @click="clickProperty(idx)"
+                      :class="[selectedMarkerIdx === idx && 'selected-class']">
                 <q-item-section>
                   <!-- address, buildingName, floorInfo-->
                   <div class="text-bold">
@@ -385,10 +496,13 @@ const clickProperty = (mapId) => {
                         <div class="text-weight-bolder">{{ map.tradeTypeName }}</div>
                       </div>
                     </div>
-                    <div class="q-ml-sm">{{map.rentPrc}}</div>
+                    <div class="q-ml-sm">{{ map.rentPrc }}</div>
                   </div>
-                  <q-item-label caption> {{ map.floorInfo }}층 {{ map.area1 }}/{{ map.area2 }}㎡ {{ map.direction }}</q-item-label>
-                  <q-item-label caption>{{map.tagList}}</q-item-label>
+                  <q-item-label caption> {{ map.floorInfo }}층 {{ map.area1 }}/{{ map.area2 }}㎡ {{
+                      map.direction
+                    }}
+                  </q-item-label>
+                  <q-item-label caption>{{ map.tagList }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -398,3 +512,9 @@ const clickProperty = (mapId) => {
     </div>
   </q-page>
 </template>
+
+<style scoped lang="scss">
+.selected-class {
+  background-color: $light-grey;
+}
+</style>

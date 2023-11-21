@@ -6,6 +6,12 @@ import {useRouter} from "vue-router";
 import {ref, onMounted} from "vue"
 import NewPropertyDialog from "components/property/NewPropertyDialog.vue";
 
+const scrollInfo = ref({});
+const onScroll = (info) => {
+  scrollInfo.value = info;
+  console.log(scrollInfo.value.position.top) // 64
+}
+
 const $router = useRouter();
 const authStore = useAuthStore();
 const propertyStore = usePropertyStore()
@@ -51,6 +57,7 @@ const handleNewPropertyDialog = () => {
 
 <template>
   <q-layout view="hHh lpR fFf">
+    <q-scroll-observer @scroll="onScroll" />
     <q-header height-hint="98" style="background: transparent">
       <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar"
                  style="display: flex; justify-content: space-between; align-items: center">
@@ -90,6 +97,7 @@ const handleNewPropertyDialog = () => {
       <div class="row justify-between">
         <q-parallax
           src="images/wallpaper.jpg"
+          style="height: 350px"
         >
           <h3 class="text-white text-bold" style="font-size: 30px; margin-bottom: 0px">FLAT에서 원하는 조건의 아파트를 탐색하고 골라보세요.</h3>
           <h3 class="text-white" style="font-size: 20px; margin-top: 0px">
@@ -100,7 +108,7 @@ const handleNewPropertyDialog = () => {
       </div>
     </div>
 
-    <q-page-container style="padding-top: 0px">
+    <q-page-container style="padding-top: 0">
       <router-view/>
     </q-page-container>
   </q-layout>

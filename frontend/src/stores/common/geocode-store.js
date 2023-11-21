@@ -11,7 +11,6 @@ export const useGeocodeStore = defineStore('geocodeStore', {
       try {
         const response = await authApi.get(`/geocode/${query}`);
         this.addresses = JSON.parse(response.data.data.body).addresses;
-
         /*
         this.addresses = [{
           "roadAddress": "서울특별시 강남구 논현동",
