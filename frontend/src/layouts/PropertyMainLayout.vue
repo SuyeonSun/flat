@@ -58,40 +58,78 @@ const handleNewPropertyDialog = () => {
 <template>
   <q-layout view="hHh lpR fFf">
     <q-scroll-observer @scroll="onScroll" />
-    <q-header height-hint="98" style="background: transparent">
-      <q-toolbar class="q-pt-md q-px-xl q-pb-sm tool-bar"
-                 style="display: flex; justify-content: space-between; align-items: center">
-        <div class="q-pl-xl">
-          <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
-            <span class="logo-font">F</span>
-            <span class="logo-font">L</span>
-            <q-icon name="house" class="logo-icon"/>
-            <span class="logo-font">T</span>
-          </h5>
-        </div>
-        <div style="display: flex; align-items: center" class="q-pr-xl q-mb-xs">
-          <div class="q-mr-sm">
-            <q-btn unelevated @click="handleNewPropertyDialog">
-              <span style="scale: 2" class="material-icons">notifications</span>
-              <q-badge v-if="newProperty.length > 0" color="red" floating rounded>NEW</q-badge>
-            </q-btn>
+    <div v-if="scrollInfo?.position?.top < 100">
+      <q-header height-hint="98" style="background: transparent">
+        <q-toolbar class="q-pt-md q-px-xl q-pb-sm"
+                   style="display: flex; justify-content: space-between; align-items: center">
+          <div class="q-pl-xl">
+            <h5 class="q-ma-none q-mb-sm" style="font-weight: bold">
+              <span class="logo-font">F</span>
+              <span class="logo-font">L</span>
+              <q-icon name="house" class="logo-icon"/>
+              <span class="logo-font">T</span>
+            </h5>
           </div>
-          <div class="q-mr-sm">
-            <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
+          <div style="display: flex; align-items: center" class="q-pr-xl q-mb-xs">
+            <div class="q-mr-sm">
+              <q-btn unelevated @click="handleNewPropertyDialog">
+                <span style="scale: 2" class="material-icons">notifications</span>
+                <q-badge v-if="newProperty.length > 0" color="red" floating rounded>NEW</q-badge>
+              </q-btn>
+            </div>
+            <div class="q-mr-sm">
+              <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
+            </div>
+            <div>
+              <q-btn size="md" unelevated outline @click="signOut()">로그아웃</q-btn>
+            </div>
           </div>
-          <div>
-            <q-btn size="md" unelevated outline @click="signOut()">로그아웃</q-btn>
-          </div>
-        </div>
-      </q-toolbar>
+        </q-toolbar>
 
-      <q-tabs align="left" style="padding-left: 80px;">
-        <q-route-tab to="/property/map"><span style="font-weight: bolder">지도</span></q-route-tab>
-        <q-route-tab to="/property/list"><span style="font-weight: bolder">검색</span></q-route-tab>
-        <q-route-tab to="/property/register"><span style="font-weight: bolder">방내놓기</span></q-route-tab>
-        <q-route-tab to="/my-page"><span style="font-weight: bolder">MY</span></q-route-tab>
-      </q-tabs>
-    </q-header>
+        <q-tabs align="left" style="padding-left: 80px;">
+          <q-route-tab to="/property/map"><span style="font-weight: bolder">지도</span></q-route-tab>
+          <q-route-tab to="/property/list"><span style="font-weight: bolder">검색</span></q-route-tab>
+          <q-route-tab to="/property/register"><span style="font-weight: bolder">방내놓기</span></q-route-tab>
+          <q-route-tab to="/my-page"><span style="font-weight: bolder">MY</span></q-route-tab>
+        </q-tabs>
+      </q-header>
+    </div>
+
+    <div v-else>
+      <q-header elevated height-hint="98">
+        <q-toolbar class="q-pt-md q-px-xl q-pb-sm" style="display: flex; justify-content: space-between; align-items: center; background: white; color: black">
+          <div class="q-pl-xl">
+            <h5 class="q-ma-none" style="font-weight: bold">
+              <span class="logo-font">F</span>
+              <span class="logo-font">L</span>
+              <q-icon name="house" class="logo-icon"/>
+              <span class="logo-font">T</span>
+            </h5>
+          </div>
+          <div style="display: flex; align-items: center" class="q-pr-xl q-mb-xs">
+            <div class="q-mr-sm">
+              <q-btn unelevated @click="handleNewPropertyDialog">
+                <span style="scale: 2" class="material-icons">notifications</span>
+                <q-badge v-if="newProperty.length > 0" color="red" floating rounded>NEW</q-badge>
+              </q-btn>
+            </div>
+            <div class="q-mr-sm">
+              <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
+            </div>
+            <div>
+              <q-btn size="md" unelevated outline @click="signOut()" class="bg-black text-white">로그아웃</q-btn>
+            </div>
+          </div>
+        </q-toolbar>
+
+        <q-tabs align="left" style="padding-left: 80px; background-color: whitesmoke; color:black" indicator-color="primary" active-color="primary">
+          <q-route-tab to="/property/map"><span style="font-weight: bolder">지도</span></q-route-tab>
+          <q-route-tab to="/property/list"><span style="font-weight: bolder">검색</span></q-route-tab>
+          <q-route-tab to="/property/register"><span style="font-weight: bolder">방내놓기</span></q-route-tab>
+          <q-route-tab to="/my-page"><span style="font-weight: bolder">MY</span></q-route-tab>
+        </q-tabs>
+      </q-header>
+    </div>
 
     <div class="">
       <div class="row justify-between">
