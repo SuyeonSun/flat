@@ -132,6 +132,18 @@ watch(() => mapList.value, (newVal, oldVal) => {
       infoWindows.push(infoWindow);
     })
 
+    if(isOnlyInterestArea.value) {
+
+      interestArea = new naver.maps.Circle({
+        map: map,
+        center: new naver.maps.LatLng(map.center._lat, map.center._lng),
+        radius: 1000,
+        fillColor: 'green',
+        fillOpacity: 0.5
+      })
+
+    }
+
     // isToggle.value가 true라면 친구 marker 추가
     if (isToggle.value) {
       addFriendMarker();
@@ -326,6 +338,7 @@ watch(() => isOnlyInterestArea.value, async(newVal) => {
     }
 
     await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+
     map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
     map.setZoom(15)
   } else {
@@ -391,6 +404,7 @@ const clickProperty = (idx) => {
         size: new naver.maps.Size(32, 32),
         anchor: new naver.maps.Point(16, 16),
       })
+      map.setCenter(new naver.maps.LatLng(marker.position._lat, marker.position._lng))
     } else {
       marker.setIcon({
         content: [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),

@@ -9,7 +9,7 @@ import NewPropertyDialog from "components/property/NewPropertyDialog.vue";
 const scrollInfo = ref({});
 const onScroll = (info) => {
   scrollInfo.value = info;
-  console.log(scrollInfo.value.position.top) // 64
+  // console.log(scrollInfo.value.position.top) // 64
 }
 
 const $router = useRouter();
