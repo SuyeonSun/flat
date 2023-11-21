@@ -88,6 +88,8 @@ watch(() => mapList.value, (newVal, oldVal) => {
           anchor: new naver.maps.Point(16, 16),
         }
       });
+
+
       // 마커 클릭 시 상세 매물 정보로 이동하기
       let infoWindow = new naver.maps.InfoWindow({
         content:
@@ -112,6 +114,16 @@ watch(() => mapList.value, (newVal, oldVal) => {
               size: new naver.maps.Size(32, 32),
               anchor: new naver.maps.Point(16, 16),
             })
+
+            // marker 클릭 시 스크롤 이동
+            let gap = scrollRef.value.getScroll().verticalSize / mapList.value.length
+            let nextScrollPosition = idx * gap
+            if(nextScrollPosition > scrollRef.value.getScroll().verticalSize) {
+              nextScrollPosition = scrollRef.value.getScroll().verticalSize
+            }
+
+            scrollRef.value.setScrollPosition('vertical', nextScrollPosition)
+
           } else {
             marker.setIcon({
               content: [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
@@ -437,6 +449,19 @@ watch(() => address.value, (newVal, oldVal) => {
 })
 
 const clickProperty = (idx) => {
+  // 매물정보 클릭 시 스크롤 이동
+  // console.log("~~~~~~~~~~", scrollRef.value.getScroll())
+  // console.log("@@@@@@@@@@", scrollRef.value.getScroll().verticalSize)
+  // console.log("!!!!!!!!!!", mapList.value.length)
+  // console.log("##########", scrollRef.value.getScroll().verticalSize / mapList.value.length)
+  let gap = scrollRef.value.getScroll().verticalSize / mapList.value.length
+  let nextScrollPosition = idx * gap
+  if(nextScrollPosition > scrollRef.value.getScroll().verticalSize) {
+    nextScrollPosition = scrollRef.value.getScroll().verticalSize
+  }
+
+  scrollRef.value.setScrollPosition('vertical', nextScrollPosition)
+
   // TODO: 마커 색상 변경
   selectedMarkerIdx.value = idx;
   markers.value.forEach((marker, i) => {
@@ -456,6 +481,8 @@ const clickProperty = (idx) => {
     }
   })
 }
+
+const scrollRef = ref(null)
 </script>
 
 <template>
@@ -465,13 +492,28 @@ const clickProperty = (idx) => {
       <!-- address, tradeTypeName -->
       <div class="q-pa-lg q-px-xl">
         <div class="row justify-between items-center">
-          <div class="row">
+          <div class="row" v-if="!isOnlyInterestArea">
             <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
                       style="width: 100px" label="거래 유형"/>
             <q-input
               v-model="address"
               dense
               outlined
+              label="검색할 매물 주소"
+            >
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+          </div>
+          <div class="row" v-else>
+            <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense readonly class="q-mr-sm"
+                      style="width: 100px" label="거래 유형"/>
+            <q-input
+              v-model="address"
+              dense
+              outlined
+              readonly
               label="검색할 매물 주소"
             >
               <template v-slot:append>
@@ -527,6 +569,7 @@ const clickProperty = (idx) => {
             :content-style="contentStyle"
             :content-active-style="contentActiveStyle"
             class="full-height"
+            ref="scrollRef"
           >
             <q-list bordered separator>
               <q-item v-for="(map, idx) in mapList" clickable v-ripple @click="clickProperty(idx)"

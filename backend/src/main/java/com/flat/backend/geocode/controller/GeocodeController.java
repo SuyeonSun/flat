@@ -2,9 +2,12 @@ package com.flat.backend.geocode.controller;
 
 import com.flat.backend.common.BaseResponseStatus;
 import com.flat.backend.common.dto.BaseResponseDto;
+import com.flat.backend.geocode.GeocodeKey;
 import com.flat.backend.policeStation.repository.PoliceStationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 public class GeocodeController {
 
     private final PoliceStationRepository policeRepository;
+    private final GeocodeKey geocodeKey;
 
     @GetMapping("/{query}")
     public ResponseEntity<BaseResponseDto<ResponseEntity<String>>> searchAddress(@PathVariable String query) {
@@ -40,8 +44,8 @@ public class GeocodeController {
         RestTemplate restTemplate = new RestTemplate();
         RequestEntity<Void> request = RequestEntity
                 .get(uri)
-                .header("X-NCP-APIGW-API-KEY-ID", "ma90kj4eu7")
-                .header("X-NCP-APIGW-API-KEY", "99XkSbZnQwTciMuTbiQ0LDGD9faiUn5Wjp7yAf6o")
+                .header("X-NCP-APIGW-API-KEY-ID", geocodeKey.getKeyId())
+                .header("X-NCP-APIGW-API-KEY", geocodeKey.getKey())
                 .build();
         ResponseEntity<String> result = restTemplate.exchange(request, String.class);
         return ResponseEntity
