@@ -9,16 +9,19 @@ import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.property.service.PropertyService;
 import com.flat.backend.user.dto.req.InterestAreaReqDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/property")
 @RequiredArgsConstructor
+@Slf4j
 public class PropertyController {
     private final PropertyService propertyService;
 
@@ -67,5 +70,20 @@ public class PropertyController {
     @PostMapping("/map/interestArea")
     public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaMapList(@RequestBody InterestAreaMapReqDto interestAreaMapReqDto) {
         return propertyService.selectInterestAreaMapList(interestAreaMapReqDto.getLat(), interestAreaMapReqDto.getLng());
+    }
+
+    @GetMapping("/list/interestArea")
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaNewProperty(@RequestParam String email) {
+        return propertyService.selectInterestAreaNewProperty(email);
+    }
+
+    @PostMapping("/remove/interestArea")
+    public ResponseEntity<BaseResponseDto<?>> deleteInterestAreaNewProperty(@RequestBody Map<String, Long[]> newPropertyMap) {
+        return propertyService.deleteInterestAreaNewProperty(newPropertyMap.get("properties"));
+    }
+
+    @GetMapping("/remove/interestArea")
+    public ResponseEntity<BaseResponseDto<?>> deleteInterestAreaAllProperty(@RequestParam String email) {
+        return propertyService.deleteInterestAreaAllProperty(email);
     }
 }

@@ -9,7 +9,8 @@ export const usePropertyStore = defineStore('propertyStore', {
     pageable: {
       totalPages: 0,
     },
-    mapList: []
+    mapList: [],
+    newProperty: []
   }),
 
   actions: {
@@ -88,6 +89,35 @@ export const usePropertyStore = defineStore('propertyStore', {
       } catch (error) {
         console.log(error)
       }
-    }
+    },
+
+    async getInterestAreaPropertyList(email) {
+      try {
+        return await api.get(`/property/list/interestArea?email=${email}`)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async removeInterestAreaAllProperty(email) {
+      try {
+        const response = await api.get(`/property/remove/interestArea?email=${email}`)
+        this.newProperty = []
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async removeInterestAreaPropertyList(properties) {
+      try {
+        console.log("!@#!@#@!#", properties)
+        const response =  await api.post('/property/remove/interestArea', {
+          properties
+        })
+        this.newProperty = []
+      } catch (error) {
+        console.log(error)
+      }
+    },
   },
 })

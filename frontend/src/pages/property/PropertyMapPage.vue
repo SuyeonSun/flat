@@ -209,6 +209,7 @@ watch(() => isInterest.value, async(newVal) => {
       selectMarker.setPosition(e.coord)
       interestArea.setCenter(e.coord)
       await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
+      await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
     })
   }
   else {
