@@ -1,8 +1,10 @@
 <script setup>
 import {useAuthStore} from "stores/auth/auth-store";
+import {usePropertyStore} from "stores/property/property-store";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
-import {ref} from "vue";
+import {ref, onMounted} from "vue"
+import NewPropertyDialog from "components/property/NewPropertyDialog.vue";
 
 const scrollInfo = ref({});
 const onScroll = (info) => {
@@ -12,8 +14,21 @@ const onScroll = (info) => {
 
 const $router = useRouter();
 const authStore = useAuthStore();
+const propertyStore = usePropertyStore()
 
 const {email, name} = storeToRefs(authStore);
+const {newProperty} = storeToRefs(propertyStore)
+
+onMounted(async () => {
+  const response = await propertyStore.getInterestAreaPropertyList(authStore.$state.email)
+  newProperty.value = response.data.data
+
+  setInterval(async () => {
+    const response = await propertyStore.getInterestAreaPropertyList(authStore.$state.email)
+    newProperty.value = response.data.data
+  }, 1000*60)
+})
+
 
 const signOut = async () => {
   // localStorage 및 store email, accessToken 값 지우기
@@ -31,6 +46,13 @@ const signOut = async () => {
 const clickGoToRegisterBtn = () => {
   $router.push("/property/register");
 }
+
+// 알람 기능
+const isOpenNewPropertyDialog = ref(false)
+const handleNewPropertyDialog = () => {
+  isOpenNewPropertyDialog.value = !isOpenNewPropertyDialog.value
+}
+
 </script>
 
 <template>
@@ -48,6 +70,12 @@ const clickGoToRegisterBtn = () => {
           </h5>
         </div>
         <div style="display: flex; align-items: center" class="q-pr-xl q-mb-xs">
+          <div class="q-mr-sm">
+            <q-btn unelevated @click="handleNewPropertyDialog">
+              <span style="scale: 2" class="material-icons">notifications</span>
+              <q-badge v-if="newProperty.length > 0" color="red" floating rounded>NEW</q-badge>
+            </q-btn>
+          </div>
           <div class="q-mr-sm">
             <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
           </div>
@@ -98,6 +126,11 @@ const clickGoToRegisterBtn = () => {
       <div style="font-size: 13px">© FLAT. All Rights Reserved.</div>
     </div>
   </div>
+
+  <new-property-dialog
+    :isOpenNewPropertyDialog="isOpenNewPropertyDialog"
+    @handleNewPropertyDialog="handleNewPropertyDialog"
+  ></new-property-dialog>
 </template>
 
 <style scoped lang="scss">

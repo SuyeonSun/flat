@@ -10,6 +10,8 @@ import com.flat.backend.property.dto.req.DetailReqDto;
 import com.flat.backend.property.dto.req.RegisterReqDto;
 import com.flat.backend.property.dto.res.DetailResDto;
 import com.flat.backend.property.repository.PropertyRepository;
+import com.flat.backend.property.repository.entity.InterestAreaProperty;
+import com.flat.backend.property.repository.entity.InterestAreaPropertyRepository;
 import com.flat.backend.property.repository.entity.Property;
 import com.flat.backend.user.repository.UserRepository;
 import com.flat.backend.user.repository.entity.User;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.flat.backend.common.BaseResponseStatus.INVALID_USER_INFO;
+import static com.flat.backend.common.BaseResponseStatus.OK;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class PropertyService {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
     private final LikeRepository likeRepository;
+    private final InterestAreaPropertyRepository interestAreaPropertyRepository;
 
     public ResponseEntity<BaseResponseDto<?>> register(String email, RegisterReqDto registerReqDto) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
@@ -61,6 +65,28 @@ public class PropertyService {
                 .build();
         propertyRepository.save(property);
         user.getProperties().add(property);
+
+        List<User> allUser = userRepository.findAll();
+        for(User u : allUser) {
+            if(u.getInterestLat() != null && u.getAddressLng() != null) {
+                double dist = Math.sin(deg2rad(Double.parseDouble(property.getLat()))) * Math.sin(deg2rad(Double.parseDouble(u.getInterestLat())))
+                        + Math.cos(deg2rad(Double.parseDouble(property.getLat()))) * Math.cos(deg2rad(Double.parseDouble(u.getInterestLat())))
+                        * Math.cos(deg2rad(Double.parseDouble(property.getLng()) - Double.parseDouble(u.getInterestLng())));
+
+                dist = Math.acos(dist);
+                dist = rad2deg(dist);
+                dist = dist * 60 * 1.1515 * 1609.344;
+
+                if(dist <= 1000) {
+                    InterestAreaProperty interestAreaProperty = InterestAreaProperty.builder()
+                            .email(u.getEmail())
+                            .property(property)
+                            .build();
+
+                    interestAreaPropertyRepository.save(interestAreaProperty);
+                }
+            }
+        }
 
 
         return ResponseEntity
@@ -152,5 +178,68 @@ public class PropertyService {
         List<Property> propertyList = propertyRepository.findMapList(address, tradeTypeName);
         BaseResponseDto<List<Property>> baseResponseDto = new BaseResponseDto<>(BaseResponseStatus.OK.getStatusCode(), BaseResponseStatus.OK.getStatusMessage(), propertyList);
         return ResponseEntity.ok().body(baseResponseDto);
+    }
+
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaMapList(String lat, String lng) {
+        List<Property> properties = propertyRepository.findAll();
+
+        List<Property> result = new ArrayList<>();
+        for(Property p : properties) {
+
+            double dist = Math.sin(deg2rad(Double.parseDouble(lat))) * Math.sin(deg2rad(Double.parseDouble(p.getLat())))
+                    + Math.cos(deg2rad(Double.parseDouble(lat))) * Math.cos(deg2rad(Double.parseDouble(p.getLat())))
+                    * Math.cos(deg2rad(Double.parseDouble(lng) - Double.parseDouble(p.getLng())));
+
+            dist = Math.acos(dist);
+            dist = rad2deg(dist);
+            dist = dist * 60 * 1.1515 * 1609.344;
+
+            if(dist <= 1000) {
+                result.add(p);
+            }
+        }
+
+        return ResponseEntity.ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage(), result));
+    }
+
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaNewProperty(String email) {
+        List<InterestAreaProperty> interestAreaProperties = interestAreaPropertyRepository.findByEmail(email);
+
+        List<Property> result = new ArrayList<>();
+
+        for(InterestAreaProperty interestAreaProperty : interestAreaProperties) {
+            result.add(interestAreaProperty.getProperty());
+        }
+
+        return ResponseEntity.ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage(), result));
+
+    }
+
+    @Transactional
+    public ResponseEntity<BaseResponseDto<?>> deleteInterestAreaNewProperty(Long[] ids) {
+        for(Long id : ids) {
+            interestAreaPropertyRepository.deleteByPropertyId(id);
+        }
+
+        return ResponseEntity.ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage()));
+    }
+
+    @Transactional
+    public ResponseEntity<BaseResponseDto<?>> deleteInterestAreaAllProperty(String email) {
+        interestAreaPropertyRepository.deleteByEmail(email);
+
+        return ResponseEntity.ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage()));
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 }

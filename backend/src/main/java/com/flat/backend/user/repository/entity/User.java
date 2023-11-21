@@ -35,6 +35,8 @@ public class User {
     private String addressLat;
     @Column(name = "address_lng")
     private String addressLng;
+    private String interestLat;
+    private String interestLng;
     private String password;
     private String phoneNumber;
 

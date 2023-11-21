@@ -159,5 +159,17 @@ export const useUserStore = defineStore('userStore', {
     async changeAddress(changeAddressRequest) {
       return await api.post('/user/address', changeAddressRequest)
     },
+
+    async getUserInterestArea(email) {
+      return await api.get(`/user/interestArea?email=${email}`)
+    },
+
+    async setUserInterestArea(email, lat, lng) {
+      return await api.post('/user/interestArea', {
+        email: email,
+        lat: lat,
+        lng: lng
+      })
+    }
   },
 })

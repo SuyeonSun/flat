@@ -6,6 +6,7 @@ import {useRouter} from "vue-router";
 import {useAuthStore} from "stores/auth/auth-store";
 import {useUserStore} from "stores/user/user-store";
 import {usePoliceStore} from "stores/police/police-store";
+import {Notify} from "quasar";
 
 const $router = useRouter();
 
@@ -252,6 +253,91 @@ const addPoliceStationMarker = () => {
   })
 }
 
+
+// 관심 지역 설정
+const isInterest = ref(false)
+let selectMarker = []
+let interestArea = []
+
+watch(() => isInterest.value, async(newVal) => {
+
+  if(newVal) {
+
+    // DB에 저장된 관심지역 lat, lng가 있으면 가져오기
+    const response = await userStore.getUserInterestArea(authStore.$state.email)
+
+    if(response.data.data.lat && response.data.data.lng) {
+      let prevInterestPosition = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
+
+      selectMarker = new naver.maps.Marker({
+        position: prevInterestPosition,
+        map: map,
+      })
+
+      interestArea = new naver.maps.Circle({
+        map: map,
+        center: prevInterestPosition,
+        radius: 1000,
+        fillColor: 'green',
+        fillOpacity: 0.5
+      })
+    } else {
+      selectMarker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(map.center._lat, map.center._lng),
+        map: map,
+      })
+
+      interestArea = new naver.maps.Circle({
+        map: map,
+        center: new naver.maps.LatLng(map.center._lat, map.center._lng),
+        radius: 1000,
+        fillColor: 'green',
+        fillOpacity: 0.5
+      })
+    }
+
+    naver.maps.Event.addListener(map, 'click', async function(e) {
+      selectMarker.setPosition(e.coord)
+      interestArea.setCenter(e.coord)
+      await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
+      await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
+    })
+  }
+  else {
+    selectMarker.setMap(null)
+    interestArea.setMap(null)
+  }
+})
+
+// 관심지역 매물만 검색
+const isOnlyInterestArea = ref(false)
+
+watch(() => isOnlyInterestArea.value, async(newVal) => {
+
+  if(newVal) {
+    const response = await userStore.getUserInterestArea(authStore.$state.email)
+
+    if(!response.data.data.lat && !response.data.data.lng) {
+      Notify.create({
+        message: "관심지역을 먼저 등록해주세요.",
+        color: "red"
+      })
+      return
+    }
+
+    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+    map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
+    map.setZoom(15)
+  } else {
+
+    const searchPayload = {
+      address: address.value,
+      tradeTypeName: tradeTypeName.value.value
+    }
+    await propertyStore.getMapList(searchPayload);
+  }
+})
+
 const contentStyle = {
   // backgroundColor: 'rgba(0,0,0,0.02)',
   color: '#555'
@@ -338,6 +424,18 @@ const clickProperty = (idx) => {
             </q-input>
           </div>
           <div>
+            <q-toggle
+              v-model="isInterest"
+              color="red"
+              label="관심지역 설정"
+              unchecked-icon="clear"
+            />
+            <q-toggle
+              v-model="isOnlyInterestArea"
+              color="red"
+              label="관심지역 매물보기"
+              unchecked-icon="clear"
+            />
             <q-toggle
               v-model="isPoliceStationToggle"
               checked-icon="check"
