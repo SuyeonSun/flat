@@ -55,7 +55,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
   script.defer = true;
   document.head.appendChild(script);
 
-  script.onload = () => {
+  script.onload = async () => {
     if (isSearch.value) {
       const center = [newVal[0].lat, newVal[0].lng]
 
@@ -132,7 +132,28 @@ watch(() => mapList.value, (newVal, oldVal) => {
       infoWindows.push(infoWindow);
     })
 
-    if(isOnlyInterestArea.value) {
+    if(isInterest.value) {
+      // DB에 저장된 관심지역 lat, lng가 있으면 가져오기
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+
+      if(response.data.data.lat && response.data.data.lng) {
+        let prevInterestPosition = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
+
+        selectMarker.setMap(map)
+        interestArea.setMap(map)
+
+      }
+
+      naver.maps.Event.addListener(map, 'click', async function(e) {
+        selectMarker.setPosition(e.coord)
+        interestArea.setCenter(e.coord)
+        await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
+        await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
+        await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng)
+      })
+    }
+
+    if(isOnlyInterestArea.value && !isInterest.value) {
 
       interestArea = new naver.maps.Circle({
         map: map,
@@ -141,7 +162,6 @@ watch(() => mapList.value, (newVal, oldVal) => {
         fillColor: 'green',
         fillOpacity: 0.5
       })
-
     }
 
     // isToggle.value가 true라면 친구 marker 추가
@@ -161,13 +181,18 @@ watch(() => isToggle.value, async (newVal, oldVal) => {
   if (newVal) {
     addFriendMarker();
   } else {
-    // 토글 해제 시, 친구 marker 제거
-    friendsMarkers.value = []
-    const searchPayload = {
-      address: address.value,
-      tradeTypeName: tradeTypeName.value.value
+    if(!isOnlyInterestArea.value) {
+      // 토글 해제 시, 친구 marker 제거
+      friendsMarkers.value = []
+      const searchPayload = {
+        address: address.value,
+        tradeTypeName: tradeTypeName.value.value
+      }
+      await propertyStore.getMapList(searchPayload);
+    } else {
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
     }
-    await propertyStore.getMapList(searchPayload);
   }
 })
 
@@ -175,12 +200,17 @@ watch (() => isPoliceStationToggle.value, async (newVal, oldVal) => {
   if (newVal) {
     addPoliceStationMarker();
   } else {
-    policeStationMarkers.value = []
-    const searchPayload = {
-      address: address.value,
-      tradeTypeName: tradeTypeName.value.value
+    if(!isOnlyInterestArea.value) {
+      policeStationMarkers.value = []
+      const searchPayload = {
+        address: address.value,
+        tradeTypeName: tradeTypeName.value.value
+      }
+      await propertyStore.getMapList(searchPayload);
+    } else {
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
     }
-    await propertyStore.getMapList(searchPayload);
   }
 })
 
@@ -278,6 +308,10 @@ watch(() => isInterest.value, async(newVal) => {
     // DB에 저장된 관심지역 lat, lng가 있으면 가져오기
     const response = await userStore.getUserInterestArea(authStore.$state.email)
 
+    if(isOnlyInterestArea.value) {
+      interestArea.setMap(null)
+    }
+
     if(response.data.data.lat && response.data.data.lng) {
       let prevInterestPosition = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
 
@@ -309,15 +343,25 @@ watch(() => isInterest.value, async(newVal) => {
     }
 
     naver.maps.Event.addListener(map, 'click', async function(e) {
+      console.log("addEventLisnter!!!!!!!!!!")
       selectMarker.setPosition(e.coord)
       interestArea.setCenter(e.coord)
       await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
       await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
+      await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng)
+
     })
   }
   else {
     selectMarker.setMap(null)
     interestArea.setMap(null)
+    if(isOnlyInterestArea.value) {
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+
+      map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
+      map.setZoom(15)
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+    }
   }
 })
 
@@ -336,11 +380,9 @@ watch(() => isOnlyInterestArea.value, async(newVal) => {
       })
       return
     }
-
-    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
-
     map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
     map.setZoom(15)
+    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
   } else {
 
     const searchPayload = {
