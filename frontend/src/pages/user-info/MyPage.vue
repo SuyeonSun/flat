@@ -102,50 +102,80 @@ const enterRoom = (room) => {
           <q-tab-panels v-model="tab" animated style="min-height: 390px; max-height: 390px">
             <q-tab-panel name="likes">
               <div class="row justify-center">
-                <div v-for="property in propertyStore.$state.propertyList"
-                     style="padding-left: 20px; padding-right: 20px">
-                  <q-card class="property-card" @click="goToDetailPage(property.id)"
-                          style="width: 320px; height: 320px">
-                    <q-img
-                      :src=property.image
-                      class="q-mb-md"
-                      style="width: 320px; height: 180px">
-                      <q-badge
-                        v-if="property.tradeTypeName === '월세'"
-                        class="absolute"
-                        style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #14ADEA">
-                        <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
-                      </q-badge>
-                      <q-badge
-                        v-if="property.tradeTypeName === '전세'"
-                        class="absolute"
-                        style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #4F5569">
-                        <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
-                      </q-badge>
-                      <q-badge
-                        v-if="property.tradeTypeName === '매매'"
-                        class="absolute"
-                        style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #444444">
-                        <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
-                      </q-badge>
-                    </q-img>
-                    <q-card-section>
-                      <h6 class="q-ma-none q-mb-xs">{{ property.title === null ? "-" : property.title }}</h6>
-                      <div class="q-mb-sm">{{ property.address }}</div>
-                      <div>
-                        <q-btn dense label="매물 특징">
-                          <q-tooltip>
-                            {{ property.articleFeatureDesc }}
-                          </q-tooltip>
-                        </q-btn>
-                      </div>
-                    </q-card-section>
-                  </q-card>
-                </div>
+                <q-table
+                  style="max-height: 375px; width: 100%"
+                  flat bordered
+                  :rows="propertyStore.$state.propertyList"
+                  :columns="[
+                    {
+                      name: 'title',
+                      required: true,
+                      label: '제목',
+                      align: 'left',
+                      field: row => row.title,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                    {
+                      name: 'address',
+                      required: true,
+                      label: '매물 주소',
+                      align: 'left',
+                      field: row => row.address,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                    {
+                      name: 'tradeTypeName',
+                      required: true,
+                      label: '거래 유형',
+                      align: 'left',
+                      field: row => row.tradeTypeName,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                    {
+                      name: 'rentPrc',
+                      required: true,
+                      label: '매매가',
+                      align: 'left',
+                      field: row => row.rentPrc,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                  ]"
+                  virtual-scroll
+                >
+                  <template v-slot:header="props">
+                    <q-tr :props="props">
+                      <q-th
+                        v-for="col in props.cols"
+                        :key="col.name"
+                        :props="props"
+                      >
+                        {{ col.label }}
+                      </q-th>
+                      <q-th auto-width />
+                    </q-tr>
+                  </template>
+                  <template v-slot:body="props">
+                    <q-tr :props="props">
+                      <q-td
+                        v-for="col in props.cols"
+                        :key="col.name"
+                        :props="props"
+                      >
+                        {{ col.value }}
+                      </q-td>
+                      <q-td auto-width>
+                        <q-btn @click="goToDetailPage(props.row.id)">상세</q-btn>
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
               </div>
             </q-tab-panel>
 
-<!--            @click="goToDetailPage(property.id)-->
             <q-tab-panel name="mines">
               <div class="row justify-center">
                 <q-table

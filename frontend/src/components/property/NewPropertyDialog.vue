@@ -55,7 +55,8 @@ const checkNewProperty = () => {
                   {{newProperty.length}}
                 </q-badge>
               </q-btn>
-              <div class="q-ml-xs" style="color: #14ADEA; font-weight: bold">새로운 매물이 등록 되었습니다.</div>
+              <div v-if="newProperty.length > 0" class="q-ml-xs" style="color: #14ADEA; font-weight: bold">새로운 매물이 등록 되었습니다.</div>
+              <div v-else class="q-ml-xs" style="color: lightgray; font-weight: bold">새로 등록된 매물이 없습니다.</div>
             </div>
             <div v-for="property in newProperty" :key="property" style="border: 1px solid lightgray">
               <q-item clickable v-ripple @click="goToDetailPage(property.id)">
