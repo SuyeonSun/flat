@@ -25,8 +25,9 @@ let friendsMarkers = ref([]);
 let policeStationMarkers = ref([]);
 let infoWindows = [];
 
-const isToggle = ref(false)
-const isSearch = ref(true)
+const isToggle = ref(false);
+const isPoliceStationToggle = ref(false);
+const isSearch = ref(true);
 
 const selectedMarkerIdx = ref(0);
 
@@ -108,7 +109,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
         borderWidth: 5,
       });
       naver.maps.Event.addListener(marker, "click", function (e) {
-        // TODO: 마커 색상 변경
+        // 마커 색상 변경
         selectedMarkerIdx.value = idx;
         markers.value.forEach((marker, i) => {
           if (i === idx) {
@@ -142,8 +143,10 @@ watch(() => mapList.value, (newVal, oldVal) => {
       addFriendMarker();
     }
 
-    // TODO: 경찰서 마커
-    addPoliceStationMarker();
+    // 경찰서 마커
+    if (isPoliceStationToggle.value) {
+      addPoliceStationMarker();
+    }
   };
 })
 
@@ -154,6 +157,19 @@ watch(() => isToggle.value, async (newVal, oldVal) => {
   } else {
     // 토글 해제 시, 친구 marker 제거
     friendsMarkers.value = []
+    const searchPayload = {
+      address: address.value,
+      tradeTypeName: tradeTypeName.value.value
+    }
+    await propertyStore.getMapList(searchPayload);
+  }
+})
+
+watch (() => isPoliceStationToggle.value, async (newVal, oldVal) => {
+  if (newVal) {
+    addPoliceStationMarker();
+  } else {
+    policeStationMarkers.value = []
     const searchPayload = {
       address: address.value,
       tradeTypeName: tradeTypeName.value.value
@@ -329,6 +345,13 @@ const clickProperty = (idx) => {
             </q-input>
           </div>
           <div>
+            <q-toggle
+              v-model="isPoliceStationToggle"
+              checked-icon="check"
+              color="yellow"
+              label="주변 경찰서 위치도 함께 표시할래요"
+              unchecked-icon="clear"
+            />
             <q-toggle
               v-model="isToggle"
               checked-icon="person"
