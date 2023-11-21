@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import {ref, watch, onMounted} from 'vue';
 import {useAuthStore} from "stores/auth/auth-store";
 import {useUserStore} from "stores/user/user-store";
 import {useChatStore} from "stores/chat/chat-store";
@@ -31,27 +31,27 @@ const goToDetailPage = (id) => {
 
 // 내가 찜한 매물
 watch(tab, async (n) => {
-  if(n === 'likes') {
+  if (n === 'likes') {
     await propertyStore.getMyLikeProperty(authStore.$state.email)
   }
 })
 
 // 내가 등록한 매물
 watch(tab, async (n) => {
-  if(n === 'mines') {
+  if (n === 'mines') {
     await propertyStore.getMyProperty(authStore.$state.email)
   }
 })
 
 // 친구
 watch(tab, async (n) => {
-  if(n === 'friends') {
+  if (n === 'friends') {
     await userStore.findFriends(userStore.user.id)
   }
 })
 
 watch(tab, async (n) => {
-  if(n === 'chats') {
+  if (n === 'chats') {
     await chatStore.findRooms(authStore.$state.name)
   }
 })
@@ -91,38 +91,41 @@ const enterRoom = (room) => {
             align="justify"
             narrow-indicator
           >
-            <q-tab name="likes" label="관심 매물" />
-            <q-tab name="mines" label="등록 매물" />
-            <q-tab name="friends" label="친구" />
-            <q-tab name="chats" label="내 문의" />
+            <q-tab name="likes" label="관심 매물"/>
+            <q-tab name="mines" label="등록 매물"/>
+            <q-tab name="friends" label="친구"/>
+            <q-tab name="chats" label="내 문의"/>
           </q-tabs>
 
-          <q-separator />
+          <q-separator/>
 
-          <q-tab-panels v-model="tab" animated>
+          <q-tab-panels v-model="tab" animated style="min-height: 390px; max-height: 390px">
             <q-tab-panel name="likes">
               <div class="row justify-center">
                 <div v-for="property in propertyStore.$state.propertyList"
                      style="padding-left: 20px; padding-right: 20px">
                   <q-card class="property-card" @click="goToDetailPage(property.id)"
-                    style="width: 320px; height: 320px">
+                          style="width: 320px; height: 320px">
                     <q-img
                       :src=property.image
                       class="q-mb-md"
                       style="width: 320px; height: 180px">
                       <q-badge
                         v-if="property.tradeTypeName === '월세'"
-                        class="absolute" style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #14ADEA">
+                        class="absolute"
+                        style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #14ADEA">
                         <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
                       </q-badge>
                       <q-badge
                         v-if="property.tradeTypeName === '전세'"
-                        class="absolute" style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #4F5569">
+                        class="absolute"
+                        style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #4F5569">
                         <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
                       </q-badge>
                       <q-badge
                         v-if="property.tradeTypeName === '매매'"
-                        class="absolute" style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #444444">
+                        class="absolute"
+                        style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #444444">
                         <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
                       </q-badge>
                     </q-img>
@@ -142,52 +145,87 @@ const enterRoom = (room) => {
               </div>
             </q-tab-panel>
 
+<!--            @click="goToDetailPage(property.id)-->
             <q-tab-panel name="mines">
               <div class="row justify-center">
-                <div v-for="property in propertyStore.$state.propertyList"
-                  style="padding-left: 20px; padding-right: 20px">
-                  <q-card class="property-card" @click="goToDetailPage(property.id)"
-                    style="width: 320px; height: 320px">
-                    <q-img
-                      :src="property.image"
-                      no-native-menu class="q-mb-md"
-                      style="width: 320px; height: 180px">
-                      <q-badge
-                        v-if="property.tradeTypeName === '월세'"
-                        class="absolute" style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #14ADEA">
-                        <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
-                      </q-badge>
-                      <q-badge
-                        v-if="property.tradeTypeName === '전세'"
-                        class="absolute" style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #4F5569">
-                        <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
-                      </q-badge>
-                      <q-badge
-                        v-if="property.tradeTypeName === '매매'"
-                        class="absolute" style="top: 8px; left: 8px; padding: 11px; width: 60px; background-color: #444444">
-                        <div class="q-ml-sm text-weight-bolder">{{ property.tradeTypeName }}</div>
-                      </q-badge>
-                    </q-img>
-                    <q-card-section>
-                      <h6 class="q-ma-none q-mb-xs">{{ property.title === null ? "-" : property.title }}</h6>
-                      <div class="q-mb-sm">{{ property.address }}</div>
-                      <div>
-                        <q-btn dense label="매물 특징">
-                          <q-tooltip>
-                            {{ property.articleFeatureDesc }}
-                          </q-tooltip>
-                        </q-btn>
-                      </div>
-                    </q-card-section>
-                  </q-card>
-                </div>
+                <q-table
+                  style="max-height: 375px; width: 100%"
+                  flat bordered
+                  :rows="propertyStore.$state.propertyList"
+                  :columns="[
+                    {
+                      name: 'title',
+                      required: true,
+                      label: '제목',
+                      align: 'left',
+                      field: row => row.title,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                    {
+                      name: 'address',
+                      required: true,
+                      label: '매물 주소',
+                      align: 'left',
+                      field: row => row.address,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                    {
+                      name: 'tradeTypeName',
+                      required: true,
+                      label: '거래 유형',
+                      align: 'left',
+                      field: row => row.tradeTypeName,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                    {
+                      name: 'rentPrc',
+                      required: true,
+                      label: '매매가',
+                      align: 'left',
+                      field: row => row.rentPrc,
+                      format: val => `${val}`,
+                      sortable: true
+                    },
+                  ]"
+                  virtual-scroll
+                >
+                  <template v-slot:header="props">
+                    <q-tr :props="props">
+                      <q-th
+                        v-for="col in props.cols"
+                        :key="col.name"
+                        :props="props"
+                      >
+                        {{ col.label }}
+                      </q-th>
+                      <q-th auto-width />
+                    </q-tr>
+                  </template>
+                  <template v-slot:body="props">
+                    <q-tr :props="props">
+                      <q-td
+                        v-for="col in props.cols"
+                        :key="col.name"
+                        :props="props"
+                      >
+                        {{ col.value }}
+                      </q-td>
+                      <q-td auto-width>
+                        <q-btn @click="goToDetailPage(props.row.id)">상세</q-btn>
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
               </div>
             </q-tab-panel>
 
             <q-tab-panel name="friends">
               <div class="row" style="justify-content: space-between; margin-bottom: 20px">
                 <div style="color: #117CE9; font-weight: bold">
-                  총 {{userStore.$state.friends.length}}명의 친구
+                  총 {{ userStore.$state.friends.length }}명의 친구
                 </div>
                 <div>
                   <q-btn style="margin-right: 10px" @click="userStore.viewAddForm">친구 추가</q-btn>
@@ -206,14 +244,17 @@ const enterRoom = (room) => {
                         </q-avatar>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label>{{friend.email}}</q-item-label>
-                        <q-item-label caption>{{friend.name}}</q-item-label>
-                        <q-item-label caption>{{friend.address === null ? 'null' : friend.address}}</q-item-label>
+                        <q-item-label>{{ friend.email }}</q-item-label>
+                        <q-item-label caption>{{ friend.name }}</q-item-label>
+                        <q-item-label caption>{{ friend.address === null ? 'null' : friend.address }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <div class="row justify-end">
                       <div>
-                        <q-btn @click="removeFriend(friend.id)" class="col-2 q-mr-md" style="background-color: lightgray">친구 삭제</q-btn>
+                        <q-btn @click="removeFriend(friend.id)" class="col-2 q-mr-md"
+                               style="background-color: lightgray">친구
+                          삭제
+                        </q-btn>
                       </div>
                     </div>
                   </q-card>
@@ -226,14 +267,16 @@ const enterRoom = (room) => {
                 <div v-for="room in chatStore.$state.myRooms"
                      style="padding-left: 20px; padding-right: 20px">
                   <q-card class="my-card"
-                    style="width: 320px; height: 320px">
+                          style="width: 320px; height: 320px">
                     <q-img
                       :src="room.image"
                       no-native-menu class="q-mb-md"
                       style="width: 320px; height: 180px"/>
                     <q-card-section>
-                      <div class="text-subtitle2">매물 : {{room.title}}</div>
-                      <div class="text-subtitle2">상대방 : {{authStore.$state.name == room.sender ? room.receiver : room.sender}}</div>
+                      <div class="text-subtitle2">매물 : {{ room.title }}</div>
+                      <div class="text-subtitle2">상대방 :
+                        {{ authStore.$state.name == room.sender ? room.receiver : room.sender }}
+                      </div>
                       <q-btn @click="enterRoom(room)">채팅방 입장</q-btn>
                     </q-card-section>
                   </q-card>
