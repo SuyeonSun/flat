@@ -55,7 +55,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
   script.defer = true;
   document.head.appendChild(script);
 
-  script.onload = () => {
+  script.onload = async () => {
     if (isSearch.value) {
       const center = [newVal[0].lat, newVal[0].lng]
 
@@ -132,6 +132,38 @@ watch(() => mapList.value, (newVal, oldVal) => {
       infoWindows.push(infoWindow);
     })
 
+    if(isInterest.value) {
+      // DB에 저장된 관심지역 lat, lng가 있으면 가져오기
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+
+      if(response.data.data.lat && response.data.data.lng) {
+        let prevInterestPosition = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
+
+        selectMarker.setMap(map)
+        interestArea.setMap(map)
+
+      }
+
+      naver.maps.Event.addListener(map, 'click', async function(e) {
+        selectMarker.setPosition(e.coord)
+        interestArea.setCenter(e.coord)
+        await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
+        await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
+        await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng)
+      })
+    }
+
+    if(isOnlyInterestArea.value && !isInterest.value) {
+
+      interestArea = new naver.maps.Circle({
+        map: map,
+        center: new naver.maps.LatLng(map.center._lat, map.center._lng),
+        radius: 1000,
+        fillColor: 'green',
+        fillOpacity: 0.5
+      })
+    }
+
     // isToggle.value가 true라면 친구 marker 추가
     if (isToggle.value) {
       addFriendMarker();
@@ -149,13 +181,18 @@ watch(() => isToggle.value, async (newVal, oldVal) => {
   if (newVal) {
     addFriendMarker();
   } else {
-    // 토글 해제 시, 친구 marker 제거
-    friendsMarkers.value = []
-    const searchPayload = {
-      address: address.value,
-      tradeTypeName: tradeTypeName.value.value
+    if(!isOnlyInterestArea.value) {
+      // 토글 해제 시, 친구 marker 제거
+      friendsMarkers.value = []
+      const searchPayload = {
+        address: address.value,
+        tradeTypeName: tradeTypeName.value.value
+      }
+      await propertyStore.getMapList(searchPayload);
+    } else {
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
     }
-    await propertyStore.getMapList(searchPayload);
   }
 })
 
@@ -163,12 +200,17 @@ watch (() => isPoliceStationToggle.value, async (newVal, oldVal) => {
   if (newVal) {
     addPoliceStationMarker();
   } else {
-    policeStationMarkers.value = []
-    const searchPayload = {
-      address: address.value,
-      tradeTypeName: tradeTypeName.value.value
+    if(!isOnlyInterestArea.value) {
+      policeStationMarkers.value = []
+      const searchPayload = {
+        address: address.value,
+        tradeTypeName: tradeTypeName.value.value
+      }
+      await propertyStore.getMapList(searchPayload);
+    } else {
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
     }
-    await propertyStore.getMapList(searchPayload);
   }
 })
 
@@ -266,6 +308,10 @@ watch(() => isInterest.value, async(newVal) => {
     // DB에 저장된 관심지역 lat, lng가 있으면 가져오기
     const response = await userStore.getUserInterestArea(authStore.$state.email)
 
+    if(isOnlyInterestArea.value) {
+      interestArea.setMap(null)
+    }
+
     if(response.data.data.lat && response.data.data.lng) {
       let prevInterestPosition = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
 
@@ -297,15 +343,25 @@ watch(() => isInterest.value, async(newVal) => {
     }
 
     naver.maps.Event.addListener(map, 'click', async function(e) {
+      console.log("addEventLisnter!!!!!!!!!!")
       selectMarker.setPosition(e.coord)
       interestArea.setCenter(e.coord)
       await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
       await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
+      await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng)
+
     })
   }
   else {
     selectMarker.setMap(null)
     interestArea.setMap(null)
+    if(isOnlyInterestArea.value) {
+      const response = await userStore.getUserInterestArea(authStore.$state.email)
+
+      map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
+      map.setZoom(15)
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+    }
   }
 })
 
@@ -324,10 +380,9 @@ watch(() => isOnlyInterestArea.value, async(newVal) => {
       })
       return
     }
-
-    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
     map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
     map.setZoom(15)
+    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
   } else {
 
     const searchPayload = {
@@ -391,6 +446,7 @@ const clickProperty = (idx) => {
         size: new naver.maps.Size(32, 32),
         anchor: new naver.maps.Point(16, 16),
       })
+      map.setCenter(new naver.maps.LatLng(marker.position._lat, marker.position._lng))
     } else {
       marker.setIcon({
         content: [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
@@ -509,6 +565,18 @@ const clickProperty = (idx) => {
           </q-scroll-area>
         </div>
       </div>
+    </div>
+
+    <div v-show="isInterest">
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-card style="height: 100px; width: 500px; background-color: rgba(255, 0, 0, 0.8);" class="row justify-center items-center">
+          <div style="font-weight: bold">
+            <div>관심 지역 설정 중입니다.</div>
+            <div>지도 영역 클릭 시 관심 지역이 업데이트 됩니다.</div>
+            <div>관심 지역 설정을 중단하고 싶다면, 관심 지역 설정 토글을 꺼주세요.</div>
+          </div>
+        </q-card>
+      </q-page-sticky>
     </div>
   </q-page>
 </template>
