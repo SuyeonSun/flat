@@ -14,6 +14,10 @@
     const url = await s3Store.uploadFile(file.value)
     console.log("@@@", url)
   }
+
+  const insertImage = async () => {
+    await s3Store.insertImage()
+  }
 </script>
 
 <template>
@@ -30,6 +34,10 @@
     label="이미지 등록"
   />
   <q-btn @click="onsubmit" label="이미지 업로드"/>
+
+  <div>
+    <q-btn @click="insertImage" label="이미지 insert" class="q-mt-lg"/>
+  </div>
 </template>
 
 <style scoped>

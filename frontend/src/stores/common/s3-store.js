@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import {authApi} from "boot/auth-api";
+import {api} from "boot/api";
 
 export const useS3Store = defineStore('s3Store', {
   state: () => ({
@@ -19,6 +20,15 @@ export const useS3Store = defineStore('s3Store', {
         console.log(error);
       }
     },
+
+    async insertImage() {
+      try {
+        await api.get("/data/image")
+      } catch (error) {
+        console.log("error")
+      }
+    },
+
     persist: {
       enabled: true,
       strategies: [{storage: localStorage}],
