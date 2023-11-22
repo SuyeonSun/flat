@@ -253,13 +253,13 @@ const enterRoom = (room) => {
             </q-tab-panel>
 
             <q-tab-panel name="friends">
-              <div class="row" style="justify-content: space-between; margin-bottom: 20px">
-                <div style="color: #117CE9; font-weight: bold">
+              <div class="row" style="justify-content: space-between; margin-bottom: 20px; padding-left: 20px; padding-right: 20px">
+                <div style="color: #117CE9; font-weight: bold; margin-top: 6px">
                   총 {{ userStore.$state.friends.length }}명의 친구
                 </div>
                 <div>
-                  <q-btn style="margin-right: 10px" @click="userStore.viewAddForm">친구 추가</q-btn>
-                  <q-btn @click="userStore.getFriendRequest(authStore.email)">요청 확인</q-btn>
+                  <q-btn style="margin-right: 10px; background-color: #5bc500; color: white; font-weight: bold" @click="userStore.viewAddForm">친구 추가</q-btn>
+                  <q-btn style="background-color: #5bc500; color: white; font-weight: bold" @click="userStore.getFriendRequest(authStore.email)">요청 확인</q-btn>
                 </div>
               </div>
 
@@ -282,7 +282,7 @@ const enterRoom = (room) => {
                     <div class="row justify-end">
                       <div>
                         <q-btn @click="removeFriend(friend.id)" class="col-2 q-mr-md"
-                               style="background-color: lightgray">친구
+                               style="background-color: #ed9b33; color: white; font-weight: bold">친구
                           삭제
                         </q-btn>
                       </div>
@@ -309,8 +309,8 @@ const enterRoom = (room) => {
                   </q-item>
                   <div class="row justify-end">
                     <div>
-                      <q-btn @click="enterRoom(room)" class="col-2 q-mr-md"
-                             style="background-color: lightgray">채팅방 입장
+                      <q-btn @click="enterRoom(room)" class="col-2 q-mr-md">
+                        채팅방 입장
                       </q-btn>
                     </div>
                   </div>

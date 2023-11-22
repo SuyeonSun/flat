@@ -5,6 +5,7 @@ import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
 import {ref, onMounted} from "vue"
 import NewPropertyDialog from "components/property/NewPropertyDialog.vue";
+import {useUserStore} from "stores/user/user-store";
 
 const scrollInfo = ref({
   position: {
@@ -19,12 +20,18 @@ const onScroll = (info) => {
 
 const $router = useRouter();
 const authStore = useAuthStore();
+const userStore = useUserStore();
 const propertyStore = usePropertyStore()
 
 const {email, name} = storeToRefs(authStore);
 const {newProperty} = storeToRefs(propertyStore)
 
+const profile = ref();
+
 onMounted(async () => {
+  const profileResponse = await userStore.getUserProfile(name.value);
+  profile.value = profileResponse.data;
+
   const response = await propertyStore.getInterestAreaPropertyList(authStore.$state.email)
   newProperty.value = response.data.data
 
@@ -82,8 +89,11 @@ const handleNewPropertyDialog = () => {
                 <q-badge v-if="newProperty.length > 0" color="red" floating rounded>NEW</q-badge>
               </q-btn>
             </div>
-            <div class="q-mr-sm">
-              <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
+            <div class="q-mr-md">
+              <q-avatar round size="35px" class="q-mr-xs">
+                <img :src="profile"/>
+              </q-avatar>
+              {{ name }} 님, 환영합니다.
             </div>
             <div>
               <q-btn size="md" unelevated outline @click="signOut()">로그아웃</q-btn>
@@ -107,7 +117,7 @@ const handleNewPropertyDialog = () => {
             <h5 class="q-ma-none" style="font-weight: bold">
               <span class="logo-font">F</span>
               <span class="logo-font">L</span>
-              <q-icon name="house" class="logo-icon"/>
+              <q-icon name="house" class="logo-icon" style="color: #ed9b33"/>
               <span class="logo-font">T</span>
             </h5>
           </div>
@@ -118,8 +128,11 @@ const handleNewPropertyDialog = () => {
                 <q-badge v-if="newProperty.length > 0" color="red" floating rounded>NEW</q-badge>
               </q-btn>
             </div>
-            <div class="q-mr-sm">
-              <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
+            <div class="q-mr-md">
+              <q-avatar round size="35px" class="q-mr-xs">
+                <img :src="profile"/>
+              </q-avatar>
+              {{ name }} 님, 환영합니다.
             </div>
             <div>
               <q-btn size="md" unelevated outline @click="signOut()" class="bg-black text-white">로그아웃</q-btn>
