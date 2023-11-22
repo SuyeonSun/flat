@@ -122,7 +122,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
               nextScrollPosition = scrollRef.value.getScroll().verticalSize
             }
 
-            scrollRef.value.setScrollPosition('vertical', nextScrollPosition)
+            scrollRef.value.setScrollPosition('vertical', nextScrollPosition, 200)
 
           } else {
             marker.setIcon({
@@ -460,7 +460,7 @@ const clickProperty = (idx) => {
     nextScrollPosition = scrollRef.value.getScroll().verticalSize
   }
 
-  scrollRef.value.setScrollPosition('vertical', nextScrollPosition)
+  scrollRef.value.setScrollPosition('vertical', nextScrollPosition, 200)
 
   // TODO: 마커 색상 변경
   selectedMarkerIdx.value = idx;
@@ -601,7 +601,7 @@ const scrollRef = ref(null)
                       map.direction
                     }}
                   </q-item-label>
-                  <q-item-label caption>{{ map.tagList }}</q-item-label>
+                  <q-item-label caption>{{ map.tagList ? map.tagList : '등록된 태그가 없습니다.'}}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>

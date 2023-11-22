@@ -6,10 +6,15 @@ import {useRouter} from "vue-router";
 import {ref, onMounted} from "vue"
 import NewPropertyDialog from "components/property/NewPropertyDialog.vue";
 
-const scrollInfo = ref({});
+const scrollInfo = ref({
+  position: {
+    top: 0
+  }
+});
+
 const onScroll = (info) => {
   scrollInfo.value = info;
-  // console.log(scrollInfo.value.position.top) // 64
+  // console.log("!@!@!#",scrollInfo.value.position.top) // 64
 }
 
 const $router = useRouter();
