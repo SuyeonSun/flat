@@ -103,7 +103,7 @@ const slide = ref(1);
       <div style="width: 86%">
         <div class="row justify-between items-center">
           <div>
-            <q-btn size="md" unelevated outline @click="goToRegisterPage">매물 등록</q-btn>
+            <q-btn size="md" @click="goToRegisterPage" style="background-color: #5bc500; color: white">방 내놓기</q-btn>
           </div>
           <div class="row">
             <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm" style="width: 100px" label="거래 유형"/>
@@ -164,7 +164,7 @@ const slide = ref(1);
         direction-links
         :max-pages="5"
         flat
-        color="grey"
+        color="black"
       />
     </div>
   </q-page>
