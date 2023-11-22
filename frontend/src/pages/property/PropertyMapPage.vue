@@ -484,10 +484,15 @@ const clickProperty = (idx) => {
       // 마커 클릭 시 상세 매물 정보로 이동하기
       let infoWindow = new naver.maps.InfoWindow({
         content:
-          `<div style="text-align:center; padding:10px;">
-            <div>${element.address} ${element.buildingName}</div>
-            <div>${element.tradeTypeName} ${element.rentPrc} ${element.area1}/${element.area2}㎡</div>
-            <a href="http://localhost:8080/property/${element.id}" style="text-decoration: none">
+          `<div style="padding:10px;">
+            <div class="row justify-start items-center">
+                <div class="q-mr-sm"><img src="${element.image}" style="width: 90px; height: 60px"></div>
+                <div>
+                    <div>${element.address} ${element.buildingName}</div>
+                    <div>${element.tradeTypeName} ${element.rentPrc} ${element.area1}/${element.area2}㎡</div>
+                </div>
+            </div>
+            <a href="http://localhost:8080/property/${element.id}" style="text-decoration: none; color: #5bc500">
                ▶ 매물 상세 보기
             </a>
           </div>`,
