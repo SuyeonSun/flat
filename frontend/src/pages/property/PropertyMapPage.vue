@@ -104,6 +104,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
         borderColor: "#FFFFFF",
         borderWidth: 5,
       });
+
       naver.maps.Event.addListener(marker, "click", function (e) {
         // 마커 색상 변경
         selectedMarkerIdx.value = idx;
@@ -472,6 +473,32 @@ const clickProperty = (idx) => {
         anchor: new naver.maps.Point(16, 16),
       })
       map.setCenter(new naver.maps.LatLng(marker.position._lat, marker.position._lng))
+
+      let element = mapList.value[i]
+
+      // 마커 클릭 시 상세 매물 정보로 이동하기
+      let infoWindow = new naver.maps.InfoWindow({
+        content:
+          `<div style="text-align:center; padding:10px;">
+            <div>${element.address} ${element.buildingName}</div>
+            <div>${element.tradeTypeName} ${element.rentPrc} ${element.area1}/${element.area2}㎡</div>
+            <a href="http://localhost:8080/property/${element.id}" style="text-decoration: none">
+               ▶ 매물 상세 보기
+            </a>
+          </div>`,
+        backgroundColor: "#FFFFFF",
+        borderColor: "#FFFFFF",
+        borderWidth: 5,
+      });
+
+      if (infoWindow.getMap()) {
+        infoWindow.close();
+      } else {
+        infoWindow.open(map, marker);
+      }
+
+      infoWindows.push(infoWindow)
+
     } else {
       marker.setIcon({
         content: [`<img src="/icons/pin.png" style="height: 30px; width: 30px; border-radius: 70%" />`].join(""),
