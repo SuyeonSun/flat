@@ -93,10 +93,15 @@ watch(() => mapList.value, (newVal, oldVal) => {
       // 마커 클릭 시 상세 매물 정보로 이동하기
       let infoWindow = new naver.maps.InfoWindow({
         content:
-          `<div style="text-align:center; padding:10px;">
-            <div>${element.address} ${element.buildingName}</div>
-            <div>${element.tradeTypeName} ${element.rentPrc} ${element.area1}/${element.area2}㎡</div>
-            <a href="http://localhost:8080/property/${element.id}" style="text-decoration: none">
+          `<div style="padding:10px;">
+            <div class="row justify-start items-center">
+                <div class="q-mr-sm"><img src="${element.image}" style="width: 90px; height: 60px"></div>
+                <div>
+                    <div>${element.address} ${element.buildingName}</div>
+                    <div>${element.tradeTypeName} ${element.rentPrc} ${element.area1}/${element.area2}㎡</div>
+                </div>
+            </div>
+            <a href="http://localhost:8080/property/${element.id}" style="text-decoration: none; color: #5bc500">
                ▶ 매물 상세 보기
             </a>
           </div>`,
@@ -524,27 +529,29 @@ const scrollRef = ref(null)
           <div>
             <q-toggle
               v-model="isInterest"
-              color="red"
-              label="관심지역 설정"
+              checked-icon="check"
+              color="green"
+              label="관심 지역 설정"
               unchecked-icon="clear"
             />
             <q-toggle
               v-model="isOnlyInterestArea"
+              checked-icon="check"
               color="red"
-              label="관심지역 매물보기"
+              label="관심 지역 매물보기"
               unchecked-icon="clear"
             />
             <q-toggle
               v-model="isPoliceStationToggle"
               checked-icon="check"
-              color="yellow"
+              color="amber-8"
               label="주변 경찰서 위치도 함께 표시할래요"
               unchecked-icon="clear"
             />
             <q-toggle
               v-model="isToggle"
               checked-icon="person"
-              color="red"
+              color="grey"
               label="친구 집 위치도 함께 표시할래요"
               unchecked-icon="clear"
             />
@@ -611,8 +618,8 @@ const scrollRef = ref(null)
     </div>
 
     <div v-show="isInterest">
-      <q-page-sticky position="bottom-right" :offset="[18, 18]">
-        <q-card style="height: 100px; width: 500px; background-color: rgba(255, 0, 0, 0.8);" class="row justify-center items-center">
+      <q-page-sticky position="bottom-left" :offset="[18, 18]">
+        <q-card style="height: 100px; width: 500px; color: black; background-color: rgba(255, 0, 0, 0.5);" class="row justify-center items-center">
           <div style="font-weight: bold">
             <div>관심 지역 설정 중입니다.</div>
             <div>지도 영역 클릭 시 관심 지역이 업데이트 됩니다.</div>

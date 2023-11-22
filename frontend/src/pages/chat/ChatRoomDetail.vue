@@ -68,10 +68,9 @@ watch(messages, (n) => {
   <div class="q-pa-md q-gutter-sm">
 
     <q-dialog v-model="chatStore.$state.isDialog" persistent>
-      <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
-
-        <q-header style="background-color: black">
-          <q-toolbar>
+      <q-layout view="Lhh lpR fff" container class="bg-white text-dark" style="max-width: 450px; max-height: 700px; min-height: 700px">
+        <q-header>
+          <q-toolbar style="background-color: white; color: black">
             <q-toolbar-title class="text-center" style="font-size: 16px;">1:1 문의</q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close" @click="chatStore.clear()"/>
           </q-toolbar>
@@ -79,9 +78,9 @@ watch(messages, (n) => {
 
         <q-footer class="bg-white text-dark" bordered>
           <q-toolbar>
-            <q-input bottom-slots v-model="input" label="채팅을 입력해주세요." @keyup.enter="sendMsg" style="width: 100%">
+            <q-input class="q-mt-xs" dense bottom-slots v-model="input" label="채팅을 입력해주세요." @keyup.enter="sendMsg" style="width: 100%">
               <template v-slot:append>
-                <q-icon v-if="input !== ''" name="close" @click="input = ''" class="cursor-pointer" />
+                <q-icon v-if="input !== ''" name="close" @click="input = ''" class="cursor-pointer"/>
               </template>
               <template v-slot:after>
                 <q-btn round dense flat icon="send" @click="sendMsg"/>
@@ -90,7 +89,7 @@ watch(messages, (n) => {
           </q-toolbar>
         </q-footer>
 
-        <q-scroll-area style="height: 915px;" ref="scrollRef">
+        <q-scroll-area style="height: 700px;" ref="scrollRef">
           <q-page-container>
             <q-page padding>
               <div class="row justify-center">
@@ -103,6 +102,7 @@ watch(messages, (n) => {
                       :text="[message.message]"
                       :stamp= getGap(message.date)
                       sent
+                      bg-color="amber-7"
                     />
                     <q-chat-message
                       v-else
@@ -110,6 +110,8 @@ watch(messages, (n) => {
                       :avatar=receiverProfile
                       :text="[message.message]"
                       :stamp= getGap(message.date)
+                      bg-color="grey-6"
+                      text-color="white"
                     />
                   </div>
                 </div>

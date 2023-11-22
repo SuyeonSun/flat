@@ -85,8 +85,10 @@ const register = async () => {
     <div style="width: 70%">
       <div>
         <div class="row items-center justify-between q-mb-md">
-          <h5 class="q-ma-none q-mb-md">매물 등록</h5>
-          <q-btn outline dense label="등록" @click="register" class="register-btn"/>
+          <div>
+            <h5 class="q-ma-none">매물 등록</h5>
+          </div>
+          <q-btn dense label="등록" @click="register" class="register-btn" style="background-color: #5bc500; color: white"/>
         </div>
 
         <!-- 기본 정보 -->

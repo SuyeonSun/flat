@@ -144,7 +144,7 @@ const onSubmit = async () => {
             outlined
           />
 
-          <q-btn label="회원가입" type="submit" class="full-width q-mt-xl q-mb-lg submit-btn bg-black"/>
+          <q-btn label="회원가입" type="submit" class="full-width q-mt-xl q-mb-lg submit-btn" style="background-color: #5bc500; color: white"/>
 
           <div class="text-subtitle1 q-ma-none text">
             <a href="/sign-in" style="text-decoration: none; color: #117CE9; font-size: 15px; font-weight: bold" class="text"> 로그인 </a>

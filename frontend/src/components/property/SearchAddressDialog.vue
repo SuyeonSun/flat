@@ -70,7 +70,7 @@ const clickOkBtn = () => {
         </q-input>
 
         <q-list bordered seperator v-if="addresses?.length > 0">
-          <div class="q-ml-md q-mt-md" style="text-decoration: none; color: #14ADEA; font-size: 13px; font-weight: bold"> 자동완성 검색어 </div>
+          <div class="q-ml-md q-mt-md" style="text-decoration: none; color: #1976D2; font-size: 13px; font-weight: bold"> 자동완성 검색어 </div>
           <q-item v-for="(address) in addresses" clickable v-ripple @click="clickAddress(address)">
             <q-item-section>
               <q-item-label>{{address.roadAddress}}</q-item-label>
@@ -97,7 +97,7 @@ const clickOkBtn = () => {
 }
 
 .confirm-btn {
-  background-color: $dark-blue;
+  background-color: $yellow_secondary;
   color: white;
 }
 
