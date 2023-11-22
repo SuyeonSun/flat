@@ -21,4 +21,9 @@ public class DataController {
     public void insert() {
         dataService.insert();
     }
+
+    @GetMapping("/image")
+    public void insertImage() {
+        dataService.insertImage();
+    }
 }
