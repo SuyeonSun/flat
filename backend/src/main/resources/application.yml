@@ -12,3 +12,7 @@ cloud:
 application:
   bucket:
     name: flat-bucket
+
+api:
+  keyId: ma90kj4eu7
+  key: 99XkSbZnQwTciMuTbiQ0LDGD9faiUn5Wjp7yAf6o
