@@ -46,10 +46,11 @@ const changePassword = async () => {
 
     <q-dialog v-model="userStore.$state.changePwdDialog" persistent>
       <q-layout view="Lhh lpR fff" container class="bg-white text-dark"
-        style="max-height: 250px">
-        <q-header class="bg-primary">
+        style="max-height: 290px">
+        <q-header class="bg-white" style="color: black">
           <q-toolbar style="height: 50px">
-            <q-toolbar-title class="text-center">비밀번호 변경</q-toolbar-title>
+            <q-toolbar-title>
+            </q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close"/>
           </q-toolbar>
         </q-header>
@@ -58,6 +59,7 @@ const changePassword = async () => {
           <q-page padding>
             <div class="row justify-end">
               <div style="width: 100%" class="row justify-center">
+                <q-item-label class="q-mb-md">비밀번호를 재설정 해주세요.</q-item-label>
                 <q-input
                   v-model="prevPwd"
                   style="width: 100%; max-width: 80%"
