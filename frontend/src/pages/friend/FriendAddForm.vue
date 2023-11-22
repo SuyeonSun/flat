@@ -80,7 +80,7 @@ const sendReq = async (senderId, receiverId) => {
         </q-page-container>
 
         <div style="display: flex; justify-content: center;">
-          <div v-if="isUser">
+          <div v-if="isUser" class="q-pa-md">
             <q-item clickable v-ripple>
               <q-item-section side>
                 <q-avatar rounded size="48px">
@@ -94,7 +94,7 @@ const sendReq = async (senderId, receiverId) => {
               </q-item-section>
             </q-item>
             <div class="row justify-end q-mb-xs">
-              <q-btn outline v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)" style="background-color: lightskyblue">요청</q-btn>
+              <q-btn dense class="col-2" outline v-if="friendState === 0" @click="sendReq(userStore.$state.user.id, searchUser.id)" style="background-color: lightskyblue">요청</q-btn>
               <q-item-label style="font-size: 12px; color: darkred" v-if="friendState === 1">이미 친구 입니다.</q-item-label>
               <q-item-label style="font-size: 12px; color: #117CE9" v-if="friendState === 2">요청 대기중</q-item-label>
             </div>

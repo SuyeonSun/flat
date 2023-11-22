@@ -264,31 +264,33 @@ const enterRoom = (room) => {
               </div>
 
               <div class="">
-                <div v-for="friend in userStore.$state.friends"
-                     style="padding-left: 20px; padding-right: 20px">
-                  <q-card flat bordered class="row justify-between items-center q-mb-sm">
-                    <q-item clickable v-ripple>
-                      <q-item-section side>
-                        <q-avatar rounded size="48px">
-                          <img :src="friend.profile" alt="친구 프로필"/>
-                        </q-avatar>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label>{{ friend.email }}</q-item-label>
-                        <q-item-label caption>{{ friend.name }}</q-item-label>
-                        <q-item-label caption>{{ friend.address === null ? 'null' : friend.address }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <div class="row justify-end">
-                      <div>
-                        <q-btn @click="removeFriend(friend.id)" class="col-2 q-mr-md"
-                               style="background-color: #ed9b33; color: white; font-weight: bold">친구
-                          삭제
-                        </q-btn>
+                <q-scroll-area style="height: 300px; max-width: 100%;">
+                  <div v-for="friend in userStore.$state.friends"
+                       style="padding-left: 20px; padding-right: 20px">
+                    <q-card flat bordered class="row justify-between items-center q-mb-sm">
+                      <q-item clickable v-ripple>
+                        <q-item-section side>
+                          <q-avatar rounded size="48px">
+                            <img :src="friend.profile" alt="친구 프로필"/>
+                          </q-avatar>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label>{{ friend.email }}</q-item-label>
+                          <q-item-label caption>{{ friend.name }}</q-item-label>
+                          <q-item-label caption>{{ friend.address === null ? 'null' : friend.address }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <div class="row justify-end">
+                        <div>
+                          <q-btn @click="removeFriend(friend.id)" class="col-2 q-mr-md"
+                                 style="background-color: #ed9b33; color: white; font-weight: bold">친구
+                            삭제
+                          </q-btn>
+                        </div>
                       </div>
-                    </div>
-                  </q-card>
-                </div>
+                    </q-card>
+                  </div>
+                </q-scroll-area>
               </div>
             </q-tab-panel>
 

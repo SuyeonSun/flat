@@ -163,9 +163,9 @@ const clickLikeBtn = async (status) => {
 
           <div class="q-mb-md">
             <!-- 비용 -->
-            <div>- 평균 관리비 : {{ averageCommonPrice }} (단위 : 만원)</div>
-            <div>- 전기 요금 : {{ averageEtcPrice }} (단위 : 만원)</div>
-            <div>- 난방비 : {{ averageHeatPrice }} (단위 : 만원)</div>
+            <div>- 평균 관리비 : {{ averageCommonPrice }}</div>
+            <div>- 전기 요금 : {{ averageEtcPrice }}</div>
+            <div>- 난방비 : {{ averageHeatPrice }}</div>
           </div>
         </q-card-section>
       </q-card>

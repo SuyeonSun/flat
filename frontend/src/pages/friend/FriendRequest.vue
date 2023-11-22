@@ -41,7 +41,11 @@ const tab = ref('recv')
 
               <q-tab-panels v-model="tab" animated>
                 <q-tab-panel name="recv">
-                  <q-card flat bordered v-for="friend in userStore.$state.recvRequests" :key="friend" class="row justify-between items-center">
+                  <q-card flat bordered
+                          v-for="friend in userStore.$state.recvRequests"
+                          :key="friend"
+                          class="row justify-between items-center q-mb-sm"
+                  >
                     <q-item clickable v-ripple>
                       <q-item-section side>
                         <q-avatar rounded size="48px">
@@ -64,7 +68,7 @@ const tab = ref('recv')
                 </q-tab-panel>
 
                 <q-tab-panel name="send">
-                  <q-card flat bordered v-for="friend in userStore.$state.sendRequests" :key="friend" class="row justify-between items-center">
+                  <q-card flat bordered v-for="friend in userStore.$state.sendRequests" :key="friend" class="row justify-between items-center q-mb-sm">
                     <q-item clickable v-ripple>
                       <q-item-section side>
                         <q-avatar rounded size="48px">
@@ -79,7 +83,7 @@ const tab = ref('recv')
                     </q-item>
                     <div class="row justify-end">
                       <div>
-                        <q-btn @click="userStore.removeRequest(friend)" class="col-2 q-mr-md" style="background-color: lightgray">삭제</q-btn>
+                        <q-btn @click="userStore.removeRequest(friend)" class="col-2 q-mr-md" style="background-color: lightgray">취소</q-btn>
                       </div>
                     </div>
                   </q-card>

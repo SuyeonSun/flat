@@ -13,10 +13,15 @@ export const useS3Store = defineStore('s3Store', {
         const response = await authApi.post('/user/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
+
         return response.data;
       } catch (error) {
         console.log(error);
       }
+    },
+    persist: {
+      enabled: true,
+      strategies: [{storage: localStorage}],
     }
   }
 })

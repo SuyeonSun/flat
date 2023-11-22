@@ -16,6 +16,14 @@ export const useTestStore = defineStore('testStore', {
         console.log("error");
       }
     },
+
+    async insertData() {
+      try {
+        await api.get("/data");
+      } catch (error) {
+        console.log("error")
+      }
+    }
   },
 
   persist: {
