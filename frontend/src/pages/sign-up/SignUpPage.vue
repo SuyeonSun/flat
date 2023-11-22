@@ -71,7 +71,7 @@ const onSubmit = async () => {
           <h5 class="q-ma-none" style="font-weight: bold">
             <span class="logo-font">F</span>
             <span class="logo-font">L</span>
-            <q-icon name="house" class="logo-icon"/>
+            <q-icon name="house" class="logo-icon" style="color: #ed9b33"/>
             <span class="logo-font">T</span>
           </h5>
         </div>

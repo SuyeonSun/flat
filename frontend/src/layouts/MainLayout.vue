@@ -2,11 +2,21 @@
 import {useAuthStore} from "stores/auth/auth-store";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
+import {onMounted, ref} from "vue";
+import {useUserStore} from "stores/user/user-store";
 
 const $router = useRouter();
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 const {email, name} = storeToRefs(authStore);
+
+const profile = ref();
+
+onMounted(async () => {
+  const profileResponse = await userStore.getUserProfile(name.value);
+  profile.value = profileResponse.data;
+})
 
 const signOut = async () => {
   // localStorage 및 store email, accessToken 값 지우기
@@ -30,7 +40,7 @@ const signOut = async () => {
           <h5 class="q-ma-none" style="font-weight: bold">
             <span class="logo-font">F</span>
             <span class="logo-font">L</span>
-            <q-icon name="house" class="logo-icon"/>
+            <q-icon name="house" class="logo-icon" style="color: #ed9b33"/>
             <span class="logo-font">T</span>
           </h5>
         </div>
@@ -41,8 +51,11 @@ const signOut = async () => {
 <!--              <q-badge color="red" floating rounded>NEW</q-badge>-->
 <!--            </q-btn>-->
 <!--          </div>-->
-          <div class="q-mr-sm">
-            <q-btn size="md" unelevated outline>{{ name }} 님</q-btn>
+          <div class="q-mr-md">
+            <q-avatar round size="35px" class="q-mr-xs">
+              <img :src="profile"/>
+            </q-avatar>
+            {{ name }} 님, 환영합니다.
           </div>
           <div>
             <q-btn size="md" unelevated outline @click="signOut()" class="bg-black text-white">로그아웃</q-btn>

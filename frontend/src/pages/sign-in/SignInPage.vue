@@ -41,7 +41,7 @@ const onSubmit = async () => {
           <h5 class="q-ma-none" style="font-weight: bold">
             <span class="logo-font">F</span>
             <span class="logo-font">L</span>
-            <q-icon name="house" class="logo-icon"/>
+            <q-icon name="house" class="logo-icon" style="color: #ed9b33"/>
             <span class="logo-font">T</span>
           </h5>
         </div>
@@ -88,7 +88,7 @@ const onSubmit = async () => {
             <label style="padding-top: 3px">아이디 저장</label>
           </div>
 
-          <q-btn label="로그인" type="submit" class="full-width q-mt-lg q-mb-lg submit-btn"/>
+          <q-btn label="로그인" type="submit" class="full-width q-mt-lg q-mb-lg submit-btn" style="background-color: #5bc500"/>
 
           <div class="text-subtitle1 q-ma-none text">
             <a href="/sign-up" style="text-decoration: none; color: #117CE9; font-size: 15px; font-weight: bold" class="text"> 회원가입 </a>
