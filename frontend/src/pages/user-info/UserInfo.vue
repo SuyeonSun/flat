@@ -126,20 +126,20 @@ const handleSearchAddressDialog = () => {
         </div>
       </div>
 
-      <div class="row justify-center">
+      <div class="row justify-start">
         <div style="width: 400px">
-          <div class="row" style="justify-content: space-around">
+          <div class="row">
             <q-btn
               @click="triggerFileInput"
+              class="q-mr-sm"
             >프로필 변경</q-btn>
             <q-file v-show="false"
                     ref="file"
                     v-model="newProfile"
                     label="프로필 변경"
             >
-              <!--        @input="onChangeProfile"-->
             </q-file>
-            <q-btn @click="onChangePwd"> 비밀번호 변경</q-btn>
+            <q-btn @click="onChangePwd" class="q-mr-sm"> 비밀번호 변경</q-btn>
             <q-btn @click="handleSearchAddressDialog">주소 수정</q-btn>
           </div>
         </div>

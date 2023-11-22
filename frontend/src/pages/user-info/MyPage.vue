@@ -293,24 +293,28 @@ const enterRoom = (room) => {
             </q-tab-panel>
 
             <q-tab-panel name="chats">
-              <div class="row justify-center">
-                <div v-for="room in chatStore.$state.myRooms"
-                     style="padding-left: 20px; padding-right: 20px">
-                  <q-card class="my-card"
-                          style="width: 320px; height: 320px">
-                    <q-img
-                      :src="room.image"
-                      no-native-menu class="q-mb-md"
-                      style="width: 320px; height: 180px"/>
-                    <q-card-section>
-                      <div class="text-subtitle2">매물 : {{ room.title }}</div>
-                      <div class="text-subtitle2">상대방 :
-                        {{ authStore.$state.name == room.sender ? room.receiver : room.sender }}
-                      </div>
-                      <q-btn @click="enterRoom(room)">채팅방 입장</q-btn>
-                    </q-card-section>
-                  </q-card>
-                </div>
+              <div v-for="room in chatStore.$state.myRooms"
+                   style="padding-left: 20px; padding-right: 20px">
+                <q-card flat bordered class="row justify-between items-center q-mb-sm">
+                  <q-item clickable v-ripple>
+                    <q-item-section side>
+                      <q-avatar rounded size="48px">
+                        <img :src="room.image" alt="채팅 이미지"/>
+                      </q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{ room.title }}</q-item-label>
+                      <q-item-label caption>{{ authStore.$state.name == room.sender ? room.receiver : room.sender }}(와)과의 대화</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <div class="row justify-end">
+                    <div>
+                      <q-btn @click="enterRoom(room)" class="col-2 q-mr-md"
+                             style="background-color: lightgray">채팅방 입장
+                      </q-btn>
+                    </div>
+                  </div>
+                </q-card>
               </div>
             </q-tab-panel>
           </q-tab-panels>

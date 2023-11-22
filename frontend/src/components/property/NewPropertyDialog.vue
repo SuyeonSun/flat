@@ -51,7 +51,7 @@ const checkNewProperty = () => {
           <q-page padding>
             <div class="q-mb-sm row items-center">
               <q-btn dense round flat icon="email">
-                <q-badge color="red" floating transparent>
+                <q-badge color="red" floating transparent v-if="newProperty.length > 0">
                   {{newProperty.length}}
                 </q-badge>
               </q-btn>
