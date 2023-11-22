@@ -1,0 +1,14 @@
+# s3
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIA4X5JVVJBRFVQQ55N
+      secretKey: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: flat-bucket
