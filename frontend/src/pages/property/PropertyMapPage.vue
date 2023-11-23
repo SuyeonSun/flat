@@ -520,6 +520,8 @@ const clickProperty = (idx) => {
 }
 
 const scrollRef = ref(null)
+const interestAreaRange = ref(1)
+const interestAreaRangeLabel = (val) => `${val}km`
 </script>
 
 <template>
@@ -529,19 +531,23 @@ const scrollRef = ref(null)
       <!-- address, tradeTypeName -->
       <div class="q-pa-lg q-px-xl">
         <div class="row justify-between items-center">
-          <div class="row" v-if="!isOnlyInterestArea">
-            <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
-                      style="width: 100px" label="거래 유형"/>
-            <q-input
-              v-model="address"
-              dense
-              outlined
-              label="검색할 매물 주소"
-            >
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+          <div v-if="!isOnlyInterestArea">
+            <div style="font-weight: bold; font-size: 17px" class="q-mb-xs">검색</div>
+            <q-item-label caption class="q-mb-sm">검색 조건을 변경 시, 자동 검색 됩니다.</q-item-label>
+            <div class="row" >
+              <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
+                        style="width: 100px" label="거래 유형"/>
+              <q-input
+                v-model="address"
+                dense
+                outlined
+                label="검색할 매물 주소"
+              >
+                <template v-slot:append>
+                  <q-icon name="search"/>
+                </template>
+              </q-input>
+            </div>
           </div>
           <div class="row" v-else>
             <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense readonly class="q-mr-sm"
@@ -559,38 +565,60 @@ const scrollRef = ref(null)
             </q-input>
           </div>
           <div>
-            <q-toggle
-              v-model="isInterest"
-              checked-icon="check"
-              color="green"
-              label="관심 지역 설정"
-              unchecked-icon="clear"
-            />
-            <q-toggle
-              v-model="isOnlyInterestArea"
-              checked-icon="check"
-              color="red"
-              label="관심 지역 매물보기"
-              unchecked-icon="clear"
-            />
-            <q-toggle
-              v-model="isPoliceStationToggle"
-              checked-icon="check"
-              color="amber-8"
-              label="주변 경찰서 위치도 함께 표시할래요"
-              unchecked-icon="clear"
-            />
-            <q-toggle
-              v-model="isToggle"
-              checked-icon="person"
-              color="grey"
-              label="친구 집 위치도 함께 표시할래요"
-              unchecked-icon="clear"
-            />
+            <div class="row items-center">
+              <div class="q-mr-xl">
+                <q-toggle
+                  v-model="isInterest"
+                  checked-icon="check"
+                  color="green"
+                  label="관심 지역 설정"
+                  unchecked-icon="clear"
+                />
+              </div>
+              <div v-if="isInterest" class="row">
+                <q-badge color="green">
+                  범위: {{ interestAreaRange }}km
+                </q-badge>
+                <q-slider
+                  style="min-width: 150px"
+                  v-model="interestAreaRange"
+                  color="green"
+                  markers
+                  :marker-labels="interestAreaRangeLabel"
+                  :min="1"
+                  :max="5"
+                />
+              </div>
+            </div>
+            <div>
+              <q-toggle
+                v-model="isOnlyInterestArea"
+                checked-icon="check"
+                color="red"
+                label="관심 지역 매물 보기"
+                unchecked-icon="clear"
+              />
+            </div>
+            <div>
+              <q-toggle
+                v-model="isPoliceStationToggle"
+                checked-icon="check"
+                color="amber-8"
+                label="주변 경찰서 위치도 함께 표시할래요"
+                unchecked-icon="clear"
+              />
+              <q-toggle
+                v-model="isToggle"
+                checked-icon="person"
+                color="grey"
+                label="친구 집 위치도 함께 표시할래요"
+                unchecked-icon="clear"
+              />
+            </div>
           </div>
         </div>
         <div class="row justify-between">
-          <q-item-label caption class="q-mt-xs">검색 조건을 변경 시, 자동 검색 됩니다.</q-item-label>
+          <q-item-label caption class="q-mt-xs"></q-item-label>
           <div style="color: #117CE9;">총 {{ mapList.length }}개의 검색 결과</div>
         </div>
       </div>
@@ -599,10 +627,10 @@ const scrollRef = ref(null)
       <div class="row q-mx-xl">
         <!-- 지도 -->
         <div class="col-8">
-          <div id="map" style="height: 75vh"></div>
+          <div id="map" style="height: 60vh"></div>
         </div>
         <!-- 목록 -->
-        <div class="col-4" style="height: 75vh">
+        <div class="col-4" style="height: 60vh">
           <q-scroll-area
             :thumb-style="thumbStyle"
             :content-style="contentStyle"
