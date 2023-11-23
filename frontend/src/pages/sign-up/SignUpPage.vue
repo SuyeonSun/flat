@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "stores/auth/auth-store";
 import {useS3Store} from "stores/common/s3-store";
@@ -61,6 +61,13 @@ const onSubmit = async () => {
       })
   }
 }
+
+const autoHyphen = (target) => {
+  phoneNumber.value = target
+    .replace(/[^0-9]/g, '')
+    .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`)
+}
+
 </script>
 
 <template>
@@ -111,6 +118,7 @@ const onSubmit = async () => {
             dense
             outlined
             class="q-mb-md"
+            type="password"
           />
 
           <q-file
@@ -142,6 +150,8 @@ const onSubmit = async () => {
             label="전화번호를 입력해 주십시오."
             dense
             outlined
+            maxlength="13"
+            @update:model-value="autoHyphen(phoneNumber)"
           />
 
           <q-btn label="회원가입" type="submit" class="full-width q-mt-xl q-mb-lg submit-btn" style="background-color: #5bc500; color: white"/>

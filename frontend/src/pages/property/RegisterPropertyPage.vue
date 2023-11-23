@@ -213,6 +213,7 @@ const register = async () => {
                 type="number"
                 dense
                 outlined
+                min="0"
               />
             </div>
             <div class="row items-center col-6">
@@ -222,6 +223,7 @@ const register = async () => {
                 type="number"
                 dense
                 outlined
+                min="0"
               />
             </div>
           </div>
@@ -235,6 +237,7 @@ const register = async () => {
                 type="number"
                 dense
                 outlined
+                min="0"
               />
             </div>
             <div class="row items-center col-6">
@@ -244,6 +247,7 @@ const register = async () => {
                 type="number"
                 dense
                 outlined
+                min="0"
               />
             </div>
           </div>
@@ -264,6 +268,7 @@ const register = async () => {
                 type="number"
                 dense
                 outlined
+                min="0"
               />
             </div>
             <div class="row items-center col-4">
@@ -274,6 +279,7 @@ const register = async () => {
                 type="number"
                 dense
                 outlined
+                min="0"
               />
             </div>
             <div class="row items-center col-4">
@@ -284,6 +290,7 @@ const register = async () => {
                 type="number"
                 dense
                 outlined
+                min="0"
               />
             </div>
           </div>
