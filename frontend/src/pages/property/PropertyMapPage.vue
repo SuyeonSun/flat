@@ -571,7 +571,7 @@ const interestAreaRangeLabel = (val) => `${val}km`
                   unchecked-icon="clear"
                 />
               </div>
-              <div class="row">
+              <div v-if="isInterest" class="row">
                 <q-badge color="green">
                   범위: {{ interestAreaRange }}km
                 </q-badge>
@@ -623,10 +623,10 @@ const interestAreaRangeLabel = (val) => `${val}km`
       <div class="row q-mx-xl">
         <!-- 지도 -->
         <div class="col-8">
-          <div id="map" style="height: 75vh"></div>
+          <div id="map" style="height: 60vh"></div>
         </div>
         <!-- 목록 -->
-        <div class="col-4" style="height: 75vh">
+        <div class="col-4" style="height: 60vh">
           <q-scroll-area
             :thumb-style="thumbStyle"
             :content-style="contentStyle"
