@@ -68,7 +68,7 @@ public class PropertyService {
 
         List<User> allUser = userRepository.findAll();
         for(User u : allUser) {
-            if(u.getInterestLat() != null && u.getAddressLng() != null) {
+            if(u.getInterestLat() != null && u.getAddressLng() != null && u.getInterestRadius() != null) {
                 double dist = Math.sin(deg2rad(Double.parseDouble(property.getLat()))) * Math.sin(deg2rad(Double.parseDouble(u.getInterestLat())))
                         + Math.cos(deg2rad(Double.parseDouble(property.getLat()))) * Math.cos(deg2rad(Double.parseDouble(u.getInterestLat())))
                         * Math.cos(deg2rad(Double.parseDouble(property.getLng()) - Double.parseDouble(u.getInterestLng())));
@@ -77,7 +77,7 @@ public class PropertyService {
                 dist = rad2deg(dist);
                 dist = dist * 60 * 1.1515 * 1609.344;
 
-                if(dist <= Double.parseDouble(user.getInterestRadius())*200) {
+                if(dist <= Double.parseDouble(u.getInterestRadius())*200) {
                     InterestAreaProperty interestAreaProperty = InterestAreaProperty.builder()
                             .email(u.getEmail())
                             .property(property)
