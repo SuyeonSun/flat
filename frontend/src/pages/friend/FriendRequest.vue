@@ -41,6 +41,9 @@ const tab = ref('recv')
 
               <q-tab-panels v-model="tab" animated>
                 <q-tab-panel name="recv">
+                  <div v-if="userStore.$state.recvRequests.length === 0" style="margin-left: 320px; margin-top: 200px">
+                    받은 요청이 없습니다.
+                  </div>
                   <q-card flat bordered
                           v-for="friend in userStore.$state.recvRequests"
                           :key="friend"
@@ -68,6 +71,9 @@ const tab = ref('recv')
                 </q-tab-panel>
 
                 <q-tab-panel name="send">
+                  <div v-if="userStore.$state.sendRequests.length === 0" style="margin-left: 320px; margin-top: 200px">
+                    보낸 요청이 없습니다.
+                  </div>
                   <q-card flat bordered v-for="friend in userStore.$state.sendRequests" :key="friend" class="row justify-between items-center q-mb-sm">
                     <q-item clickable v-ripple>
                       <q-item-section side>
