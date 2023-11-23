@@ -531,19 +531,23 @@ const interestAreaRangeLabel = (val) => `${val}km`
       <!-- address, tradeTypeName -->
       <div class="q-pa-lg q-px-xl">
         <div class="row justify-between items-center">
-          <div class="row" v-if="!isOnlyInterestArea">
-            <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
-                      style="width: 100px" label="거래 유형"/>
-            <q-input
-              v-model="address"
-              dense
-              outlined
-              label="검색할 매물 주소"
-            >
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+          <div v-if="!isOnlyInterestArea">
+            <div style="font-weight: bold; font-size: 17px" class="q-mb-xs">검색</div>
+            <q-item-label caption class="q-mb-sm">검색 조건을 변경 시, 자동 검색 됩니다.</q-item-label>
+            <div class="row" >
+              <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense class="q-mr-sm"
+                        style="width: 100px" label="거래 유형"/>
+              <q-input
+                v-model="address"
+                dense
+                outlined
+                label="검색할 매물 주소"
+              >
+                <template v-slot:append>
+                  <q-icon name="search"/>
+                </template>
+              </q-input>
+            </div>
           </div>
           <div class="row" v-else>
             <q-select outlined v-model="tradeTypeName" :options="tradeTypeOptions" stack-label dense readonly class="q-mr-sm"
@@ -614,7 +618,7 @@ const interestAreaRangeLabel = (val) => `${val}km`
           </div>
         </div>
         <div class="row justify-between">
-          <q-item-label caption class="q-mt-xs">검색 조건을 변경 시, 자동 검색 됩니다.</q-item-label>
+          <q-item-label caption class="q-mt-xs"></q-item-label>
           <div style="color: #117CE9;">총 {{ mapList.length }}개의 검색 결과</div>
         </div>
       </div>
