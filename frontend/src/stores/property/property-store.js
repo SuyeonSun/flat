@@ -79,11 +79,12 @@ export const usePropertyStore = defineStore('propertyStore', {
       }
     },
 
-    async getInterestAreaMapList(lat, lng) {
+    async getInterestAreaMapList(lat, lng, radius) {
       try {
         const response = await api.post('/property/map/interestArea', {
           lat: lat,
-          lng: lng
+          lng: lng,
+          radius: radius
         })
         this.mapList = response.data.data
       } catch (error) {

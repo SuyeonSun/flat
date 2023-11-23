@@ -37,6 +37,7 @@ public class User {
     private String addressLng;
     private String interestLat;
     private String interestLng;
+    private String interestRadius;
     private String password;
     private String phoneNumber;
 

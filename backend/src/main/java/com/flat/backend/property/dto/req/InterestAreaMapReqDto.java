@@ -7,4 +7,5 @@ public class InterestAreaMapReqDto {
 
     String lat;
     String lng;
+    String radius;
 }

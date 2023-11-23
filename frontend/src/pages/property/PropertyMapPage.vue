@@ -156,6 +156,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
 
       if(response.data.data.lat && response.data.data.lng) {
         let prevInterestPosition = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
+        interestArea.value = response.data.data.radius
 
         selectMarker.setMap(map)
         interestArea.setMap(map)
@@ -165,9 +166,11 @@ watch(() => mapList.value, (newVal, oldVal) => {
       naver.maps.Event.addListener(map, 'click', async function(e) {
         selectMarker.setPosition(e.coord)
         interestArea.setCenter(e.coord)
-        await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
+
+        curCirclePosition.value = new naver.maps.LatLng(e.coord._lat, e.coord._lng)
+        await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng, interestAreaRange.value)
         await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
-        await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng)
+        await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng, interestAreaRange.value)
       })
     }
 
@@ -176,7 +179,7 @@ watch(() => mapList.value, (newVal, oldVal) => {
       interestArea = new naver.maps.Circle({
         map: map,
         center: new naver.maps.LatLng(map.center._lat, map.center._lng),
-        radius: 1000,
+        radius: interestAreaRange.value*200,
         fillColor: 'green',
         fillOpacity: 0.5
       })
@@ -209,7 +212,8 @@ watch(() => isToggle.value, async (newVal, oldVal) => {
       await propertyStore.getMapList(searchPayload);
     } else {
       const response = await userStore.getUserInterestArea(authStore.$state.email)
-      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+      interestArea.value = response.data.data.radius
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng, interestAreaRange.value)
     }
   }
 })
@@ -227,7 +231,8 @@ watch (() => isPoliceStationToggle.value, async (newVal, oldVal) => {
       await propertyStore.getMapList(searchPayload);
     } else {
       const response = await userStore.getUserInterestArea(authStore.$state.email)
-      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+      interestArea.value = response.data.data.radius
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng, interestAreaRange.value)
     }
   }
 })
@@ -333,6 +338,9 @@ watch(() => isInterest.value, async(newVal) => {
     if(response.data.data.lat && response.data.data.lng) {
       let prevInterestPosition = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
 
+      interestAreaRange.value = response.data.data.radius
+      curCirclePosition.value = new naver.maps.LatLng(response.data.data.lat, response.data.data.lng)
+
       selectMarker = new naver.maps.Marker({
         position: prevInterestPosition,
         map: map,
@@ -341,7 +349,7 @@ watch(() => isInterest.value, async(newVal) => {
       interestArea = new naver.maps.Circle({
         map: map,
         center: prevInterestPosition,
-        radius: 1000,
+        radius: interestAreaRange.value*200,
         fillColor: 'green',
         fillOpacity: 0.5
       })
@@ -354,7 +362,7 @@ watch(() => isInterest.value, async(newVal) => {
       interestArea = new naver.maps.Circle({
         map: map,
         center: new naver.maps.LatLng(map.center._lat, map.center._lng),
-        radius: 1000,
+        radius: interestAreaRange.value*200,
         fillColor: 'green',
         fillOpacity: 0.5
       })
@@ -364,9 +372,9 @@ watch(() => isInterest.value, async(newVal) => {
       console.log("addEventLisnter!!!!!!!!!!")
       selectMarker.setPosition(e.coord)
       interestArea.setCenter(e.coord)
-      await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng)
+      await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng, interestAreaRange.value)
       await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
-      await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng)
+      await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng, interestAreaRange.value)
 
     })
   }
@@ -375,10 +383,10 @@ watch(() => isInterest.value, async(newVal) => {
     interestArea.setMap(null)
     if(isOnlyInterestArea.value) {
       const response = await userStore.getUserInterestArea(authStore.$state.email)
-
+      interestArea.value = response.data.data.radius
       map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
       map.setZoom(15)
-      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+      await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng, interestAreaRange.value)
     }
   }
 })
@@ -398,9 +406,11 @@ watch(() => isOnlyInterestArea.value, async(newVal) => {
       })
       return
     }
+
+    interestAreaRange.value = response.data.data.radius
     map.setCenter(new naver.maps.LatLng(response.data.data.lat, response.data.data.lng))
     map.setZoom(15)
-    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng)
+    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng, interestAreaRange.value)
   } else {
 
     const searchPayload = {
@@ -521,7 +531,29 @@ const clickProperty = (idx) => {
 
 const scrollRef = ref(null)
 const interestAreaRange = ref(1)
-const interestAreaRangeLabel = (val) => `${val}km`
+const interestAreaRangeLabel = (val) => `${val*200}m`
+const curCirclePosition = ref(undefined)
+
+watch(() => interestAreaRange.value, async (n) => {
+
+  interestArea.setMap(null)
+
+  interestArea = new naver.maps.Circle({
+    map: map,
+    center: curCirclePosition.value,
+    radius: n*200,
+    fillColor: 'green',
+    fillOpacity: 0.5
+  })
+  await userStore.setUserInterestAreaRange(authStore.$state.email, interestAreaRange.value)
+
+  if(isOnlyInterestArea.value) {
+    await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
+    const response = await userStore.getUserInterestArea(authStore.$state.email)
+    await propertyStore.getInterestAreaMapList(response.data.data.lat, response.data.data.lng, interestAreaRange.value)
+  }
+
+})
 </script>
 
 <template>
@@ -577,7 +609,7 @@ const interestAreaRangeLabel = (val) => `${val}km`
               </div>
               <div v-if="isInterest" class="row">
                 <q-badge color="green">
-                  범위: {{ interestAreaRange }}km
+                  범위: {{ interestAreaRange * 200 }}m
                 </q-badge>
                 <q-slider
                   style="min-width: 150px"

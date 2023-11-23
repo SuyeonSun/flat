@@ -164,11 +164,19 @@ export const useUserStore = defineStore('userStore', {
       return await api.get(`/user/interestArea?email=${email}`)
     },
 
-    async setUserInterestArea(email, lat, lng) {
+    async setUserInterestArea(email, lat, lng, radius) {
       return await api.post('/user/interestArea', {
         email: email,
         lat: lat,
-        lng: lng
+        lng: lng,
+        radius: radius
+      })
+    },
+
+    async setUserInterestAreaRange(email, radius) {
+      return await api.post('/user/interestAreaRange', {
+        email: email,
+        radius: radius
       })
     }
   },

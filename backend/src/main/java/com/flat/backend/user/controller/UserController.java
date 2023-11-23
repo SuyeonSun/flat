@@ -6,6 +6,7 @@ import com.flat.backend.friends.dto.SendReqDto;
 import com.flat.backend.friends.repository.entity.ReqFriendDto;
 import com.flat.backend.user.dto.req.ChangeAddressDto;
 import com.flat.backend.user.dto.req.ChangeProfileDto;
+import com.flat.backend.user.dto.req.InterestAreaRangeReqDto;
 import com.flat.backend.user.dto.req.InterestAreaReqDto;
 import com.flat.backend.user.dto.res.InterestAreaResDto;
 import com.flat.backend.user.repository.UserRepository;
@@ -150,6 +151,7 @@ public class UserController {
         InterestAreaResDto interestAreaDto = InterestAreaResDto.builder()
                 .lat(user.getInterestLat())
                 .lng(user.getInterestLng())
+                .radius(user.getInterestRadius())
                 .build();
 
         return ResponseEntity
@@ -166,9 +168,21 @@ public class UserController {
 
         user.setInterestLat(interestAreaReqDto.getLat());
         user.setInterestLng(interestAreaReqDto.getLng());
+        user.setInterestRadius(interestAreaReqDto.getRadius());
 
         return ResponseEntity.ok()
                 .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage()));
     }
 
+    @Transactional
+    @ResponseBody
+    @PostMapping("/interestAreaRange")
+    public ResponseEntity<BaseResponseDto<?>> setInterestAreaRange(@RequestBody InterestAreaRangeReqDto interestAreaRangeReqDto) {
+        User user = userRepository.findByEmail(interestAreaRangeReqDto.getEmail()).orElseThrow(() -> new BaseException(INVALID_USER_INFO));
+
+        user.setInterestRadius(interestAreaRangeReqDto.getRadius());
+
+        return ResponseEntity.ok()
+                .body(new BaseResponseDto<>(OK.getStatusCode(), OK.getStatusMessage()));
+    }
 }
