@@ -520,6 +520,8 @@ const clickProperty = (idx) => {
 }
 
 const scrollRef = ref(null)
+const interestAreaRange = ref(1)
+const interestAreaRangeLabel = (val) => `${val}km`
 </script>
 
 <template>
@@ -559,34 +561,56 @@ const scrollRef = ref(null)
             </q-input>
           </div>
           <div>
-            <q-toggle
-              v-model="isInterest"
-              checked-icon="check"
-              color="green"
-              label="관심 지역 설정"
-              unchecked-icon="clear"
-            />
-            <q-toggle
-              v-model="isOnlyInterestArea"
-              checked-icon="check"
-              color="red"
-              label="관심 지역 매물보기"
-              unchecked-icon="clear"
-            />
-            <q-toggle
-              v-model="isPoliceStationToggle"
-              checked-icon="check"
-              color="amber-8"
-              label="주변 경찰서 위치도 함께 표시할래요"
-              unchecked-icon="clear"
-            />
-            <q-toggle
-              v-model="isToggle"
-              checked-icon="person"
-              color="grey"
-              label="친구 집 위치도 함께 표시할래요"
-              unchecked-icon="clear"
-            />
+            <div class="row items-center">
+              <div class="q-mr-xl">
+                <q-toggle
+                  v-model="isInterest"
+                  checked-icon="check"
+                  color="green"
+                  label="관심 지역 설정"
+                  unchecked-icon="clear"
+                />
+              </div>
+              <div class="row">
+                <q-badge color="green">
+                  범위: {{ interestAreaRange }}km
+                </q-badge>
+                <q-slider
+                  style="min-width: 150px"
+                  v-model="interestAreaRange"
+                  color="green"
+                  markers
+                  :marker-labels="interestAreaRangeLabel"
+                  :min="1"
+                  :max="5"
+                />
+              </div>
+            </div>
+            <div>
+              <q-toggle
+                v-model="isOnlyInterestArea"
+                checked-icon="check"
+                color="red"
+                label="관심 지역 매물 보기"
+                unchecked-icon="clear"
+              />
+            </div>
+            <div>
+              <q-toggle
+                v-model="isPoliceStationToggle"
+                checked-icon="check"
+                color="amber-8"
+                label="주변 경찰서 위치도 함께 표시할래요"
+                unchecked-icon="clear"
+              />
+              <q-toggle
+                v-model="isToggle"
+                checked-icon="person"
+                color="grey"
+                label="친구 집 위치도 함께 표시할래요"
+                unchecked-icon="clear"
+              />
+            </div>
           </div>
         </div>
         <div class="row justify-between">
