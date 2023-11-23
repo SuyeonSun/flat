@@ -3,9 +3,7 @@ package com.flat.backend.user.dto.req;
 import lombok.Getter;
 
 @Getter
-public class InterestAreaReqDto {
+public class InterestAreaRangeReqDto {
     String email;
-    String lat;
-    String lng;
     String radius;
 }

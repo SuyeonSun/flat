@@ -77,7 +77,7 @@ public class PropertyService {
                 dist = rad2deg(dist);
                 dist = dist * 60 * 1.1515 * 1609.344;
 
-                if(dist <= 1000) {
+                if(dist <= Double.parseDouble(user.getInterestRadius())*200) {
                     InterestAreaProperty interestAreaProperty = InterestAreaProperty.builder()
                             .email(u.getEmail())
                             .property(property)
@@ -180,7 +180,7 @@ public class PropertyService {
         return ResponseEntity.ok().body(baseResponseDto);
     }
 
-    public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaMapList(String lat, String lng) {
+    public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaMapList(String lat, String lng, String radius) {
         List<Property> properties = propertyRepository.findAll();
 
         List<Property> result = new ArrayList<>();
@@ -194,7 +194,7 @@ public class PropertyService {
             dist = rad2deg(dist);
             dist = dist * 60 * 1.1515 * 1609.344;
 
-            if(dist <= 1000) {
+            if(dist <= Double.parseDouble(radius)*200) {
                 result.add(p);
             }
         }

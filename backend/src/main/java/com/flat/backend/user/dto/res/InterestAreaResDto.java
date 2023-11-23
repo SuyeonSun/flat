@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class InterestAreaResDto {
     String lat;
     String lng;
+    String radius;
 }

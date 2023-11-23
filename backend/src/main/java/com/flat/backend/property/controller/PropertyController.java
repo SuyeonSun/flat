@@ -69,7 +69,7 @@ public class PropertyController {
 
     @PostMapping("/map/interestArea")
     public ResponseEntity<BaseResponseDto<List<Property>>> selectInterestAreaMapList(@RequestBody InterestAreaMapReqDto interestAreaMapReqDto) {
-        return propertyService.selectInterestAreaMapList(interestAreaMapReqDto.getLat(), interestAreaMapReqDto.getLng());
+        return propertyService.selectInterestAreaMapList(interestAreaMapReqDto.getLat(), interestAreaMapReqDto.getLng(), interestAreaMapReqDto.getRadius());
     }
 
     @GetMapping("/list/interestArea")
