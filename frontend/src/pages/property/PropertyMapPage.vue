@@ -370,11 +370,17 @@ watch(() => isInterest.value, async(newVal) => {
 
     naver.maps.Event.addListener(map, 'click', async function(e) {
       console.log("addEventLisnter!!!!!!!!!!")
+      curCirclePosition.value = new naver.maps.LatLng(e.coord._lat, e.coord._lng)
+
       selectMarker.setPosition(e.coord)
       interestArea.setCenter(e.coord)
+
       await userStore.setUserInterestArea(authStore.$state.email, e.coord._lat, e.coord._lng, interestAreaRange.value)
       await propertyStore.removeInterestAreaAllProperty(authStore.$state.email)
-      await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng, interestAreaRange.value)
+
+      if(isOnlyInterestArea.value) {
+        await propertyStore.getInterestAreaMapList(e.coord._lat, e.coord._lng, interestAreaRange.value)
+      }
 
     })
   }
